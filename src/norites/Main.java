@@ -3,6 +3,7 @@ package norites;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -14,6 +15,7 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 	/* 1. Main クラスまたはオブジェクトに所属するメンバー変数の宣言を書く所 */
 	float x = 180, y = 184;
+	int right = 1;
 
 	byte icount = 0;
 	boolean ismove = false;
@@ -88,9 +90,11 @@ public class Main extends BasicGame {
 		Input input = gc.getInput();
 		if (input.isKeyDown(input.KEY_LEFT)) {
 			x -= move;
+			right = -1;
 			
 		} else if (input.isKeyDown(input.KEY_RIGHT)) {
 			x += move;
+			right = 1;
 		}
 		if (input.isKeyDown(input.KEY_UP)) {
 			y -= move;
@@ -99,7 +103,7 @@ public class Main extends BasicGame {
 		}
 		int ntx=(int)x/64; //のりぴーのタイル位置
 		int nty=(int)y/64; //のりぴーのタイル位置
-		System.out.println(nty);
+		System.out.println(ntx);
 		
 		if(map.getTileId(ntx, nty, map2)==12 ||
 				map.getTileId(ntx+1, nty, map2)==12 || 
@@ -143,15 +147,19 @@ public class Main extends BasicGame {
 				g.drawImage(tinko,tx*64,ty*64);
 			}
 			//System.out.println(map.getTileId(tx, ty, map2));
+			if(map.getTileId(tx, ty, map2) == 12){
+			g.setColor(Color.green);
 			
-				//g.setColor(Color.green);
-				
-				//g.drawRect(tx,ty,64,64);
-				
+			g.drawRect(tx*64,ty*64,64,64);
+			}
 			
 			}
 	}
-		noripie.draw((int)x,(int)y);
+		if(right==1){
+			noripie.draw((int)x,(int)y,right*64,64);
+		}else if(right == -1){
+			noripie.draw((int)x+64,(int)y,right*64,64);
+		}
 	}
 
 	public static void main(String[] args) throws SlickException {
