@@ -150,7 +150,7 @@ public class Main extends BasicGame {
 			if(map.getTileId(tx, ty, map2) == 12){
 			g.setColor(Color.green);
 			
-			g.drawRect(tx*64,ty*64,64,64);
+			//g.drawRect(tx*64,ty*64,64,64);
 			}
 			
 			}
