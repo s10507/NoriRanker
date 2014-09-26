@@ -15,8 +15,14 @@ import org.newdawn.slick.tiled.TiledMap;
 
 public class Main extends BasicGame {
 	/* 1. Main クラスまたはオブジェクトに所属するメンバー変数の宣言を書く所 */
-	float x = 180, y = 184;
+	float x = 180, y = 184;	
+	int ntx=(int)x/64; //のりぴーのタイル位置
+	int nty=(int)y/64; //のりぴーのタイル位置
+		
 	float usax = 150, usay = 340;
+	int utx=(int)usax/64;//うさたんのタイル位置
+	int uty=(int)usay/64;
+	
 	int right = 1;
 	boolean usamuki= true;//trueだと右向き
 	Random rnd = new Random();
@@ -27,13 +33,12 @@ public class Main extends BasicGame {
 	private Animation noripie,walk,wait;
 	
 	String path =null;
-	Image unko, tinko, enemy,houdai,tama;
+	Image kabe1, kabe2, usatan,cannon,shell;
 	
 
 	TiledMap map = null;
 	int map1,map2;
 	public Main(String title) {
-		/* 2. コンストラクター */
 		super(title);
 	}
 
@@ -59,15 +64,15 @@ public class Main extends BasicGame {
 		noripie = wait;
 		
 		try{
-			unko = new Image("./resource/kabe1.png");
+			kabe1 = new Image("./resource/kabe1.png");
 
-			tinko = new Image("./resource/kabe2.png");
+			kabe2 = new Image("./resource/kabe2.png");
 			
-			enemy = new Image("./resource/usatan.gif");
+			usatan = new Image("./resource/usatan.gif");
 			
-			houdai = new Image("./resource/砲台1.gif");
+			cannon = new Image("./resource/砲台1.gif");
 			
-			tama = new Image("./resource/砲弾.gif");
+			shell = new Image("./resource/砲弾.gif");
 		}catch(Exception e){
 		}
 		
@@ -161,29 +166,22 @@ public class Main extends BasicGame {
 		
 		for(int tx = 0; tx < 10; tx++){
 			for(int ty =0; ty<7;ty++){
-			//	System.out.println(map.getTileId(tx,ty,map2));
-			if(map.getTileId(tx, ty, map1) == 2){
+				//	System.out.println(map.getTileId(tx,ty,map2));
+				if(map.getTileId(tx, ty, map1) == 2){
+					
+					
+					g.drawImage(kabe1,tx*64,ty*64);
+				}
+				if(map.getTileId(tx, ty, map1) == 3){
+					
+					
+					g.drawImage(kabe2,tx*64,ty*64);
+				}
+				//System.out.println(map.getTileId(tx, ty, map1));
 				
-				
-				g.drawImage(unko,tx*64,ty*64);
-			}
-			if(map.getTileId(tx, ty, map1) == 3){
-				
-				
-				g.drawImage(tinko,tx*64,ty*64);
-			}
-			//System.out.println(map.getTileId(tx, ty, map1));
-			
-			if(map.getTileId(tx, ty, map2) == 4){
-				g.drawImage(houdai,tx*64,ty*64);
-			}
-			
-			
-			
-			
-			
-			
-			
+				if(map.getTileId(tx, ty, map2) == 4){
+					g.drawImage(cannon,tx*64,ty*64);
+				}	
 			}
 	}
 		if(right==1){
@@ -203,7 +201,7 @@ public class Main extends BasicGame {
 		else if(map.getTileId((int)usax/64+1, (int)usay/64, map2) == 3 && usamuki==true)
 			usamuki = false;
 		
-			g.drawImage(enemy, usax, usay);
+			g.drawImage(usatan, usax, usay);
 	}
 
 	public static void main(String[] args) throws SlickException {
