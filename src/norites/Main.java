@@ -1,5 +1,6 @@
 package norites;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.newdawn.slick.Animation;
@@ -43,6 +44,11 @@ public class Main extends BasicGame {
 	String path =null;
 	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super;
 	
+	ArrayList<Integer> cannon_x_list = new ArrayList<>();
+	ArrayList<Integer> cannon_y_list = new ArrayList<>();
+	int cannon_number = 0;
+	boolean shell_flag = true;
+	int shell_x = 0;
 
 	TiledMap map = null;
 	int map1,map2;
@@ -100,8 +106,22 @@ public class Main extends BasicGame {
 		
 		map1 = map.getLayerIndex("タイル・レイヤー1");
 		map2 = map.getLayerIndex("collision");
-
 		
+		for(int tx = 0;tx < 10; tx++){
+			for(int ty = 0;ty < 7; ty++){
+				if(map.getTileId(tx, ty, map2) == 4){
+					cannon_x_list.add(tx*64);
+					cannon_y_list.add(ty*64);
+				}
+			}
+		}		
+		
+		for(int tx = 0;tx < cannon_x_list.size(); tx++){
+			System.out.println("cannon_x_list: "+ cannon_x_list.get(tx));
+		}
+		for(int ty = 0;ty < cannon_y_list.size(); ty++){
+			System.out.println("cannon_y_list: "+ cannon_y_list.get(ty));
+		}		
 	}
 	@SuppressWarnings("static-access")
 	@Override
@@ -127,6 +147,24 @@ public class Main extends BasicGame {
 		} else if (input.isKeyDown(input.KEY_DOWN)) {
 			y += move;
 		}
+		
+		if(input.isKeyDown(input.KEY_1)){
+			cannon_number = 0;
+			shell_x = cannon_x_list.get(cannon_number);
+		}
+		if(input.isKeyDown(input.KEY_2)){
+			cannon_number = 1;
+			shell_x = cannon_x_list.get(cannon_number);
+		}
+		if(input.isKeyDown(input.KEY_3)){
+			cannon_number = 2;
+			shell_x = cannon_x_list.get(cannon_number);
+		}
+		if(input.isKeyDown(input.KEY_4)){
+			cannon_number = 3;
+			shell_x = cannon_x_list.get(cannon_number);
+		}
+		
 		int ntx=(int)x/64; //のりぴーのタイル位置
 		int nty=(int)y/64; //のりぴーのタイル位置
 
@@ -178,14 +216,10 @@ public class Main extends BasicGame {
 		for(int tx = 0; tx < 10; tx++){
 			for(int ty =0; ty<7;ty++){
 				//	System.out.println(map.getTileId(tx,ty,map2));
-				if(map.getTileId(tx, ty, map1) == 2){
-					
-					
+				if(map.getTileId(tx, ty, map1) == 2){									
 					g.drawImage(kabe1,tx*64,ty*64);
 				}
-				if(map.getTileId(tx, ty, map1) == 3){
-					
-					
+				if(map.getTileId(tx, ty, map1) == 3){					
 					g.drawImage(kabe2,tx*64,ty*64);
 				}
 				//System.out.println(map.getTileId(tx, ty, map1));
@@ -194,7 +228,7 @@ public class Main extends BasicGame {
 					g.drawImage(cannon,tx*64,ty*64);
 				}	
 			}
-	}
+		}
 		if(right==1){
 			noripie.draw((int)x,(int)y,right*64,64);
 		}else if(right == -1){
@@ -246,7 +280,15 @@ public class Main extends BasicGame {
 				shimomuki = false;
 				g.drawImage(shimo_super, shimo_x,shimo_y);
 			}
-
+			
+			shell_x--;
+			
+			if(shell_x<=100)
+				shell_x = cannon_x_list.get(cannon_number);
+								
+			if(shell_flag)
+				g.drawImage(shell, shell_x-64, cannon_y_list.get(cannon_number));
+				
 			g.setColor(Color.blue);
 			g.drawRect(x, y, 64, 64);
 			g.drawRect(usax, usay, 64, 64);
