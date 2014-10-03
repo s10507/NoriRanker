@@ -21,7 +21,7 @@ public class Main extends BasicGame {
 	int ntx=(int)x/64; //のりぴーのタイル位置
 	int nty=(int)y/64; //のりぴーのタイル位置
 		
-	float usax = 150, usay = 340;
+	float usax = 150, usay = 300;
 	int utx=(int)usax/64;//うさたんのタイル位置
 	int uty=(int)usay/64;
 	
@@ -142,7 +142,7 @@ public class Main extends BasicGame {
 			x=77;
 			y=77;
 		}
-		if(((int)x+32)/64==(((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64){
+		if(((int)x+32)/64==(((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 || ((int)x+32)/64==(((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64){
 			for(;;){
 				x=rnd.nextInt(640-64);
 				y=rnd.nextInt(400-64);
@@ -246,16 +246,15 @@ public class Main extends BasicGame {
 				shimomuki = false;
 				g.drawImage(shimo_super, shimo_x,shimo_y);
 			}
-			
-			
+
 			g.setColor(Color.blue);
 			g.drawRect(x, y, 64, 64);
 			g.drawRect(usax, usay, 64, 64);
 			g.drawRect(shimo_x, shimo_y, 64, 64);
 			System.out.println("noriko"+(int)x+":"+(int)y);
 			System.out.println("usagi"+(int)usax+":"+(int)usay);
-
 	}
+	
 
 	public static void main(String[] args) throws SlickException {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
