@@ -19,8 +19,8 @@ public class Main extends BasicGame {
 	/* 1. Main クラスまたはオブジェクトに所属するメンバー変数の宣言を書く所 */
 
 	float x = 180, y = 184;	
-	int ntx=(int)x/64; //のりぴーのタイル位置
-	int nty=(int)y/64; //のりぴーのタイル位置
+//	int ntx=(int)x/64; //のりぴーのタイル位置
+//	int nty=(int)y/64; //のりぴーのタイル位置
 		
 	float usax = 150, usay = 300;
 	int utx=(int)usax/64;//うさたんのタイル位置
@@ -164,30 +164,33 @@ public class Main extends BasicGame {
 			cannon_number = 3;
 			shell_x = cannon_x_list.get(cannon_number);
 		}
-		
-		int ntx=(int)x/64; //のりぴーのタイル位置
-		int nty=(int)y/64; //のりぴーのタイル位置
-
-		
-		if(map.getTileId(ntx, nty, map2)==3 ||
-				map.getTileId(ntx+1, nty, map2)==3 || 
-				map.getTileId(ntx, nty+1, map2)==3 || 
-				map.getTileId(ntx+1, nty+1, map2) == 3){
+				
+		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==3 ||
+				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==3 || 
+				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==3 || 
+				map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2)==3 ||
+				map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==4 ||
+				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==4 || 
+				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==4 || 
+				map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == 4){
 			x=px;
 			y=py;
 		}
-		if(map.getTileId(ntx, nty, map1)==66){
-			x=77;
-			y=77;
-		}
-		if(((int)x+32)/64==(((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 || ((int)x+32)/64==(((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64){
+		System.out.print("50 : ("+(x+50)/64+", "+(y+50)/64+")\n");
+		System.out.print("10 : ("+(x+10)/64+", "+(y+10)/64+")\n");
+		
+		if(((int)x+32)/64==(((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 || ((int)x+32)/64==(((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64|| ((int)x+32)/64==(((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64){
 			for(;;){
 				x=rnd.nextInt(640-64);
 				y=rnd.nextInt(400-64);
-				if(map.getTileId((int)x/64, (int)y/64, map2)!=3 &&
-					map.getTileId((int)x/64+1, (int)y/64, map2)!=3 && 
-					map.getTileId((int)x/64, (int)y/64+1, map2)!=3 && 
-					map.getTileId((int)x/64+1, (int)y/64+1, map2) != 3)
+				if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)!=3 &&
+						map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)!=3 && 
+						map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)!=3 && 
+						map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2)!=3 &&
+						map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)!=4 &&
+						map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)!=4 && 
+						map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)!=4 && 
+						map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2)!=4)
 					break;
 			}
 		}
@@ -227,6 +230,8 @@ public class Main extends BasicGame {
 				if(map.getTileId(tx, ty, map2) == 4){
 					g.drawImage(cannon,tx*64,ty*64);
 				}	
+				g.setColor(Color.magenta);
+				g.drawRect(tx*64, ty*64, 64, 64);
 			}
 		}
 		if(right==1){
@@ -253,7 +258,7 @@ public class Main extends BasicGame {
 			usamuki = false;
 			g.drawImage(usatan, usax, usay);
 
-			
+		
 			
 			
 			
@@ -293,8 +298,14 @@ public class Main extends BasicGame {
 			g.drawRect(x, y, 64, 64);
 			g.drawRect(usax, usay, 64, 64);
 			g.drawRect(shimo_x, shimo_y, 64, 64);
-			System.out.println("noriko"+(int)x+":"+(int)y);
-			System.out.println("usagi"+(int)usax+":"+(int)usay);
+			g.setColor(Color.black);
+			g.drawRect((((int)x+50)/64)*64, (((int)y+50)/64)*64, 5, 5);
+			g.drawRect((((int)x+50)/64)*64, (((int)y+10)/64)*64, 5, 5);
+			g.drawRect((((int)x+10)/64)*64, (((int)y+50)/64)*64, 5, 5);
+			g.drawRect((((int)x+10)/64)*64, (((int)y+10)/64)*64, 5, 5);
+			
+//			System.out.println("noriko"+(int)x+":"+(int)y);
+//			System.out.println("usagi"+(int)usax+":"+(int)usay);
 	}
 	
 
