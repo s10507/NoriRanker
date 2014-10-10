@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="10" height="7" tilewidth="64" tileheight="64">
- <tileset firstgid="1" name="砲台" tilewidth="64" tileheight="64">
-  <image source="砲台.gif" trans="0000ff" width="64" height="64"/>
- </tileset>
- <tileset firstgid="2" name="kabe1" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="kabe1" tilewidth="64" tileheight="64">
   <image source="kabe1.png" width="64" height="64"/>
  </tileset>
- <tileset firstgid="3" name="kabe2" tilewidth="64" tileheight="64">
+ <tileset firstgid="2" name="kabe2" tilewidth="64" tileheight="64">
   <image source="kabe2.png" width="64" height="64"/>
  </tileset>
- <tileset firstgid="4" name="砲台1" tilewidth="64" tileheight="64">
-  <image source="砲台1.gif" trans="0000ff" width="64" height="64"/>
- </tileset>
- <tileset firstgid="5" name="砲台1" tilewidth="64" tileheight="64">
+ <tileset firstgid="3" name="砲台" tilewidth="64" tileheight="64">
+  <properties>
+   <property name="number" value="1"/>
+  </properties>
   <image source="砲台1.gif" trans="0000ff" width="64" height="64"/>
  </tileset>
  <layer name="タイル・レイヤー1" width="10" height="7" opacity="0.9">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NmYGBgJhIzEcDEqmOionn43Eesv7BhAG3qv+cYAQAA
+   H4sIAAAAAAAAC2NiYGBgIhIzEsDEqmOkonn43Eesv7BhAJbxFfIYAQAA
   </data>
  </layer>
  <layer name="collision" width="10" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NmYGBgJhLjAyxEqkNWS6l5yGqwqSPWX9gwAAf5zw4YAQAA
+   H4sIAAAAAAAAC2NiYGBgIhLjA8xEqkNWS6l5yGqwqSPWX9gwALWT9tQYAQAA
   </data>
  </layer>
 </map>
