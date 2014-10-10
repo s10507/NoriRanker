@@ -257,53 +257,48 @@ public class Main extends BasicGame {
 		else if(map.getTileId((int)usax/64+1, (int)usay/64+1, map2) == 3 && usamuki==true)
 			usamuki = false;
 			g.drawImage(usatan, usax, usay);
-
+			
+		if(shimomuki){
+			g.drawImage(shimo_normal, shimo_x,shimo_y);
+			shimo_y+=0.1;
+		}else{
+			shimo_y-=0.1;
+			shimo_y-=0.1;
+			g.drawImage(shimo_super, shimo_x,shimo_y);
+		}
+		if(map.getTileId((int)shimo_x/64, (int)shimo_y/64, map2) == 3 && shimomuki==false){
+			shimomuki = true;
+			g.drawImage(shimo_normal, shimo_x,shimo_y);
+		}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64, map2) == 3 && shimomuki==true){
+			shimomuki = false;
+			g.drawImage(shimo_super, shimo_x,shimo_y);
+		}
+		if(map.getTileId((int)shimo_x/64, (int)shimo_y/64+1, map2) == 3 && shimomuki==false){
+			shimomuki = true;
+			g.drawImage(shimo_normal, shimo_x,shimo_y);
+		}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64+1, map2) == 3 && shimomuki==true){
+			shimomuki = false;
+			g.drawImage(shimo_super, shimo_x,shimo_y);
+		}
+			
+		shell_x--;
 		
-			
-			
-			
-			if(shimomuki){
-				g.drawImage(shimo_normal, shimo_x,shimo_y);
-				shimo_y+=0.1;
-			
-			}else{
-				shimo_y-=0.1;
-				shimo_y-=0.1;
-				g.drawImage(shimo_super, shimo_x,shimo_y);
-			}
-			if(map.getTileId((int)shimo_x/64, (int)shimo_y/64, map2) == 3 && shimomuki==false){
-				shimomuki = true;
-				g.drawImage(shimo_normal, shimo_x,shimo_y);
-			}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64, map2) == 3 && shimomuki==true){
-				shimomuki = false;
-				g.drawImage(shimo_super, shimo_x,shimo_y);
-				}
-			if(map.getTileId((int)shimo_x/64, (int)shimo_y/64+1, map2) == 3 && shimomuki==false){
-				shimomuki = true;
-				g.drawImage(shimo_normal, shimo_x,shimo_y);
-			}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64+1, map2) == 3 && shimomuki==true){
-				shimomuki = false;
-				g.drawImage(shimo_super, shimo_x,shimo_y);
-			}
-			
-			shell_x--;
-			
-			if(shell_x<=100)
-				shell_x = cannon_x_list.get(cannon_number);
+		if(shell_x<=100)
+			shell_x = cannon_x_list.get(cannon_number);
 								
-			if(shell_flag)
-				g.drawImage(shell, shell_x-64, cannon_y_list.get(cannon_number));
-				
-			g.setColor(Color.blue);
-			g.drawRect(x, y, 64, 64);
-			g.drawRect(usax, usay, 64, 64);
-			g.drawRect(shimo_x, shimo_y, 64, 64);
-			g.setColor(Color.black);
-			g.drawRect((((int)x+50)/64)*64, (((int)y+50)/64)*64, 5, 5);
-			g.drawRect((((int)x+50)/64)*64, (((int)y+10)/64)*64, 5, 5);
-			g.drawRect((((int)x+10)/64)*64, (((int)y+50)/64)*64, 5, 5);
-			g.drawRect((((int)x+10)/64)*64, (((int)y+10)/64)*64, 5, 5);
-			
+		if(shell_flag)
+			g.drawImage(shell, shell_x-64, cannon_y_list.get(cannon_number));
+				           
+		g.setColor(Color.blue);
+		g.drawRect(x, y, 64, 64);
+		g.drawRect(usax, usay, 64, 64);
+		g.drawRect(shimo_x, shimo_y, 64, 64);
+		g.setColor(Color.black);
+		g.drawRect((((int)x+50)/64)*64, (((int)y+50)/64)*64, 5, 5);
+		g.drawRect((((int)x+50)/64)*64, (((int)y+10)/64)*64, 5, 5);
+		g.drawRect((((int)x+10)/64)*64, (((int)y+50)/64)*64, 5, 5);
+		g.drawRect((((int)x+10)/64)*64, (((int)y+10)/64)*64, 5, 5);
+		
 //			System.out.println("noriko"+(int)x+":"+(int)y);
 //			System.out.println("usagi"+(int)usax+":"+(int)usay);
 	}
