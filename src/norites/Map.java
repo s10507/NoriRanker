@@ -1,54 +1,92 @@
 
 package norites;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.tiled.TiledMap;
 
-
-
-public class Map {
-/*
-	public int width = 100,height = 100;
+public class Map extends Trap{
 	
-	//public Background[][] bg = new Background[width][height];
+	TiledMap map;
 	
-	public final String Dpath = "G:/5年/5年応用プログラミング";
-	public String path =null;
+	int map1,map2;
 	
-	public TiledMap map = null;
+	final int WALL1_ID = 1;	
+	final int WALL2_ID = 2;
 	
-	public Map(int id){
-		path = "G:/5年/5年応用プログラミング/untitled.tmx";
-		System.out.println(path);
+	Image kabe1, kabe2, usatan;
+	
+	public Map() throws SlickException{
+		
+		String path = "./resource/untitled.tmx";
 		
 		try{
 			map = new TiledMap(path, false);
 		}catch(SlickException e){
-			System.out.println("Error Loading Map!");
+			System.out.println("Error Loading Map!");		
+		}	
 		
-		}
+		map1 = map.getLayerIndex("タイル・レイヤー1");
+		map2 = map.getLayerIndex("collision");
 		
-		for(int x = 0; x< bg.length;x++){
-			for(int y=0;y< bg[0].length; x++){
-				bg[x][y] = new Background(new Rectangle(x * Tile.size,y * Tile.size, Tile.size,Tile.size),Tile.blank);
-			}
-		}
-		}
-	public void loadworld(){
+//		System.out.println("map1: "+map1+" map2: "+map2);
+
 		
-		int map1 = map.getLayerIndex("タイル・レイヤー1");
-		
-		
-		for(int x = 0; x < bg.length; x++){
-			for(int y =0; y<bg[0].length;y++){
-			if(map.getTileId(x, y, map1) == 36){
-				drawrect(x,y,64,64);
-			}
-			if(map.getTileId(x, y, map1) == 31){
-				bg[x][y].id = Tile.road;
-			}
-			if(map.getTileId(x, y, map1) == 32){
-				bg[x][y].id = Tile.Leaves;
+		for(int tx = 0;tx < 10; tx++){
+			for(int ty = 0;ty < 7; ty++){
+				if(map.getTileId(tx, ty, map2) == CANNON_ID){
+					cannon_x_list.add(tx*64);
+					cannon_y_list.add(ty*64);
 				}
 			}
 		}
-	}*/
+		
+		for(int tx = 0;tx < cannon_x_list.size(); tx++)
+//			System.out.println("cannon_x_list: "+ cannon_x_list.get(tx));
+		
+		for(int ty = 0;ty < cannon_y_list.size(); ty++)
+//			System.out.println("cannon_y_list: "+ cannon_y_list.get(ty));
+		
+		
+		
+		kabe1 = new Image("./resource/kabe1.png");
+
+		kabe2 = new Image("./resource/kabe2.png");
+		
+		usatan = new Image("./resource/usatan.gif");
+		
+		cannon = new Image("./resource/砲台1.gif");
+		
+		shell = new Image("./resource/砲弾.gif");
+		
+		shimo_normal = new Image("./resource/シタ.gif");
+		
+		shimo_super = new Image("./resource/ウエ.gif");
+	}
+	
+	public void render(Graphics g){
+		
+		for(int tx = 0; tx < 10; tx++){
+			for(int ty =0; ty<7;ty++){
+				//	System.out.println(map.getTileId(tx,ty,map2));
+				if(map.getTileId(tx, ty, map1) == WALL1_ID){									
+					g.drawImage(kabe1,tx*64,ty*64);
+				}
+				if(map.getTileId(tx, ty, map1) == WALL2_ID){					
+					g.drawImage(kabe2,tx*64,ty*64);
+				}
+				//System.out.println(map.getTileId(tx, ty, map1));
+				
+				if(map.getTileId(tx, ty, map2) == CANNON_ID){
+					g.drawImage(cannon,tx*64,ty*64);
+				}	
+				g.setColor(Color.magenta);
+				g.drawRect(tx*64, ty*64, 64, 64);
+			}
+		}
+		
+		super.render(g);
+	}
 }
