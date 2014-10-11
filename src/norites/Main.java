@@ -297,7 +297,7 @@ public class Main extends BasicGame {
 			shell_x = cannon_x_list.get(cannon_number)-64;
 								
 		if(shell_flag)
-			g.drawImage(shell, shell_x-64, cannon_y_list.get(cannon_number));
+			g.drawImage(shell, shell_x, cannon_y_list.get(cannon_number));
 				           
 		g.setColor(Color.blue);
 		g.drawRect(x, y, 64, 64);
