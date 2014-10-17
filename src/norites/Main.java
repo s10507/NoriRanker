@@ -22,7 +22,7 @@ public class Main extends BasicGame {
 	final int WALL2_ID = 2;
 	final int CANNON_ID = 3;
 
-	float x = 180, y = 184;	
+	float x = 65, y = 65;	
 //	int ntx=(int)x/64; //のりぴーのタイル位置
 //	int nty=(int)y/64; //のりぴーのタイル位置
 		
@@ -34,7 +34,9 @@ public class Main extends BasicGame {
 	int stx=(int)shimo_x/64;//しもたんのタイル位置
 	int sty=(int)shimo_y/64;
 
-
+	int menu_id =0;
+	int i;
+	
 	int right = 1;
 	boolean usamuki= true;//trueだと右向き
 	boolean shimomuki =true; //trueだと下向き
@@ -224,7 +226,20 @@ public class Main extends BasicGame {
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		/* 5. 画面描画に関するルーチン
 		（ゲームの結果出力に関する本体・メインループ） */
-		
+		Input input = gc.getInput();
+		if(menu_id==0){
+			
+			g.setColor(Color.magenta);
+			g.drawString("start!!!!!!!!!!!!!!!!!!!!", 100, 200);
+			if(input.isKeyDown(input.KEY_A)){
+				g.setColor(Color.red);
+				g.drawString("start!!!!!!!!!!!!!!!!!!!!", 100, 200);
+			}
+			if(input.isKeyDown(input.KEY_ENTER)){
+				menu_id=1;
+			}
+			
+		}else{
 		
 		for(int tx = 0; tx < 10; tx++){
 			for(int ty =0; ty<7;ty++){
@@ -313,13 +328,13 @@ public class Main extends BasicGame {
 //			System.out.println("usagi"+(int)usax+":"+(int)usay);
 	}
 	
-
+	}
 	public static void main(String[] args) throws SlickException {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
 		いわば着火メソッド。便宜上、このクラスに埋め込まれているだけで、
 		ゲームプログラム本体とは基本的に関係がない部分 */
 		AppGameContainer app = new AppGameContainer(new Main("骨組"));
-		app.setDisplayMode(680, 500, false);
+		app.setDisplayMode(64*10, 64*7, false);
 		app.start();
 	}
 }
