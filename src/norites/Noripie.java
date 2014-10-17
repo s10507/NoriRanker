@@ -1,7 +1,5 @@
 package norites;
 
-import java.util.Random;
-
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -11,7 +9,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
-public class Noripie extends Enemy{
+public class Noripie extends Character{
 
 	float x = 180, y = 184;	
 //	int ntx=(int)x/64; //のりぴーのタイル位置
@@ -24,8 +22,6 @@ public class Noripie extends Enemy{
 	static final float SPEED = 0.1f;
 	Image[] sprite = new Image[7];
 	private Animation noripie,walk,wait;
-	Random rnd = new Random();
-	
 	
 	public Noripie() throws SlickException{
 		
@@ -94,27 +90,9 @@ public class Noripie extends Enemy{
 //		System.out.print("50 : ("+(x+50)/64+", "+(y+50)/64+")\n");
 //		System.out.print("10 : ("+(x+10)/64+", "+(y+10)/64+")\n");
 		
-		if(((int)x+32)/64==(((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 || ((int)x+32)/64==(((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64|| ((int)x+32)/64==(((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64){
-			for(;;){
-				x=rnd.nextInt(640-64);
-				y=rnd.nextInt(400-64);
-				if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)!=WALL2_ID &&
-						map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)!=WALL2_ID && 
-						map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)!=WALL2_ID && 
-						map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2)!=WALL2_ID &&
-						map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)!=CANNON_ID &&
-						map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)!=CANNON_ID && 
-						map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)!=CANNON_ID && 
-						map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2)!=CANNON_ID)
-					break;
-			}
-		}
-		
 	}
 	
 	public void render(Graphics g){
-		
-		super.render(g);
 		
 		if(right==1){
 			noripie.draw((int)x,(int)y,right*64,64);
@@ -131,7 +109,5 @@ public class Noripie extends Enemy{
 		g.drawRect((((int)x+10)/64)*64, (((int)y+50)/64)*64, 5, 5);
 		g.drawRect((((int)x+10)/64)*64, (((int)y+10)/64)*64, 5, 5);
 		
-	}
-
-
+	}	
 }

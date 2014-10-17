@@ -89,4 +89,21 @@ public class Map extends Trap{
 		
 		super.render(g);
 	}
+	
+	public boolean turn (Character c, boolean muki){
+		
+		if(map.getTileId((int)c.x/64, (int)c.y/64, map2) == WALL2_ID && muki==false)
+			muki = true;
+		
+		else if(map.getTileId((int)c.x/64+1, (int)c.y/64, map2) == WALL2_ID && muki==true)
+			muki = false;
+		
+		if(map.getTileId((int)c.x/64, (int)c.y/64+1, map2) == WALL2_ID && muki==false)
+			muki = true;
+		
+		else if(map.getTileId((int)c.x/64+1, (int)c.y/64+1, map2) == WALL2_ID && muki==true)
+			muki = false;
+		
+		return muki;
+	}
 }
