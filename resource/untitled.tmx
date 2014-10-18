@@ -14,12 +14,12 @@
  </tileset>
  <layer name="タイル・レイヤー1" width="10" height="7" opacity="0.9">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgIhIzEsDEqmOkonn43Eesv7BhAJbxFfIYAQAA
+   H4sIAAAAAAAAC2NiYGBgIhIzEsDEqmOkonmE3EeMvxiwiAEAyhLevBgBAAA=
   </data>
  </layer>
  <layer name="collision" width="10" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgIhLjA8xEqkNWS6l5yGqwqSPWX9gwALWT9tQYAQAA
+   H4sIAAAAAAAAC2NiYGBgIhLjA8xEqkNWS6l5yGpwqSPWX+hiAGb+7lAYAQAA
   </data>
  </layer>
 </map>
