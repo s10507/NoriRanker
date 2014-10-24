@@ -18,19 +18,25 @@
  <tileset firstgid="5" name="map1" tilewidth="64" tileheight="64">
   <image source="map1.bmp" width="64" height="64"/>
  </tileset>
- <layer name="ceilingandfloor" width="10" height="7">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NlYGBgJYCJASwkqiVGDSF15KphQcPYAACrb3rLGAEAAA==
-  </data>
- </layer>
+ <tileset firstgid="6" name="hasigo" tilewidth="64" tileheight="64">
+  <image source="Z:/おえ/hasigo.gif" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="7" name="takara" tilewidth="64" tileheight="64">
+  <image source="takara.gif" width="64" height="64"/>
+ </tileset>
  <layer name="タイル・レイヤー1" width="10" height="7" opacity="0.9">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgIhIzEsDEqmOkonmE3EeMvxiwiAEAyhLevBgBAAA=
+   H4sIAAAAAAAAC2NiYGBgIhIzEsDEqmOko3nE+IsBixgAsCuVqhgBAAA=
   </data>
  </layer>
  <layer name="collision" width="10" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgIhLjA8xEqkNWS6l5yGpwqSPWX+hiAGb+7lAYAQAA
+   H4sIAAAAAAAAC2NiYGBgIhLjA8xEqkNWSy3zWPGoI9Zf6GIAK28xkhgBAAA=
+  </data>
+ </layer>
+ <layer name="ceilingandfloor" width="10" height="7">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NlYGBgJYCJASwkqiVGDSF15KphQcPYAACrb3rLGAEAAA==
   </data>
  </layer>
 </map>

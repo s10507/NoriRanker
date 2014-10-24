@@ -24,6 +24,7 @@ public class Main extends BasicGame {
 	final int FLOOR = 4;
 	final int CEILING = 5;
 	final int CANNON_ID = 3;
+	final int TAKARA_ID = 6;
 	
 	float x = 65, y = 65;	
 //	int ntx=(int)x/64; //のりぴーのタイル位置
@@ -51,7 +52,7 @@ public class Main extends BasicGame {
 	private Animation noripie,walk,wait;
 	
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara;
 	
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
@@ -105,6 +106,9 @@ public class Main extends BasicGame {
 			shimo_normal = new Image("./resource/シタ.gif");
 			
 			shimo_super = new Image("./resource/ウエ.gif");
+			
+			takara = new Image("./resource/takara.gif");
+			
 		}catch(Exception e){
 		}
 		
@@ -211,6 +215,9 @@ public class Main extends BasicGame {
 			
 //		System.out.print("50 : ("+(x+50)/64+", "+(y+50)/64+")\n");
 //		System.out.print("10 : ("+(x+10)/64+", "+(y+10)/64+")\n");
+		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == TAKARA_ID){
+			menu_id=2;
+		}
 		
 		if(((int)x+32)/64==(((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 || 
 				((int)x+32)/64==(((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64|| 
@@ -265,6 +272,7 @@ public class Main extends BasicGame {
 				menu_id=1;
 			}
 			
+			
 		}else{
 		
 		for(int tx = 0; tx < 10; tx++){							//マップ描画
@@ -281,6 +289,10 @@ public class Main extends BasicGame {
 				if(map.getTileId(tx, ty, map2) == CANNON_ID){			//キャノン
 					g.drawImage(cannon,tx*64,ty*64);
 				}	
+				
+				if(map.getTileId(tx, ty, map2)==TAKARA_ID){
+					g.drawImage(takara,tx*64,ty*64);
+				}
 				g.setColor(Color.magenta);
 				g.drawRect(tx*64, ty*64, 64, 64);
 			}
