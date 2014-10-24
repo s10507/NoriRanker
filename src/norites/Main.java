@@ -35,7 +35,7 @@ public class Main extends BasicGame {
 		
 		Input input = gc.getInput();
 		
-		n.controlling(gc, delta, input);
+		gs.update(gc, delta);
 		
 		
 	}
@@ -44,7 +44,7 @@ public class Main extends BasicGame {
 		/* 5. 画面描画に関するルーチン
 		（ゲームの結果出力に関する本体・メインループ） */
 		
-		n.render(g);
+		gs.render(gc,g);
 		
 //		System.out.println("noriko"+(int)x+":"+(int)y);
 //		System.out.println("usagi"+(int)usax+":"+(int)usay);

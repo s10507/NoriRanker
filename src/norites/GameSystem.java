@@ -2,6 +2,9 @@ package norites;
 
 import java.util.Random;
 
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class GameSystem extends Map {
@@ -32,5 +35,16 @@ public class GameSystem extends Map {
 						map.getTileId((int)(n.x+10)/64, (int)(n.y+10)/64, map2)!=CANNON_ID)
 					break;
 			}
+	}
+
+	public void update(GameContainer gc, int delta) {
+		Input in = new Input();
+		n.controlling(in);
+		
+	}
+
+	public void render(GameContainer gc, Graphics g) {
+
+		
 	}
 }
