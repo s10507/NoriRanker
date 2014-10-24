@@ -198,12 +198,13 @@ public class Main extends BasicGame {
 			x=px;			//前の位置にもどす
 			y=py;							
 		}
-		System.out.println(map.getTileId((int)(x+50)/64, (int)(y+65)/64, map3));
-		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map3)==FLOOR || map.getTileId((int)(x+10)/64, (int)(y+50)/64, map3)==FLOOR)
-			onground = true;
 		
+		if(map.getTileId((int)(x+32)/64, (int)(y+51)/64, map3)==FLOOR)
+			onground = true;
 		else
 			onground = false;
+		
+		System.out.println("x:"+(int)(x+50)+" "+"y:"+(int)(y+50)+" "+onground);
 		
 //		System.out.println(onground);
 		
