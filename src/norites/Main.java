@@ -21,6 +21,8 @@ public class Main extends BasicGame {
 	final int WARP_ID = 0;
 	final int WALL1_ID = 1;	
 	final int WALL2_ID = 2;
+	final int FLOOR = 4;
+	final int CEILING = 5;
 	final int CANNON_ID = 3;
 	
 	float x = 65, y = 65;	
@@ -60,7 +62,9 @@ public class Main extends BasicGame {
 	TiledMap map = null;
 	
 	
-	int map1,map2;
+	int map1, map2, map3;
+	
+	boolean onground;
 	
 	public Main(String title) {
 		super(title);
@@ -115,6 +119,7 @@ public class Main extends BasicGame {
 				
 		map1 = map.getLayerIndex("タイル・レイヤー1");
 		map2 = map.getLayerIndex("collision");
+		map3 = map.getLayerIndex("ceilingandfloor");
 		try{
 			//System.out.println(map.getTileProperty(3, "number", "true"));			
 		}catch(NullPointerException e){
@@ -189,6 +194,14 @@ public class Main extends BasicGame {
 			x=px;			//前の位置にもどす
 			y=py;							
 		}
+		System.out.println(map.getTileId((int)(x+50)/64, (int)(y+65)/64, map3));
+		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map3)==FLOOR || map.getTileId((int)(x+10)/64, (int)(y+50)/64, map3)==FLOOR)
+			onground = true;
+		
+		else
+			onground = false;
+		
+//		System.out.println(onground);
 		
 		if(map.getTileId((int)(x+50)/64 ,(int)(y+10)/64,map1) == WARP_ID ||
 		map.getTileId((int)(x+10)/64 ,(int)(y+10)/64,map1) == WARP_ID ){		//落下ワープとのりぴーの判定
@@ -256,7 +269,7 @@ public class Main extends BasicGame {
 		
 		for(int tx = 0; tx < 10; tx++){							//マップ描画
 			for(int ty =0; ty<7;ty++){
-				//	System.out.println(map.getTileId(tx,ty,map2));
+//				System.out.println(map.getTileId(tx,ty,map3));
 				if(map.getTileId(tx, ty, map1) == WALL1_ID){			//背景の壁						
 					g.drawImage(kabe1,tx*64,ty*64);
 				}
@@ -345,8 +358,11 @@ public class Main extends BasicGame {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
 		いわば着火メソッド。便宜上、このクラスに埋め込まれているだけで、
 		ゲームプログラム本体とは基本的に関係がない部分 */
+		TMXRead t = new TMXRead();
 		AppGameContainer app = new AppGameContainer(new Main("骨組"));
 		app.setDisplayMode(64*10, 64*7, false);
 		app.start();
+		
+		
 	}
 }

@@ -12,6 +12,17 @@
   </properties>
   <image source="砲台1.gif" trans="0000ff" width="64" height="64"/>
  </tileset>
+ <tileset firstgid="4" name="openspace2" tilewidth="64" tileheight="64">
+  <image source="openspace2.bmp" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="5" name="map1" tilewidth="64" tileheight="64">
+  <image source="map1.bmp" width="64" height="64"/>
+ </tileset>
+ <layer name="ceilingandfloor" width="10" height="7">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NlYGBgJYCJASwkqiVGDSF15KphQcPYAACrb3rLGAEAAA==
+  </data>
+ </layer>
  <layer name="タイル・レイヤー1" width="10" height="7" opacity="0.9">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAC2NiYGBgIhIzEsDEqmOkonmE3EeMvxiwiAEAyhLevBgBAAA=
