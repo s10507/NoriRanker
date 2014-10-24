@@ -10,7 +10,7 @@ import org.newdawn.slick.SlickException;
 public class Main extends BasicGame {
 	/* 1. Main クラスまたはオブジェクトに所属するメンバー変数の宣言を書く所 */
 	
-	Noripie n;
+	GameSystem gs;
 	
 	public Main(String title) {
 		super(title);
@@ -23,7 +23,7 @@ public class Main extends BasicGame {
 		オブジェクトとして変数名に関連付けたりする）
 		当然、ここはループしない */
 		
-		n = new Noripie();
+		gs = new GameSystem();
 	}
 	
 	@SuppressWarnings("static-access")

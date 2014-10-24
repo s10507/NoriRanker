@@ -7,10 +7,12 @@ import org.newdawn.slick.SlickException;
 public class GameSystem extends Map {
 	
 	Random rnd;
+	Noripie n;
 	
 	public GameSystem() throws SlickException {
 		super();
 		// TODO 自動生成されたコンストラクター・スタブ
+		n = new Noripie();
 
 		rnd = new Random();
 	}

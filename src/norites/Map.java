@@ -16,7 +16,7 @@ public class Map extends Trap{
 	final int WALL1_ID = 1;	
 	final int WALL2_ID = 2;
 	
-	Image kabe1, kabe2, usatan;
+	Image kabe1, kabe2, kabe3, usatan;
 	
 	public Map() throws SlickException{
 		
@@ -43,10 +43,10 @@ public class Map extends Trap{
 			}
 		}
 		
-		for(int tx = 0;tx < cannon_x_list.size(); tx++)
+//		for(int tx = 0;tx < cannon_x_list.size(); tx++)
 //			System.out.println("cannon_x_list: "+ cannon_x_list.get(tx));
 		
-		for(int ty = 0;ty < cannon_y_list.size(); ty++)
+//		for(int ty = 0;ty < cannon_y_list.size(); ty++)
 //			System.out.println("cannon_y_list: "+ cannon_y_list.get(ty));
 		
 		
@@ -54,6 +54,8 @@ public class Map extends Trap{
 		kabe1 = new Image("./resource/kabe1.png");
 
 		kabe2 = new Image("./resource/kabe2.png");
+		
+		kabe3 = new Image("./resource/kabe3.png");
 		
 		usatan = new Image("./resource/usatan.gif");
 		
@@ -66,10 +68,13 @@ public class Map extends Trap{
 		shimo_super = new Image("./resource/ウエ.gif");
 	}
 	
-	public void render(Graphics g){
+	public void render(Graphics g, Character c){
 		
-		for(int tx = 0; tx < 10; tx++){
-			for(int ty =0; ty<7;ty++){
+		float draw_x, draw_y;
+		int draw_tx = 0, draw_ty = 0;
+		
+		for(int tx = draw_tx; tx < 10; tx++){
+			for(int ty =draw_ty; ty < 7;ty++){
 				//	System.out.println(map.getTileId(tx,ty,map2));
 				if(map.getTileId(tx, ty, map1) == WALL1_ID){									
 					g.drawImage(kabe1,tx*64,ty*64);
@@ -87,7 +92,7 @@ public class Map extends Trap{
 			}
 		}
 		
-		super.render(g);
+		super.Trap_render(g);
 	}
 	
 	public boolean turn (Character c, boolean muki){

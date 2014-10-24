@@ -94,6 +94,8 @@ public class Noripie extends Character{
 	
 	public void render(Graphics g){
 		
+		super.render(g, this);
+		
 		if(right==1){
 			noripie.draw((int)x,(int)y,right*64,64);
 		}else if(right == -1){

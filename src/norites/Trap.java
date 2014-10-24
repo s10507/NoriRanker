@@ -36,7 +36,7 @@ public class Trap {
 		}
 	}
 	
-	public void render(Graphics g){
+	public void Trap_render(Graphics g){
 		shell_x--;
 		
 		if(shell_x<=64)
