@@ -49,7 +49,8 @@ public class Main extends BasicGame {
 	boolean ismove = false;
 	static final float SPEED = 0.1f;
 	Image[] sprite = new Image[7];
-	private Animation noripie,walk,wait;
+	Image[] sprite_k = new Image[4];
+	private Animation noripie,walk,wait,attack;
 
 	String path =null;
 	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara,clear;
@@ -78,20 +79,24 @@ public class Main extends BasicGame {
 		オブジェクトとして変数名に関連付けたりする）
 		当然、ここはループしない */
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
-
+		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 		byte i;
 		for (i = 0; i < sprite.length; i++) {
 			sprite[i] = ssheet.getSubImage(i, 0);
 		}
+		for(i = 0; i < sprite_k.length; i++) {
+			sprite_k[i] = ssheet_k.getSubImage(i,0);
+		}
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
+		Image[] attacking = {sprite[1],sprite[2],sprite[3],sprite[4]};
 		int[] duration = {100,100,100,100};
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
-
 		noripie = wait;
 
+		attack = new Animation(attacking,duration);
 		try{
 			kabe1 = new Image("./resource/kabe1.png");
 
@@ -258,6 +263,10 @@ public class Main extends BasicGame {
 			noripie.update(delta);
 		};
 		
+		if(input.isKeyDown(input.KEY_V)){
+			attack.update(1);		/////////なおすとこ
+		}
+		
 		}
 		
 	}
@@ -279,12 +288,14 @@ public class Main extends BasicGame {
 				menu_id=1;
 			}
 		}else if(menu_id==2){
+			int a=0;
 			for(int i = 0; i < 3; i++){
-			g.drawImage(clear, 0,i*64,128,128,0,0,64,64);
-			g.drawImage(clear, 500,i*64,628,128,0,0,-64,64);
-		}
+			g.drawImage(clear, 0,64+a,128,192+a,0,0,64,64);
+			g.drawImage(clear, 500,64+a,628,192+a,0,0,-64,64);
+			a+=128;
+			}
 			g.setColor(Color.red);
-			g.drawString("start!!!!!!!!!!!!!!!!!!!!", 100, 200);
+			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
 		}else{
 		
 		
