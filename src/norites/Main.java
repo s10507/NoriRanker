@@ -24,7 +24,7 @@ public class Main extends BasicGame {
 	final int FLOOR = 4;
 	final int CEILING = 5;
 	final int CANNON_ID = 3;
-	final int TAKARA_ID = 6;
+	final int TAKARA_ID = 7;
 
 	float x = 65, y = 65;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
@@ -52,7 +52,7 @@ public class Main extends BasicGame {
 	private Animation noripie,walk,wait;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara,clear;
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
@@ -108,6 +108,8 @@ public class Main extends BasicGame {
 			shimo_super = new Image("./resource/ウエ.gif");
 
 			takara = new Image("./resource/takara.gif");
+			
+			clear = new Image("./resource/クリア.gif");
 
 		}catch(Exception e){
 		}
@@ -153,6 +155,9 @@ public class Main extends BasicGame {
 		/* 4. ゲームの内部状態（変数等）の更新に関するルーチン
 		 *
 		（ゲームのロジックや入力に関する本体・メインループ） */
+		
+		if(menu_id!=2){
+			
 		float px=x,py=y;
 
 		float move = SPEED * delta;
@@ -211,8 +216,9 @@ public class Main extends BasicGame {
 
 
 //		System.out.print("50 : ("+(x+50)/64+", "+(y+50)/64+")\n");
-//		System.out.print("10 : ("+(x+10)/64+", "+(y+10)/64+")\n");
+//		System.out.println(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2));
 		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == TAKARA_ID){
+			
 			menu_id=2;
 		}
 
@@ -252,12 +258,15 @@ public class Main extends BasicGame {
 			noripie.update(delta);
 		};
 		
+		}
+		
 	}
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		/* 5. 画面描画に関するルーチン
 		（ゲームの結果出力に関する本体・メインループ） */
 		Input input = gc.getInput();
+		System.out.println(menu_id);
 		if(menu_id==0){			//メニュー画面の起動
 
 			g.setColor(Color.magenta);
@@ -269,8 +278,16 @@ public class Main extends BasicGame {
 			if(input.isKeyDown(input.KEY_ENTER)){					//enter押すとゲームスタート
 				menu_id=1;
 			}
+		}else if(menu_id==2){
+			for(int i = 0; i < 3; i++){
+			g.drawImage(clear, 0,i*64,128,128,0,0,64,64);
+			g.drawImage(clear, 500,i*64,628,128,0,0,-64,64);
+		}
+			g.setColor(Color.red);
+			g.drawString("start!!!!!!!!!!!!!!!!!!!!", 100, 200);
 		}else{
-
+		
+		
 		for(int tx = 0; tx < 10; tx++){							//マップ描画
 			for(int ty =0; ty<7;ty++){
 //				System.out.println(map.getTileId(tx,ty,map3));
@@ -361,12 +378,12 @@ public class Main extends BasicGame {
 		g.drawRect((((int)x+50)/64)*64, (((int)y+10)/64)*64, 5, 5);
 		g.drawRect((((int)x+10)/64)*64, (((int)y+50)/64)*64, 5, 5);
 		g.drawRect((((int)x+10)/64)*64, (((int)y+10)/64)*64, 5, 5);
-
+		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
 //			System.out.println("usagi"+(int)usax+":"+(int)usay);
 	}
 
-	}
+	
 	public static void main(String[] args) throws SlickException {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
 		いわば着火メソッド。便宜上、このクラスに埋め込まれているだけで、
