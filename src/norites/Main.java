@@ -24,17 +24,28 @@ public class Main extends BasicGame {
 	final int FLOOR = 4;
 	final int CEILING = 5;
 	final int CANNON_ID = 3;
-	final int TAKARA_ID = 6;
+	final int TAKARA_ID = 7;
 
 	float x = 64*4, y = 64*4;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
 //	int nty=(int)y/64; //のりぴーのタイル位置
 
-	float usax = 150, usay = 200;
+	float usax = 150, usay = 300;
+	int utx=(int)usax/64;//うさたんのタイル位置
+	int uty=(int)usay/64;
 
 	float shimo_x=200, shimo_y=200;
-	
-	int menu_id =0;
+	int stx=(int)shimo_x/64;//しもたんのタイル位置
+	int sty=(int)shimo_y/64;
+
+	int menu_id = 0;
+	int screen_mapx = 0;
+	int screen_mapy = 0;
+	int screen_tx = 0;
+	int screen_ty = 0;
+
+	float draw_x = 0;
+	float draw_y = 0;
 
 	int right = 1;
 	boolean usamuki= true;//trueだと右向き
@@ -44,16 +55,17 @@ public class Main extends BasicGame {
 	boolean ismove = false;
 	static final float SPEED = 0.1f;
 	Image[] sprite = new Image[7];
-	private Animation noripie,walk,wait;
+	Image[] sprite_k = new Image[6];
+	private Animation noripie,walk,wait,attack;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara,clear;
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
 	int cannon_number = 0;
 	boolean shell_flag = true;
-	float shell_x = 0;
+	int shell_x = 0;
 
 	TiledMap map = null;
 
@@ -61,10 +73,13 @@ public class Main extends BasicGame {
 
 	boolean onground;
 	int next_cannon;
-	
-	int tx, ty;
-	
-	Color sky = new Color(187, 255, 255);
+
+	Point N_P = new Point(x,y);
+	Point USA_P = new Point(usax, usay);
+	Point SHIMO_P = new Point(shimo_x, shimo_y);
+
+	float wid_between_x; //のりぴーとうさの間の長さ
+	float wid_between_y; //のりぴーとうさの間の長さ
 
 	public Main(String title) {
 		super(title);
@@ -77,25 +92,29 @@ public class Main extends BasicGame {
 		オブジェクトとして変数名に関連付けたりする）
 		当然、ここはループしない */
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
-
+		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 		byte i;
-		for (i = 0; i < sprite.length; i++)
+		for (i = 0; i < sprite.length; i++) {
 			sprite[i] = ssheet.getSubImage(i, 0);
-
+		}
+		for(i = 0; i < sprite_k.length; i++) {
+			sprite_k[i] = ssheet_k.getSubImage(i,0);
+		}
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
+		Image[] attacking = {sprite_k[0],sprite_k[1],sprite_k[2],sprite_k[3],sprite_k[4],sprite_k[5]};
 		int[] duration = {100,100,100,100};
+		int[] duration_k = {50,50,50,50,50,100};
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
-
+		attack = new Animation(attacking,duration_k, false);
 		noripie = wait;
 
 		try{
-			
-			kabe1 = new Image("./resource/kabe3.png");
+//			kabe1 = new Image("./resource/kabe1.png");
 
-			kabe2 = new Image("./resource/kabe1.png");
+			kabe2 = new Image("./resource/kabe3.png");
 
 			usatan = new Image("./resource/usatan.gif");
 
@@ -108,6 +127,8 @@ public class Main extends BasicGame {
 			shimo_super = new Image("./resource/ウエ.gif");
 
 			takara = new Image("./resource/takara.gif");
+
+			clear = new Image("./resource/クリア.gif");
 
 		}catch(Exception e){
 		}
@@ -129,10 +150,10 @@ public class Main extends BasicGame {
 		}catch(NullPointerException e){
 			System.err.println(e.getMessage());
 		}
-		System.out.println("map1: "+map1+" map2: "+map2);
+//		System.out.println("map1: "+map1+" map2: "+map2);
 
-		for(int ty = 0;ty < map.getHeight(); ty++){
-			for(int tx = 0;tx < map.getWidth(); tx++){
+		for(int ty = 0;ty < 7; ty++){
+			for(int tx = 0;tx < 10; tx++){
 				if(map.getTileId(tx, ty, map2) == CANNON_ID){
 					cannon_x_list.add(tx*64);
 					cannon_y_list.add(ty*64);
@@ -140,12 +161,14 @@ public class Main extends BasicGame {
 			}
 		}
 
-		for(int tx = 0;tx < cannon_x_list.size(); tx++){
+//		for(int tx = 0;tx < cannon_x_list.size(); tx++){
 //			System.out.println("cannon_x_list: "+ cannon_x_list.get(tx));
-		}
-		for(int ty = 0;ty < cannon_y_list.size(); ty++){
+//		}
+//		for(int ty = 0;ty < cannon_y_list.size(); ty++){
 //			System.out.println("cannon_y_list: "+ cannon_y_list.get(ty));
-		}
+//		}
+		screen_mapx = (int) x/640;
+		screen_mapy = (int) y/448;
 	}
 	@SuppressWarnings("static-access")
 	@Override
@@ -153,7 +176,13 @@ public class Main extends BasicGame {
 		/* 4. ゲームの内部状態（変数等）の更新に関するルーチン
 		 *
 		（ゲームのロジックや入力に関する本体・メインループ） */
+
+
+
+		if(menu_id!=2){
+
 		float px=x,py=y;
+
 
 		float move = SPEED * delta;
 		Input input = gc.getInput();
@@ -183,8 +212,15 @@ public class Main extends BasicGame {
 			shell_x = cannon_x_list.get(cannon_number)-64;
 		}
 
-		if(detect_collision(x,y,map2,WALL2_ID) ||		//のりぴーの四隅と壁判定
-				detect_collision(x,y,map2,CANNON_ID)){				//キャノンの左上と壁判定
+
+		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==WALL2_ID ||		//のりぴーの右下と壁判定
+				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==WALL2_ID || 		//のりぴーの右上と壁判定
+				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==WALL2_ID || 			//のりぴーの左下と壁判定
+				map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2)==WALL2_ID ||				//のりぴーの左上と壁判定
+				map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==CANNON_ID ||	//キャノンの右下と壁判定
+				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==CANNON_ID || 		//キャノンの右上と壁判定
+				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==CANNON_ID || 			//キャノンの左下と壁判定
+				map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == CANNON_ID){				//キャノンの左上と壁判定
 			x=px;			//前の位置にもどす
 			y=py;
 		}
@@ -198,32 +234,36 @@ public class Main extends BasicGame {
 
 //		System.out.println(onground);
 
-		if(detect_collision(x,y,map1,WARP_ID)){		//落下ワープとのりぴーの判定
+		if(map.getTileId((int)(x+50)/64 ,(int)(y+10)/64,map1) == WARP_ID ||
+		map.getTileId((int)(x+10)/64 ,(int)(y+10)/64,map1) == WARP_ID ){		//落下ワープとのりぴーの判定
 			x=100;y=100;
 		}
 
+
 //		System.out.print("50 : ("+(x+50)/64+", "+(y+50)/64+")\n");
-//		System.out.print("10 : ("+(x+10)/64+", "+(y+10)/64+")\n");
+//		System.out.println(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2));
 		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == TAKARA_ID){
+
 			menu_id=2;
 		}
 
+		N_P = N_P.setPoint(N_P, x, y);
+		USA_P = USA_P.setPoint(USA_P, usax, usay);
+		SHIMO_P = SHIMO_P.setPoint(SHIMO_P, shimo_x, shimo_y);
+
 		if(
-				((int)x+32)/64==(((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 ||
-				((int)x+32)/64==(((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64||
-				((int)x+32)/64==(((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64
-				
+				(((int)x+32)/64==((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 ||
+				(((int)x+32)/64==((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64||
+				(((int)x+32)/64==((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64
+
 			){											//障害物たちのあたり判定
-			for(;;){
-				x=rnd.nextInt(map.getWidth()*64-64);	//当たったらランダムにふっとばす
-				y=rnd.nextInt(map.getHeight()*32-64)+map.getHeight()*32;
-				if(!detect_collision(x,y,map2,WALL2_ID) &&		//ランダムで吹っ飛んだ先が壁や障害物にならないように
-						!detect_collision(x,y,map2,CANNON_ID)&&
-						!detect_collision(x,y,map1,WARP_ID) )
-					break;
-			}
+			//N_P = blowing(N_P);
+			x = N_P.x;
+			y = N_P.y;
 		}
 
+		wid_between_x = x-usax;
+		wid_between_y = y-usay;
 		if (input.isKeyDown(input.KEY_LEFT)||
 			input.isKeyDown(input.KEY_RIGHT)||
 			input.isKeyDown(input.KEY_UP)||
@@ -232,11 +272,30 @@ public class Main extends BasicGame {
 			ismove = true;
 			noripie = walk;
 			noripie.update(delta);
+		} else if(input.isKeyDown(input.KEY_V)){
+			ismove = false;
+			noripie = attack;
+			noripie.update(delta);
+//			if(((int)x)/64==(((int)usax)/64) && ((int)y+32)/64 == ((int)usay+32)/64){
+			if(right == 1 && (wid_between_x > -50 && wid_between_x < 0) && (wid_between_y > -10 && wid_between_y < 10)){
+				USA_P = blowing(USA_P);
+				System.out.println("USA L: "+(int)usax/64+" "+(int)usay/64);
+				System.out.println("NORI L: "+(int)x/64+" "+(int)y/64+"\nwidth: "+wid_between_x);
+			}else if(right == -1 && (wid_between_x < 50 && wid_between_x > 0) && (wid_between_y > -10 && wid_between_y < 10)){
+				USA_P = blowing(USA_P);
+				System.out.println("USA R: "+((int)usax+64)/64+" "+(int)usay/64);
+				System.out.println("NORI R: "+((int)x+64)/64+" "+(int)y/64+"\nwidth: "+wid_between_x);
+			}
+
+			usax = USA_P.x;
+			usay = USA_P.y;
 		} else {
 			ismove = false;
 			noripie = wait;
 			noripie.update(delta);
 		};
+
+	}
 	}
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -254,113 +313,106 @@ public class Main extends BasicGame {
 			if(input.isKeyDown(input.KEY_ENTER)){					//enter押すとゲームスタート
 				menu_id=1;
 			}
+		}else if(menu_id==2){
+			int a=0;
+			for(int i = 0; i < 3; i++){
+			g.drawImage(clear, 0,64+a,128,192+a,0,0,64,64);
+			g.drawImage(clear, 500,64+a,628,192+a,0,0,-64,64);
+			a+=128;
+			}
+			g.setColor(Color.red);
+			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
 		}else{
-			g.setColor(sky);
-			g.fillRect(0,0,640,448);
-			
-		if(map.getWidth() - (int)(x/64) > 45)
-			tx = 0;
-		else
-			tx = (int)(x/64);
-		
-		if(map.getHeight() - (int)(y/64) > 43)
-			ty = 0;
-		else
-			ty = (int)(y/64) - 3;
-		
-		System.out.println("tx : ty | "+tx+" : "+ty+"  "+(int)(y / 64));
 
-		System.out.println("x : y | "+x+" : "+y+"  "+(int)(y / 64));
-				
-		for(int draw_tx = 0; draw_tx < 10; draw_tx++){							//マップ描画
-			for(int draw_ty = 0; draw_ty < 7;draw_ty++){
-//				System.out.println(map.getTileId(draw_tx,draw_ty,map3));
-				if(map.getTileId(tx+draw_tx, ty+draw_ty, map1) == WALL1_ID){			//背景の壁
-//					g.drawImage(kabe1,draw_tx*64,draw_ty*64);
-				}
-				if(map.getTileId(tx+draw_tx, ty+draw_ty, map1) == WALL2_ID){			//存在する壁
-					g.drawImage(kabe1,draw_tx*64,draw_ty*64);
-				}
-				//System.out.println(map.getTileId(draw_tx, draw_ty, map1));
+		draw_x = x % 640;
+		draw_y = y % 448;
+		screen_mapx = (int)x/640;
+		screen_mapy = (int)y/448;
+		screen_tx = screen_mapx * 10;
+		screen_ty = screen_mapy * 7;
 
-				if(map.getTileId(tx+draw_tx, ty+draw_ty, map2) == CANNON_ID){			//キャノン
-					g.drawImage(cannon,draw_tx*64,draw_ty*64);
+		g.setColor(Color.cyan);
+		g.fillRect(0, 0, 640, 448);
+		for(int tx = 0; tx < 10; tx++){							//マップ描画
+			for(int ty =0; ty < 7;ty++){
+				System.out.println(draw_y+"s");
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map1) == WALL1_ID){			//背景の壁
+//					g.drawImage(kabe1,tx*64,ty*64);
+				}
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map1) == WALL2_ID){			//存在する壁
+					g.drawImage(kabe2,tx*64,ty*64);
+				}
+				//System.out.println(map.getTileId(tx, ty, map1));
+
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2) == CANNON_ID){			//キャノン
+					g.drawImage(cannon,tx*64,ty*64);
 				}
 
-				if(map.getTileId(tx+draw_tx, ty+draw_ty, map2)==TAKARA_ID){
-					g.drawImage(takara,draw_tx*64,draw_ty*64);
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==TAKARA_ID){
+					g.drawImage(takara,tx*64,ty*64);
 				}
-//				g.setColor(Color.magenta);
-//				g.drawRect(tx*64, ty*64, 64, 64);
+				g.setColor(Color.magenta);
+				g.drawRect(tx*64, ty*64, 64, 64);
+
 			}
 		}
-		
 		if(right==1){
-			noripie.draw(x,y,right*64,64);
+			noripie.draw((int)draw_x,(int)draw_y,right*64,64);
 		}else if(right == -1){
-			noripie.draw(x+64,y,right*64,64);
+			noripie.draw((int)draw_x+64,(int)draw_y,right*64,64);
 		}
-		
-//		if(right==1){
-//			noripie.draw((int)x,(int)y,right*64,64);
-//		}else if(right == -1){
-//			noripie.draw((int)x+64,(int)y,right*64,64);
-//		}
 		if(usamuki)
-			usax+=0.06;
+			usax+=0.25;
 		else
-			usax-=0.06;
-		//System.out.println(usamuki);
+			usax-=0.25;
 		if(map.getTileId((int)usax/64, (int)usay/64, map2) == WALL2_ID && usamuki==false)
 			usamuki = true;
+
 		else if(map.getTileId((int)usax/64+1, (int)usay/64, map2) == WALL2_ID && usamuki==true)
 			usamuki = false;
 
 		if(map.getTileId((int)usax/64, (int)usay/64+1, map2) == WALL2_ID && usamuki==false)
 			usamuki = true;
+
 		else if(map.getTileId((int)usax/64+1, (int)usay/64+1, map2) == WALL2_ID && usamuki==true)
 			usamuki = false;
-		
-		if(map.getTileId((int)usax/64, (int)usay/64, map2) == CANNON_ID && usamuki==false)
-			usamuki = true;
-		else if(map.getTileId((int)usax/64+1, (int)usay/64, map2) == CANNON_ID && usamuki==true)
-			usamuki = false;
-
-		if(map.getTileId((int)usax/64, (int)usay/64+1, map2) == CANNON_ID && usamuki==false)
-			usamuki = true;
-		else if(map.getTileId((int)usax/64+1, (int)usay/64+1, map2) == CANNON_ID && usamuki==true)
-			usamuki = false;
-
-		g.drawImage(usatan, usax, usay);
+			g.drawImage(usatan, usax, usay);
 
 		if(shimomuki){
 			g.drawImage(shimo_normal, shimo_x,shimo_y);
 			shimo_y+=0.1;
 		}else{
 			shimo_y-=0.1;
+			shimo_y-=0.1;
 			g.drawImage(shimo_super, shimo_x,shimo_y);
 		}
-		if(map.getTileId((int)(shimo_x/64), (int)(shimo_y/64), map2) == WALL2_ID && shimomuki==false)
+		if(map.getTileId((int)shimo_x/64, (int)shimo_y/64, map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
-		else if(map.getTileId((int)(shimo_x/64)+1, (int)(shimo_y/64), map2) == WALL2_ID && shimomuki==true)
+			g.drawImage(shimo_normal, shimo_x,shimo_y);
+		}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64, map2) == WALL2_ID && shimomuki==true){
 			shimomuki = false;
-
-		if(map.getTileId((int)(shimo_x/64), (int)(shimo_y/64)+1, map2) == WALL2_ID && shimomuki==false)
+			g.drawImage(shimo_super, shimo_x,shimo_y);
+		}
+		if(map.getTileId((int)shimo_x/64, (int)shimo_y/64+1, map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
-		else if(map.getTileId((int)(shimo_x/64)+1, (int)(shimo_y/64)+1, map2) == WALL2_ID && shimomuki==true)
+			g.drawImage(shimo_normal, shimo_x,shimo_y);
+		}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64+1, map2) == WALL2_ID && shimomuki==true){
 			shimomuki = false;
+			g.drawImage(shimo_super, shimo_x,shimo_y);
+		}
 
-		shell_x -= 0.25;
+		if(cannon_x_list.size()==0){
+		shell_x--;
 		if(shell_x<=64){
 			for (int i = 0;i < cannon_y_list.size(); i++)
 				if(cannon_y_list.get(i)/64 == (int)(y+50)/64){
 					System.out.println("a"+i);
 					cannon_number = i;
 				}
-			shell_x = cannon_x_list.get(cannon_number)-64;
+		//	shell_x = cannon_x_list.get(cannon_number)-64;
 		}
 		if(shell_flag)
-			g.drawImage(shell, shell_x, cannon_y_list.get(cannon_number));
+		//	g.drawImage(shell, shell_x, cannon_y_list.get(cannon_number));
 
 		g.setColor(Color.blue);
 		g.drawRect(x, y, 64, 64);
@@ -371,22 +423,14 @@ public class Main extends BasicGame {
 		g.drawRect((((int)x+50)/64)*64, (((int)y+10)/64)*64, 5, 5);
 		g.drawRect((((int)x+10)/64)*64, (((int)y+50)/64)*64, 5, 5);
 		g.drawRect((((int)x+10)/64)*64, (((int)y+10)/64)*64, 5, 5);
-
+		g.setColor(Color.pink);
+		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
+		g.setColor(Color.orange);
+		g.drawRect((((int)usax+32)/64)*64, (((int)usay+32)/64)*64, 5, 5);
+		}
+		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
 //			System.out.println("usagi"+(int)usax+":"+(int)usay);
-	}
-
-	}
-	public static void main(String[] args) throws SlickException {
-		/* 6. JVM 側がこの Main クラスを実体化するための、
-		いわば着火メソッド。便宜上、このクラスに埋め込まれているだけで、
-		ゲームプログラム本体とは基本的に関係がない部分 */
-//		TMXRead t = new TMXRead();
-		AppGameContainer app = new AppGameContainer(new Main("骨組"));
-		app.setDisplayMode(64*10, 64*7, false);
-		app.start();
-
-
 	}
 
 	boolean detect_collision (float x, float y, int layer, int ID){
@@ -402,26 +446,60 @@ public class Main extends BasicGame {
 			result = true;
 		else
 			result = false;
-		
+
 		return result;
 	}
-	
-	boolean detect_collision (float x, float y, int layer, int ID, boolean muki){
-//		敵の右下と壁判定
-//		敵の右上と壁判定
-//		敵の左下と壁判定
-//		敵の左上と壁判定
-		boolean result;
-		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, layer )== ID ||
-				map.getTileId((int)(x+50)/64, (int)(y+10)/64, layer )== ID||
-				map.getTileId((int)(x+10)/64, (int)(y+50)/64, layer )== ID||
-				map.getTileId((int)(x+50)/64, (int)(y+50)/64, layer )== ID){
-			result = !muki;
+
+	public static void main(String[] args) throws SlickException {
+		/* 6. JVM 側がこの Main クラスを実体化するための、
+		いわば着火メソッド。便宜上、このクラスに埋め込まれているだけで、
+		ゲームプログラム本体とは基本的に関係がない部分 */
+		TMXRead t = new TMXRead();
+		AppGameContainer app = new AppGameContainer(new Main("骨組"));
+		app.setDisplayMode(64*10, 64*7, false);
+		app.start();
+	}
+	Point attack(Point enemy_P){
+		if(right>0){
+			if(((int)x)/64==(((int)enemy_P.x)/64) && ((int)y+32)/64 == ((int)enemy_P.y+32)/64){
+				enemy_P = blowing(enemy_P);
+			}
+
+		} else {
+			if(((int)x+64)/64==(((int)enemy_P.x+64)/64) && ((int)y+32)/64 == ((int)enemy_P.y+32)/64)
+				enemy_P = blowing(enemy_P);
 		}
-		else
-			result = muki;
-		
-		return result;
-		
+
+		return enemy_P;
+	}
+
+	Point blowing(Point P){
+		for(;;){
+			P.x=rnd.nextInt(map.getWidth()*64-64);	//当たったらランダムにふっとばす
+			P.y=rnd.nextInt(map.getHeight()*32-64)+map.getHeight()*32;
+			if(
+					!detect_collision(P.x,P.y,map2,WALL2_ID) &&		//ランダムで吹っ飛んだ先が壁や障害物にならないように
+					!detect_collision(P.x,P.y,map2,CANNON_ID)&&
+					!detect_collision(P.x,P.y,map1,WARP_ID)
+					)
+				break;
+		}
+		return P;
+	}
+}
+
+class Point {
+	float x;
+	float y;
+
+	Point(float _x, float _y){
+		x = _x;
+		y = _y;
+	}
+
+	Point setPoint(Point _P, float _x, float _y){
+		_P.x = _x;
+		_P.y = _y;
+		return _P;
 	}
 }
