@@ -25,8 +25,8 @@ public class Main extends BasicGame {
 	final int CEILING = 5;
 	final int CANNON_ID = 3;
 	final int TAKARA_ID = 7;
-
-	float x = 65, y = 65;
+	
+	float x = 64*40, y = 64*25;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
 //	int nty=(int)y/64; //のりぴーのタイル位置
 
@@ -38,8 +38,11 @@ public class Main extends BasicGame {
 	int stx=(int)shimo_x/64;//しもたんのタイル位置
 	int sty=(int)shimo_y/64;
 
-	int menu_id =0;
-
+	int menu_id = 0;
+	float screen_x=0;
+	float screen_y = 0;
+	int screen_tx = 0;
+	int screen_ty = 0;
 
 	int right = 1;
 	boolean usamuki= true;//trueだと右向き
@@ -127,7 +130,7 @@ public class Main extends BasicGame {
 		}catch(Exception e){
 		}
 
-		path = "./resource/untitled.tmx";
+		path = "./resource/bigmap.tmx";
 		//System.out.println(path);
 
 		try{
@@ -247,7 +250,7 @@ public class Main extends BasicGame {
 				(((int)x+32)/64==((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64
 
 			){											//障害物たちのあたり判定
-			N_P = blowing(N_P);
+			//N_P = blowing(N_P);
 			x = N_P.x;
 			y = N_P.y;
 		}
@@ -318,32 +321,52 @@ public class Main extends BasicGame {
 
 		g.setColor(Color.cyan);
 		g.fillRect(0, 0, 640, 448);
+		if(x-320<0){
+			screen_x=0;
+		}else if(x+320>map.getWidth()*64){
+			screen_x=map.getWidth();
+		}else{
+			screen_x=(int) x -320;
+		}
+		
+		if(y-224<0){
+			screen_y=0;
+		}else if(y+224>map.getHeight()*64){
+			screen_y=map.getHeight();
+		}else{
+			screen_y=(int)y -224;
+		}
+		screen_tx=(int)screen_x/64+1;
+		screen_ty=(int)screen_y/64+1;
+		
 		for(int tx = 0; tx < 10; tx++){							//マップ描画
 			for(int ty =0; ty<7;ty++){
-//				System.out.println(map.getTileId(tx,ty,map3));
-				if(map.getTileId(tx, ty, map1) == WALL1_ID){			//背景の壁
+				System.out.println(screen_ty);
+				System.out.println(screen_tx);
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map1) == WALL1_ID){			//背景の壁
 //					g.drawImage(kabe1,tx*64,ty*64);
 				}
-				if(map.getTileId(tx, ty, map1) == WALL2_ID){			//存在する壁
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map1) == WALL2_ID){			//存在する壁
 					g.drawImage(kabe2,tx*64,ty*64);
 				}
 				//System.out.println(map.getTileId(tx, ty, map1));
 
-				if(map.getTileId(tx, ty, map2) == CANNON_ID){			//キャノン
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2) == CANNON_ID){			//キャノン
 					g.drawImage(cannon,tx*64,ty*64);
 				}
 
-				if(map.getTileId(tx, ty, map2)==TAKARA_ID){
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==TAKARA_ID){
 					g.drawImage(takara,tx*64,ty*64);
 				}
 				g.setColor(Color.magenta);
 				g.drawRect(tx*64, ty*64, 64, 64);
+				
 			}
 		}
 		if(right==1){
-			noripie.draw((int)x,(int)y,right*64,64);
+			noripie.draw(320-64,256-64,right*64,64);
 		}else if(right == -1){
-			noripie.draw((int)x+64,(int)y,right*64,64);
+			noripie.draw(320,256-64,right*64,64);
 		}
 		if(usamuki)
 			usax+=0.25;
@@ -385,7 +408,7 @@ public class Main extends BasicGame {
 			g.drawImage(shimo_super, shimo_x,shimo_y);
 		}
 
-
+		if(cannon_x_list.size()==0){
 		shell_x--;
 		if(shell_x<=64){
 			for (int i = 0;i < cannon_y_list.size(); i++)
@@ -393,10 +416,10 @@ public class Main extends BasicGame {
 					System.out.println("a"+i);
 					cannon_number = i;
 				}
-			shell_x = cannon_x_list.get(cannon_number)-64;
+		//	shell_x = cannon_x_list.get(cannon_number)-64;
 		}
 		if(shell_flag)
-			g.drawImage(shell, shell_x, cannon_y_list.get(cannon_number));
+		//	g.drawImage(shell, shell_x, cannon_y_list.get(cannon_number));
 
 		g.setColor(Color.blue);
 		g.drawRect(x, y, 64, 64);
@@ -411,6 +434,7 @@ public class Main extends BasicGame {
 		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
 		g.setColor(Color.orange);
 		g.drawRect((((int)usax+32)/64)*64, (((int)usay+32)/64)*64, 5, 5);
+		}
 		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
 //			System.out.println("usagi"+(int)usax+":"+(int)usay);
