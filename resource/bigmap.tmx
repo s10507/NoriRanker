@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="50" height="30" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="kabe1" tilewidth="64" tileheight="64">
+  <image source="kabe1.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="2" name="kabe2" tilewidth="64" tileheight="64">
+  <image source="kabe2.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="3" name="砲台" tilewidth="64" tileheight="64">
+  <properties>
+   <property name="number" value="1"/>
+  </properties>
+  <image source="砲台1.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="4" name="openspace2" tilewidth="64" tileheight="64">
+  <image source="openspace2.bmp" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="5" name="map1" tilewidth="64" tileheight="64">
+  <image source="map1.bmp" width="64" height="64"/>
+ </tileset>
+ <layer name="collision" width="50" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+1UWw7AIAxq3P3vvP+lLq0F7RZI+OUh6jCzIYpiiNYgg3qoR9UrgwvcA4mV3sgzOrVv1J/hu+ueqkddLwP0O69k8bDiw8q0c+9ojy/dW/XA6lfA6MHK8+aV7cHKw979icy/3YUdz7bS5XSGP23iAaExA0PTA/OdZjHTYO0hiqLZDZm9H1hwFwAA
+  </data>
+ </layer>
+ <layer name="タイル・レイヤー1" width="50" height="30" opacity="0.9">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2Wyw3AMAhDXfYfugu0UvgYaOWDT1HALwQSA2CSJB3pWuBBHOLI5vKqkiOSP+vLnHsmzoXBwsjbdU/FkY832edZLxlvnv6YnocVMdj3uatfxBGLz+qrKEfXm26H+57WWX7Ydd/usapmX9GfODawVM4E1r+ia7axvL3FYNVDkiTgBiUC7glwFwAA
+  </data>
+ </layer>
+ <layer name="ceilingandfloor" width="50" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3BMQEAAADCoPVPbQhfoAAAAAAAgNcAxA3c/HAXAAA=
+  </data>
+ </layer>
+</map>
