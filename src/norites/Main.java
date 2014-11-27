@@ -30,7 +30,7 @@ public class Main extends BasicGame {
 //	int ntx=(int)x/64; //のりぴーのタイル位置
 //	int nty=(int)y/64; //のりぴーのタイル位置
 
-	float usax = 150, usay = 64*7;
+	float usax = 150, usay = 64*5;
 	int utx=(int)usax/64;//うさたんのタイル位置
 	int uty=(int)usay/64;
 
@@ -133,7 +133,7 @@ public class Main extends BasicGame {
 		}catch(Exception e){
 		}
 
-		path = "./resource/bigmap.tmx";
+		path = "./resource/sample.tmx";
 		//System.out.println(path);
 
 		try{
@@ -142,9 +142,9 @@ public class Main extends BasicGame {
 			System.out.println("Error Loading Map!");
 		}
 
-		map1 = map.getLayerIndex("タイル・レイヤー1");
+		map1 = map.getLayerIndex("base");
 		map2 = map.getLayerIndex("collision");
-		map3 = map.getLayerIndex("ceilingandfloor");
+		map3 = map.getLayerIndex("floor");
 		try{
 			//System.out.println(map.getTileProperty(3, "number", "true"));
 		}catch(NullPointerException e){
@@ -335,7 +335,7 @@ public class Main extends BasicGame {
 		g.fillRect(0, 0, 640, 448);
 		for(int tx = 0; tx < 10; tx++){							//マップ描画
 			for(int ty =0; ty < 7;ty++){
-				System.out.println(draw_y+"s");
+				//System.out.println(draw_y+"s");
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map1) == WALL1_ID){			//背景の壁
 //					g.drawImage(kabe1,tx*64,ty*64);
 				}
@@ -380,8 +380,10 @@ public class Main extends BasicGame {
 		int draw_usax = (int) (usax % 640);
 		int draw_usay = (int) (usay % 448);
 
-		if(screen_mapx*640 > usax && screen_mapy*448 > usay)
+		if((screen_mapx*640 < usax && (screen_mapx+1)*640-1 > usax ) && (screen_mapy*448 < usay && (screen_mapy+1)*448-1 > usay))
 			g.drawImage(usatan, draw_usax, draw_usay);
+		
+		System.out.println(usax+" "+screen_mapx);
 
 		if(shimomuki){
 			g.drawImage(shimo_normal, shimo_x,shimo_y);
@@ -391,6 +393,8 @@ public class Main extends BasicGame {
 			shimo_y-=0.1;
 			g.drawImage(shimo_super, shimo_x,shimo_y);
 		}
+		
+		
 		if(map.getTileId((int)shimo_x/64, (int)shimo_y/64, map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
 			g.drawImage(shimo_normal, shimo_x,shimo_y);
@@ -416,12 +420,12 @@ public class Main extends BasicGame {
 				}
 		//	shell_x = cannon_x_list.get(cannon_number)-64;
 		}
-		if(shell_flag)
+		//if(shell_flag)
 		//	g.drawImage(shell, shell_x, cannon_y_list.get(cannon_number));
-
-		g.setColor(Color.blue);
+		}
+		g.setColor(Color.red);
 		g.drawRect(x, y, 64, 64);
-		g.drawRect(usax, usay, 64, 64);
+		g.drawRect(draw_usax, draw_usay, 64, 64);
 		g.drawRect(shimo_x, shimo_y, 64, 64);
 		g.setColor(Color.black);
 		g.drawRect((((int)x+50)/64)*64, (((int)y+50)/64)*64, 5, 5);
@@ -431,8 +435,8 @@ public class Main extends BasicGame {
 		g.setColor(Color.pink);
 		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
 		g.setColor(Color.orange);
-		g.drawRect((((int)usax+32)/64)*64, (((int)usay+32)/64)*64, 5, 5);
-		}
+		g.drawRect((((int)draw_usax+32)/64)*64, (((int)draw_usay+32)/64)*64, 5, 5);
+		
 		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
 //			System.out.println("usagi"+(int)usax+":"+(int)usay);
