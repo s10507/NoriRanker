@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="20" height="7" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="kabe1" tilewidth="64" tileheight="64">
+  <image source="kabe1.png" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="2" name="kabe2" tilewidth="64" tileheight="64">
+  <image source="kabe2.png" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="3" name="cannon" tilewidth="64" tileheight="64">
+  <image source="cannon.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="4" name="takara" tilewidth="64" tileheight="64">
+  <image source="takara.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <layer name="base" width="20" height="7">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NiYGBgojJmJIBHmjpiMa3MIwcz4BAHAG/YQ7IwAgAA
+  </data>
+ </layer>
+ <layer name="collision" width="20" height="7">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NiYGBgojLGB5iJVMcwQOoodR8jAUyp+4gFLAyUxyE2cQDGRBKiMAIAAA==
+  </data>
+ </layer>
+ <layer name="floor" width="20" height="7">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAXDGTCRiXHpBQCie5DKMAIAAA==
+  </data>
+ </layer>
+</map>
