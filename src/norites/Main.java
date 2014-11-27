@@ -30,7 +30,7 @@ public class Main extends BasicGame {
 //	int ntx=(int)x/64; //のりぴーのタイル位置
 //	int nty=(int)y/64; //のりぴーのタイル位置
 
-	float usax = 150, usay = 300;
+	float usax = 150, usay = 64*7;
 	int utx=(int)usax/64;//うさたんのタイル位置
 	int uty=(int)usay/64;
 
@@ -376,7 +376,12 @@ public class Main extends BasicGame {
 
 		else if(map.getTileId((int)usax/64+1, (int)usay/64+1, map2) == WALL2_ID && usamuki==true)
 			usamuki = false;
-			g.drawImage(usatan, usax, usay);
+
+		int draw_usax = (int) (usax % 640);
+		int draw_usay = (int) (usay % 448);
+
+		if(screen_mapx*640 > usax && screen_mapy*448 > usay)
+			g.drawImage(usatan, draw_usax, draw_usay);
 
 		if(shimomuki){
 			g.drawImage(shimo_normal, shimo_x,shimo_y);
