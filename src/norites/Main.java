@@ -354,7 +354,6 @@ public class Main extends BasicGame {
 				}
 				g.setColor(Color.magenta);
 				g.drawRect(tx*64, ty*64, 64, 64);
-
 			}
 		}
 		if(right==1){
