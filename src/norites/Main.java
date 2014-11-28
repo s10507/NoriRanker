@@ -56,7 +56,8 @@ public class Main extends BasicGame {
 	static final float SPEED = 0.1f;
 	Image[] sprite = new Image[7];
 	Image[] sprite_k = new Image[6];
-	private Animation noripie,walk,wait,attack;
+	Image[] sprite_h = new Image[3];
+	private Animation noripie,walk,wait,attack,happy;
 
 	String path =null;
 	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara,clear;
@@ -81,6 +82,12 @@ public class Main extends BasicGame {
 	float wid_between_y; //のりぴーとうさの間の長さ
 
 	Color col = new Color(180,230,250);
+	
+	boolean is_shimo_super = false;
+	
+	float angle = 0;
+	float jump = 0;
+	boolean jump_flg = false;
 
 	public Main(String title) {
 		super(title);
@@ -94,6 +101,7 @@ public class Main extends BasicGame {
 		当然、ここはループしない */
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
+		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappy.gif"), 64, 64);
 		byte i;
 		for (i = 0; i < sprite.length; i++) {
 			sprite[i] = ssheet.getSubImage(i, 0);
@@ -101,6 +109,8 @@ public class Main extends BasicGame {
 		for(i = 0; i < sprite_k.length; i++) {
 			sprite_k[i] = ssheet_k.getSubImage(i,0);
 		}
+		for(i = 0; i < sprite_h.length; i++)
+			sprite_h[i] = ssheet_h.getSubImage(i, 0);
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
 		Image[] attacking = {sprite_k[0],sprite_k[1],sprite_k[2],sprite_k[3],sprite_k[4],sprite_k[5]};
@@ -321,6 +331,8 @@ public class Main extends BasicGame {
 			g.drawImage(clear, 500,64+a,628,192+a,0,0,-64,64);
 			a+=128;
 			}
+			wait.draw(300, 300-jump);
+			jump += 0.1; 
 			g.setColor(Color.red);
 			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
 		}else{
@@ -383,26 +395,27 @@ public class Main extends BasicGame {
 		if((screen_mapx*640 < usax && (screen_mapx+1)*640-1 > usax ) && (screen_mapy*448 < usay && (screen_mapy+1)*448-1 > usay))
 			g.drawImage(usatan, draw_usax, draw_usay);
 
-
-		boolean is_shimo_super = false;
 		if(shimomuki){
 			shimo_y+=0.1;
 		}else{
 			shimo_y-=0.1;
 			shimo_y-=0.1;
 		}
+		
+		shimo_normal.setRotation(angle);
+		angle++;
 
-		if(map.getTileId((int)shimo_x/64, (int)shimo_y/64, map2) == WALL2_ID && shimomuki==false){
+		if(map.getTileId((int)(shimo_x+10)/64, (int)(shimo_y+10)/64, map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
 			is_shimo_super = false;
-		}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64, map2) == WALL2_ID && shimomuki==true){
+		}else if(map.getTileId((int)(shimo_x+50)/64, (int)(shimo_y+10)/64, map2) == WALL2_ID && shimomuki==true){
 			shimomuki = false;
 			is_shimo_super = true;
 		}
-		if(map.getTileId((int)shimo_x/64, (int)shimo_y/64+1, map2) == WALL2_ID && shimomuki==false){
+		if(map.getTileId((int)(shimo_x+10)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
 			is_shimo_super = false;
-		}else if(map.getTileId((int)shimo_x/64+1, (int)shimo_y/64+1, map2) == WALL2_ID && shimomuki==true){
+		}else if(map.getTileId((int)(shimo_x+50)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==true){
 			shimomuki = false;
 			is_shimo_super = true;
 		}
@@ -416,12 +429,13 @@ public class Main extends BasicGame {
 			else
 				g.drawImage(shimo_normal, draw_shimo_x, draw_shimo_y);
 
+		shimo_super.setRotation(90);
 
 		int draw_shell_x = (int) (shell_x % 640);
 		int draw_shell_y = (int) (cannon_y_list.get(cannon_number) % 640);
 		System.out.println(shell_x);
 		if(cannon_x_list.size()!=0){
-			shell_x -= 2;
+			shell_x -= 0.5;
 			if(shell_x<=64){
 				for (int i = 0;i < cannon_y_list.size(); i++){
 					if(cannon_y_list.get(i)/64 == (int)(y+50)/64){
