@@ -88,6 +88,8 @@ public class Main extends BasicGame {
 	float angle = 0;
 	float jump = 0;
 	boolean jump_flg = false;
+	
+	int life = 0;
 
 	public Main(String title) {
 		super(title);
@@ -101,7 +103,7 @@ public class Main extends BasicGame {
 		当然、ここはループしない */
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
-		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappy.gif"), 64, 64);
+//		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappy.gif"), 64, 64);
 		byte i;
 		for (i = 0; i < sprite.length; i++) {
 			sprite[i] = ssheet.getSubImage(i, 0);
@@ -109,8 +111,8 @@ public class Main extends BasicGame {
 		for(i = 0; i < sprite_k.length; i++) {
 			sprite_k[i] = ssheet_k.getSubImage(i,0);
 		}
-		for(i = 0; i < sprite_h.length; i++)
-			sprite_h[i] = ssheet_h.getSubImage(i, 0);
+//		for(i = 0; i < sprite_h.length; i++)
+//			sprite_h[i] = ssheet_h.getSubImage(i, 0);
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
 		Image[] attacking = {sprite_k[0],sprite_k[1],sprite_k[2],sprite_k[3],sprite_k[4],sprite_k[5]};
@@ -180,6 +182,8 @@ public class Main extends BasicGame {
 //		}
 		screen_mapx = (int) x/640;
 		screen_mapy = (int) y/448;
+		
+		life = 3;
 	}
 	@SuppressWarnings("static-access")
 	@Override
@@ -271,7 +275,11 @@ public class Main extends BasicGame {
 			N_P = blowing(N_P);
 			x = N_P.x;
 			y = N_P.y;
+			life--;
 		}
+		System.out.println("Life: "+life);
+		if(life == 0)
+			gc.exit();
 
 		wid_between_x = x-usax;
 		wid_between_y = y-usay;
@@ -433,7 +441,6 @@ public class Main extends BasicGame {
 
 		int draw_shell_x = (int) (shell_x % 640);
 		int draw_shell_y = (int) (cannon_y_list.get(cannon_number) % 640);
-		System.out.println(shell_x);
 		if(cannon_x_list.size()!=0){
 			shell_x -= 0.5;
 			if(shell_x<=64){
@@ -449,6 +456,10 @@ public class Main extends BasicGame {
 					(screen_mapy*448 < cannon_y_list.get(cannon_number) && (screen_mapy+1)*448-1 > cannon_y_list.get(cannon_number) ))
 				g.drawImage(shell, draw_shell_x, draw_shell_y);
 		}
+		
+		for(int i = 0;i < life; i++)
+			g.drawImage(sprite[1],i*32,0,i*32+32,32,0,0,64,64);
+		
 		g.setColor(Color.red);
 		g.drawRect(x, y, 64, 64);
 		g.drawRect(draw_usax, draw_usay, 64, 64);
