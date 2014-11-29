@@ -65,7 +65,8 @@ public class Main extends BasicGame {
 	private Animation noripie,walk,wait,attack,damage;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara,clear,doragon;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super;
+	Image takara,clear,doragon,gameover;
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
@@ -110,6 +111,7 @@ public class Main extends BasicGame {
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 //		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappy.gif"), 64, 64);
 		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
+		
 		byte i;
 		for (i = 0; i < sprite.length; i++) {
 			sprite[i] = ssheet.getSubImage(i, 0);
@@ -129,12 +131,13 @@ public class Main extends BasicGame {
 		Image[] damaging = {sprite_d[0],sprite_d[1],sprite_d[2],sprite_d[3]};
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
-		int[] duration_d = {50,50,50,50,50,100};
+		int[] duration_d = {50,50,50,50};
+		
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
 		attack = new Animation(attacking,duration_k, false);
-		//damage = new Animation(damaging,duration_d,false);
+		damage = new Animation(damaging,duration_d,false);
 		noripie = wait;
 
 		try{
@@ -158,6 +161,7 @@ public class Main extends BasicGame {
 
 			doragon = new Image("./resource/ha-chan.gif");
 
+			gameover = new Image("./resource/gameover.gif");
 		}catch(Exception e){
 		}
 
@@ -293,12 +297,13 @@ public class Main extends BasicGame {
 			life--;
 		}
 		//System.out.println("Life: "+life);
-				if(life == 0)
-					//ismove = false;
-					//noripie = damage;
-				//	noripie.update(delta);
-					gc.exit();
-
+				if(life == 0){
+				//	menu_id=3;
+					ismove=false;
+					noripie=damage;
+					noripie.setLooping(false);
+					//gc.exit();
+				}
 		wid_between_x = x-usax;
 		wid_between_y = y-usay;
 		if (input.isKeyDown(input.KEY_LEFT)||
@@ -361,6 +366,9 @@ public class Main extends BasicGame {
 			jump += 0.1;
 			g.setColor(Color.red);
 			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
+		}else if(menu_id==3){
+			g.drawImage(gameover, 0, 0);
+			
 		}else{
 
 		draw_x = x % 640;
