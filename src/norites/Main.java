@@ -38,6 +38,10 @@ public class Main extends BasicGame {
 	int stx=(int)shimo_x/64;//しもたんのタイル位置
 	int sty=(int)shimo_y/64;
 
+	float doragon_x=64*16, doragon_y=64;
+	int dtx=(int)doragon_x/64;
+	int dty=(int)doragon_y/64;
+
 	int menu_id = 0;
 	int screen_mapx = 0;
 	int screen_mapy = 0;
@@ -54,13 +58,14 @@ public class Main extends BasicGame {
 	byte icount = 0;
 	boolean ismove = false;
 	static final float SPEED = 0.1f;
-	Image[] sprite = new Image[7];
-	Image[] sprite_k = new Image[6];
-	Image[] sprite_h = new Image[3];
-	private Animation noripie,walk,wait,attack,happy;
+	Image[] sprite = new Image[7];   //移動の絵
+	Image[] sprite_k = new Image[6]; //攻撃の絵
+	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
+	Image[] sprite_d = new Image[4]; //ダメージの絵
+	private Animation noripie,walk,wait,attack,damage;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara,clear;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super, takara,clear,doragon;
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
@@ -82,13 +87,13 @@ public class Main extends BasicGame {
 	float wid_between_y; //のりぴーとうさの間の長さ
 
 	Color col = new Color(180,230,250);
-	
+
 	boolean is_shimo_super = false;
-	
+
 	float angle = 0;
 	float jump = 0;
 	boolean jump_flg = false;
-	
+
 	int life = 0;
 
 	public Main(String title) {
@@ -104,6 +109,7 @@ public class Main extends BasicGame {
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 //		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappy.gif"), 64, 64);
+		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
 		byte i;
 		for (i = 0; i < sprite.length; i++) {
 			sprite[i] = ssheet.getSubImage(i, 0);
@@ -113,15 +119,22 @@ public class Main extends BasicGame {
 		}
 //		for(i = 0; i < sprite_h.length; i++)
 //			sprite_h[i] = ssheet_h.getSubImage(i, 0);
+		for(i = 0; i < sprite_d.length; i++) {
+			sprite_d[i] = ssheet_d.getSubImage(i,0);
+		}
+
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
 		Image[] attacking = {sprite_k[0],sprite_k[1],sprite_k[2],sprite_k[3],sprite_k[4],sprite_k[5]};
+		Image[] damaging = {sprite_d[0],sprite_d[1],sprite_d[2],sprite_d[3]};
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
+		int[] duration_d = {50,50,50,50,50,100};
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
 		attack = new Animation(attacking,duration_k, false);
+		//damage = new Animation(damaging,duration_d,false);
 		noripie = wait;
 
 		try{
@@ -142,6 +155,8 @@ public class Main extends BasicGame {
 			takara = new Image("./resource/takara.gif");
 
 			clear = new Image("./resource/クリア.gif");
+
+			doragon = new Image("./resource/ha-chan.gif");
 
 		}catch(Exception e){
 		}
@@ -182,7 +197,7 @@ public class Main extends BasicGame {
 //		}
 		screen_mapx = (int) x/640;
 		screen_mapy = (int) y/448;
-		
+
 		life = 3;
 	}
 	@SuppressWarnings("static-access")
@@ -277,9 +292,12 @@ public class Main extends BasicGame {
 			y = N_P.y;
 			life--;
 		}
-		System.out.println("Life: "+life);
-		if(life == 0)
-			gc.exit();
+		//System.out.println("Life: "+life);
+				if(life == 0)
+					//ismove = false;
+					//noripie = damage;
+				//	noripie.update(delta);
+					gc.exit();
 
 		wid_between_x = x-usax;
 		wid_between_y = y-usay;
@@ -340,7 +358,7 @@ public class Main extends BasicGame {
 			a+=128;
 			}
 			wait.draw(300, 300-jump);
-			jump += 0.1; 
+			jump += 0.1;
 			g.setColor(Color.red);
 			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
 		}else{
@@ -409,7 +427,7 @@ public class Main extends BasicGame {
 			shimo_y-=0.1;
 			shimo_y-=0.1;
 		}
-		
+
 		shimo_normal.setRotation(angle);
 		angle++;
 
@@ -456,10 +474,18 @@ public class Main extends BasicGame {
 					(screen_mapy*448 < cannon_y_list.get(cannon_number) && (screen_mapy+1)*448-1 > cannon_y_list.get(cannon_number) ))
 				g.drawImage(shell, draw_shell_x, draw_shell_y);
 		}
-		
+
+		int draw_doragon_x = (int) (doragon_x % 640);
+		int draw_doragon_y = (int) (doragon_y % 448);
+		System.out.println((map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2)));
+		if((screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x ) && (screen_mapy*448 < doragon_y && (screen_mapy+1)*448-1 > doragon_y))
+				g.drawImage(doragon, draw_doragon_x, draw_doragon_y);
+		if(screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x  && map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) != WALL2_ID)
+		doragon_y += 0.3;
+
 		for(int i = 0;i < life; i++)
 			g.drawImage(sprite[1],i*32,0,i*32+32,32,0,0,64,64);
-		
+
 		g.setColor(Color.red);
 		g.drawRect(x, y, 64, 64);
 		g.drawRect(draw_usax, draw_usay, 64, 64);
