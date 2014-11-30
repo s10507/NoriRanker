@@ -131,7 +131,7 @@ public class Main extends BasicGame {
 		Image[] damaging = {sprite_d[0],sprite_d[1],sprite_d[2],sprite_d[3]};
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
-		int[] duration_d = {50,50,50,50};
+		int[] duration_d = {500,500,500,500};
 		
 
 		walk = new Animation(pyonning, duration, false);
@@ -143,7 +143,7 @@ public class Main extends BasicGame {
 		try{
 //			kabe1 = new Image("./resource/kabe1.png");
 
-			kabe2 = new Image("./resource/kabe3.png");
+			kabe2 = new Image("./resource/kumo.gif");
 
 			usatan = new Image("./resource/usatan.gif");
 
@@ -297,15 +297,19 @@ public class Main extends BasicGame {
 			life--;
 		}
 		//System.out.println("Life: "+life);
-				if(life == 0){
-				//	menu_id=3;
-					ismove=false;
-					noripie=damage;
-					noripie.setLooping(false);
-					//gc.exit();
-				}
+			
 		wid_between_x = x-usax;
 		wid_between_y = y-usay;
+		if(life==0){
+			menu_id=3;
+			noripie=damage;
+			noripie.update(delta);
+			noripie.setLooping(false);
+			
+			
+			
+		}
+		
 		if (input.isKeyDown(input.KEY_LEFT)||
 			input.isKeyDown(input.KEY_RIGHT)||
 			input.isKeyDown(input.KEY_UP)||
@@ -331,7 +335,8 @@ public class Main extends BasicGame {
 
 			usax = USA_P.x;
 			usay = USA_P.y;
-		} else {
+		
+		}else{
 			ismove = false;
 			noripie = wait;
 			noripie.update(delta);
@@ -367,7 +372,12 @@ public class Main extends BasicGame {
 			g.setColor(Color.red);
 			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
 		}else if(menu_id==3){
-			g.drawImage(gameover, 0, 0);
+
+			g.setColor(Color.black);
+			g.fillRect(0, 0, 640, 448);
+			damage.draw(64*5-32,64*4);
+			
+			//gameover.draw();
 			
 		}else{
 
