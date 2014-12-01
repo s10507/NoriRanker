@@ -143,7 +143,7 @@ public class Main extends BasicGame {
 		try{
 //			kabe1 = new Image("./resource/kabe1.png");
 
-			kabe2 = new Image("./resource/kumo.gif");
+			kabe2 = new Image("./resource/kabe3.png");
 
 			usatan = new Image("./resource/usatan.gif");
 
@@ -288,7 +288,9 @@ public class Main extends BasicGame {
 		if(
 				(((int)x+32)/64==((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 ||
 				(((int)x+32)/64==((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64||
-				(((int)x+32)/64==((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64
+				(((int)x+32)/64==((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64||
+				(((int)doragon_x/64<=((int)x+32)/64)&&((int)x+32)/64<=((int)doragon_x+64)/64) && 
+				(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+64)/64)
 
 			){											//障害物たちのあたり判定
 			N_P = blowing(N_P);
