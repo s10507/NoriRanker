@@ -65,14 +65,15 @@ public class Main extends BasicGame {
 	private Animation noripie,walk,wait,attack,damage;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless;
 	Image takara,clear,doragon,gameover;
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
 	int cannon_number = 0;
 	int shell_x = 0;
-
+	float bless_x = doragon_x;
+	boolean doragon_flg = false;
 	TiledMap map = null;
 
 	int map1, map2, map3;
@@ -160,7 +161,9 @@ public class Main extends BasicGame {
 			clear = new Image("./resource/クリア.gif");
 
 			doragon = new Image("./resource/ha-chan.gif");
-
+			
+			bless = new Image("./resource/mizu.gif");
+			
 			gameover = new Image("./resource/gameover.gif");
 		}catch(Exception e){
 		}
@@ -377,9 +380,10 @@ public class Main extends BasicGame {
 
 			g.setColor(Color.black);
 			g.fillRect(0, 0, 640, 448);
+			damage.setLooping(false);
 			damage.draw(64*5-32,64*4);
-			
-			//gameover.draw();
+			if(damage.isStopped())
+				gameover.draw();
 			
 		}else{
 
@@ -420,9 +424,9 @@ public class Main extends BasicGame {
 			noripie.draw((int)draw_x+64,(int)draw_y,right*64,64);
 		}
 		if(usamuki)
-			usax+=0.25;
+			usax+=0.25f;
 		else
-			usax-=0.25;
+			usax-=0.25f;
 		if(map.getTileId((int)(usax+10)/64, (int)(usay+10)/64, map2) == WALL2_ID && usamuki==false)
 			usamuki = true;
 
@@ -442,10 +446,10 @@ public class Main extends BasicGame {
 			g.drawImage(usatan, draw_usax, draw_usay);
 
 		if(shimomuki){
-			shimo_y+=0.1;
+			shimo_y+=0.1f;
 		}else{
-			shimo_y-=0.1;
-			shimo_y-=0.1;
+			shimo_y-=0.1f;
+			shimo_y-=0.1f;
 		}
 
 		shimo_normal.setRotation(angle);
@@ -497,12 +501,32 @@ public class Main extends BasicGame {
 
 		int draw_doragon_x = (int) (doragon_x % 640);
 		int draw_doragon_y = (int) (doragon_y % 448);
-		System.out.println((map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2)));
+		int draw_bless_x = (int)(bless_x % 640);
 		if((screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x ) && (screen_mapy*448 < doragon_y && (screen_mapy+1)*448-1 > doragon_y))
 				g.drawImage(doragon, draw_doragon_x, draw_doragon_y);
-		if(screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x  && map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) != WALL2_ID)
+		if(screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x  && map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) != WALL2_ID){
 		doragon_y += 0.3;
-
+		
+		if((map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) == WALL2_ID)){
+			doragon_y -= 10;
+		
+		}
+		}
+		
+		if(((int)doragon_y+64)/64 <= y/64 && y/64<=((int)doragon_y+128)/64)
+			doragon_flg = true;
+		
+		if(doragon_flg){
+			if((screen_mapx*640 < bless_x && (screen_mapx+1)*640-1 > bless_x ) && (screen_mapy*448 < doragon_y && (screen_mapy+1)*448-1 > doragon_y))
+				g.drawImage(bless,draw_bless_x-64,draw_doragon_y+64);
+			bless_x -= 0.5;
+			if(map.getTileId((int)bless_x/64-1, (int)doragon_y/64,map2 )== WALL2_ID){
+				doragon_flg=false;
+				bless_x = doragon_x;
+			}
+		}
+		System.out.println(bless_x);
+		
 		for(int i = 0;i < life; i++)
 			g.drawImage(sprite[1],i*32,0,i*32+32,32,0,0,64,64);
 
