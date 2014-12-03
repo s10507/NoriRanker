@@ -73,7 +73,9 @@ public class Main extends BasicGame {
 	int cannon_number = 0;
 	int shell_x = 0;
 	float bless_x = doragon_x;
+	float bless_y = doragon_y;
 	boolean doragon_flg = false;
+	boolean doragon_up = false;
 	TiledMap map = null;
 
 	int map1, map2, map3;
@@ -95,6 +97,9 @@ public class Main extends BasicGame {
 	float angle = 0;
 	float jump = 0;
 	boolean jump_flg = false;
+	
+	float dra_jump = 90;
+	float darara = 256;
 
 	int life = 0;
 
@@ -499,33 +504,54 @@ public class Main extends BasicGame {
 				g.drawImage(shell, draw_shell_x, draw_shell_y);
 		}
 
+		
 		int draw_doragon_x = (int) (doragon_x % 640);
 		int draw_doragon_y = (int) (doragon_y % 448);
 		int draw_bless_x = (int)(bless_x % 640);
+		int draw_bless_y = (int)(bless_y % 640);
+		
+		
+		
 		if((screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x ) && (screen_mapy*448 < doragon_y && (screen_mapy+1)*448-1 > doragon_y))
 				g.drawImage(doragon, draw_doragon_x, draw_doragon_y);
-		if(screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x  && map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) != WALL2_ID){
-		doragon_y += 0.3;
-		
-		if((map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) == WALL2_ID)){
-			doragon_y -= 10;
-		
+		if(doragon_up==false&&screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x  && map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) != WALL2_ID){
+			doragon_y +=0.5;
+			
+//		if((map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) == WALL2_ID)){
+//			doragon_y -= 128;
+//		
+//		}
+		}else if(map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) == WALL2_ID){
+			doragon_up=true;
+			darara = doragon_y;
+			
 		}
+		if(doragon_up){
+			if(dra_jump >= 180)
+				dra_jump = 0;
+
+			dra_jump += 0.5;
+			doragon_y = (float) (darara - 128 + Math.sin(Math.toRadians(dra_jump)) * 128);
 		}
+		//System.out.println(doragon_up);
+				
+		System.out.println(doragon_y);
+			
 		
 		if(((int)doragon_y+64)/64 <= y/64 && y/64<=((int)doragon_y+128)/64)
 			doragon_flg = true;
 		
 		if(doragon_flg){
-			if((screen_mapx*640 < bless_x && (screen_mapx+1)*640-1 > bless_x ) && (screen_mapy*448 < doragon_y && (screen_mapy+1)*448-1 > doragon_y))
-				g.drawImage(bless,draw_bless_x-64,draw_doragon_y+64);
+			if((screen_mapx*640 < bless_x && (screen_mapx+1)*640-1 > bless_x ) && (screen_mapy*448 < bless_y && (screen_mapy+1)*448-1 > bless_y))
+				g.drawImage(bless,draw_bless_x-64,draw_bless_y+64);
 			bless_x -= 0.5;
-			if(map.getTileId((int)bless_x/64-1, (int)doragon_y/64,map2 )== WALL2_ID){
+			//bless_y += 0.1;
+			if(map.getTileId((int)bless_x/64-1, (int)bless_y/64,map2 )== WALL2_ID){
 				doragon_flg=false;
 				bless_x = doragon_x;
+				bless_y = doragon_y;
 			}
 		}
-		System.out.println(bless_x);
 		
 		for(int i = 0;i < life; i++)
 			g.drawImage(sprite[1],i*32,0,i*32+32,32,0,0,64,64);
