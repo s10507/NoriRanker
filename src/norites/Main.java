@@ -56,13 +56,13 @@ public class Main extends BasicGame {
 	boolean shimomuki =true; //trueだと下向き
 	Random rnd = new Random();
 	byte icount = 0;
-	boolean ismove = false;
+	boolean iswalk = false;
 	static final float SPEED = 0.1f;
 	Image[] sprite = new Image[7];   //移動の絵
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
 	Image[] sprite_d = new Image[4]; //ダメージの絵
-	private Animation noripie,walk,wait,attack,damage;
+	private Animation noripie,walk,wait,attack,damage,jump;
 
 	String path =null;
 	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless;
@@ -99,7 +99,6 @@ public class Main extends BasicGame {
 	boolean is_shimo_super = false;
 
 	float angle = 0;
-	float jump = 0;
 	boolean jump_flg = false;
 	
 	float dra_jump = 90;
@@ -119,18 +118,16 @@ public class Main extends BasicGame {
 		当然、ここはループしない */
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
-//		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappy.gif"), 64, 64);
+		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
 		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
 		
 		byte i;
-		for (i = 0; i < sprite.length; i++) {
-			sprite[i] = ssheet.getSubImage(i, 0);
-		}
-		for(i = 0; i < sprite_k.length; i++) {
+		for (i = 0; i < sprite.length; i++)
+			sprite[i] = ssheet.getSubImage(i,0);
+		for(i = 0; i < sprite_k.length; i++)
 			sprite_k[i] = ssheet_k.getSubImage(i,0);
-		}
-//		for(i = 0; i < sprite_h.length; i++)
-//			sprite_h[i] = ssheet_h.getSubImage(i, 0);
+		for(i = 0; i < sprite_h.length; i++)
+			sprite_h[i] = ssheet_h.getSubImage(i,0);
 		for(i = 0; i < sprite_d.length; i++) {
 			sprite_d[i] = ssheet_d.getSubImage(i,0);
 		}
@@ -139,14 +136,16 @@ public class Main extends BasicGame {
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
 		Image[] attacking = {sprite_k[0],sprite_k[1],sprite_k[2],sprite_k[3],sprite_k[4],sprite_k[5]};
 		Image[] damaging = {sprite_d[0],sprite_d[1],sprite_d[2],sprite_d[3]};
+		Image[] jumping = {sprite_h[0],sprite_h[1],sprite_h[2]};
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
 		int[] duration_d = {500,500,500,500};
+		int[] duration_h = {500,300,700};
 		
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
-		//jump = new Animation(jumping, duration, false);
+		jump = new Animation(jumping, duration_h, false);
 		attack = new Animation(attacking,duration_k, false);
 		damage = new Animation(damaging,duration_d,false);
 		noripie = wait;
@@ -252,7 +251,7 @@ public class Main extends BasicGame {
 		}else if(onground){												  //ongroundなら上下加速度ゼロ
 			vspeed = 0;													
 		}else {															//ongroundじゃなければ下加速度どんどん追加
-			vspeed += gravity * delta; 									
+			vspeed += gravity * delta; 	
 		}																
 																		
 		y += vspeed;													//加速度分だけyに盛り付ける
@@ -285,13 +284,6 @@ public class Main extends BasicGame {
 			y=py;
 		}
 		
-		if(map.getTileId((int)(x+50)/64, (int)(y+55)/64, map3)==FLOOR ||		//のりぴーの右下と床判定
-				map.getTileId((int)(x+10)/64, (int)(y+55)/64, map3)==FLOOR ){				//のりぴーの左下と床判定
-			onground = true;
-		} else {
-			onground = false;
-		}
-		
 		if(map.getTileId((int)(x+50)/64 ,(int)(y+10)/64,map1) == WARP_ID ||
 		map.getTileId((int)(x+10)/64 ,(int)(y+10)/64,map1) == WARP_ID ){		//落下ワープとのりぴーの判定
 			x=100;y=100;
@@ -314,10 +306,10 @@ public class Main extends BasicGame {
 				(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+64)/64)
 
 			){											//障害物たちのあたり判定
-			N_P = blowing(N_P);
+			//N_P = blowing(N_P);
 			x = N_P.x;
 			y = N_P.y;
-			life--;
+			//life--;
 		}
 		//System.out.println("Life: "+life);
 			
@@ -335,14 +327,13 @@ public class Main extends BasicGame {
 		
 		if (input.isKeyDown(input.KEY_LEFT)||
 			input.isKeyDown(input.KEY_RIGHT)||
-			input.isKeyDown(input.KEY_UP)||
 			input.isKeyDown(input.KEY_DOWN))
 		{
-			ismove = true;
+			iswalk = true;
 			noripie = walk;
 			noripie.update(delta);
 		} else if(input.isKeyDown(input.KEY_V)){
-			ismove = false;
+			iswalk = false;
 			noripie = attack;
 			noripie.update(delta);
 //			if(((int)x)/64==(((int)usax)/64) && ((int)y+32)/64 == ((int)usay+32)/64){
@@ -360,10 +351,21 @@ public class Main extends BasicGame {
 			usay = USA_P.y;
 		
 		}else{
-			ismove = false;
+			iswalk = false;
 			noripie = wait;
 			noripie.update(delta);
 		};
+		
+		if(map.getTileId((int)(x+50)/64, (int)(y+55)/64, map3)==FLOOR ||		//のりぴーの右下と床判定
+				map.getTileId((int)(x+10)/64, (int)(y+55)/64, map3)==FLOOR ){				//のりぴーの左下と床判定
+			onground = true;
+		//	noripie = wait;
+		//	noripie.update(delta);
+		} else {
+			onground = false;
+			noripie = jump;
+			noripie.update(delta);
+		}
 
 	}
 	}
@@ -390,8 +392,6 @@ public class Main extends BasicGame {
 			g.drawImage(clear, 500,64+a,628,192+a,0,0,-64,64);
 			a+=128;
 			}
-			wait.draw(300, 300-jump);
-			jump += 0.1;
 			g.setColor(Color.red);
 			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
 		}else if(menu_id==3){
@@ -466,7 +466,6 @@ public class Main extends BasicGame {
 		if(shimomuki){
 			shimo_y+=0.1f;
 		}else{
-			shimo_y-=0.1f;
 			shimo_y-=0.1f;
 		}
 
