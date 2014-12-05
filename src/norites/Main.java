@@ -146,7 +146,7 @@ public class Main extends BasicGame {
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
-		jump = new Animation(jumping, duration, false);
+		//jump = new Animation(jumping, duration, false);
 		attack = new Animation(attacking,duration_k, false);
 		damage = new Animation(damaging,duration_d,false);
 		noripie = wait;
