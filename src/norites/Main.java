@@ -21,7 +21,7 @@ public class Main extends BasicGame {
 	final int WARP_ID = 0;
 	final int WALL1_ID = 1;
 	final int WALL2_ID = 2;
-	final int FLOOR = 4;
+	final int FLOOR = 2;
 	final int CEILING = 5;
 	final int CANNON_ID = 3;
 	final int TAKARA_ID = 4;
@@ -56,13 +56,13 @@ public class Main extends BasicGame {
 	boolean shimomuki =true; //trueだと下向き
 	Random rnd = new Random();
 	byte icount = 0;
-	boolean ismove = false;
+	boolean iswalk = false;
 	static final float SPEED = 0.1f;
 	Image[] sprite = new Image[7];   //移動の絵
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
 	Image[] sprite_d = new Image[4]; //ダメージの絵
-	private Animation noripie,walk,wait,attack,damage;
+	private Animation noripie,walk,wait,attack,damage,jump;
 
 	String path =null;
 	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless;
@@ -81,6 +81,10 @@ public class Main extends BasicGame {
 	int map1, map2, map3;
 
 	boolean onground;
+	final float leg_mussle = 0.3f; //脚力
+	final float gravity = 0.01f; //重力
+	
+	float vspeed = 0.0f;
 	int next_cannon;
 
 	Point N_P = new Point(x,y);
@@ -95,7 +99,6 @@ public class Main extends BasicGame {
 	boolean is_shimo_super = false;
 
 	float angle = 0;
-	float jump = 0;
 	boolean jump_flg = false;
 	
 	float dra_jump = 90;
@@ -115,18 +118,16 @@ public class Main extends BasicGame {
 		当然、ここはループしない */
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
-//		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappy.gif"), 64, 64);
+		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
 		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
 		
 		byte i;
-		for (i = 0; i < sprite.length; i++) {
+		for (i = 0; i < sprite.length; i++)
 			sprite[i] = ssheet.getSubImage(i, 0);
-		}
-		for(i = 0; i < sprite_k.length; i++) {
+		for(i = 0; i < sprite_k.length; i++)
 			sprite_k[i] = ssheet_k.getSubImage(i,0);
-		}
-//		for(i = 0; i < sprite_h.length; i++)
-//			sprite_h[i] = ssheet_h.getSubImage(i, 0);
+		for(i = 0; i < sprite_h.length; i++)
+			sprite_h[i] = ssheet_h.getSubImage(i,0);
 		for(i = 0; i < sprite_d.length; i++) {
 			sprite_d[i] = ssheet_d.getSubImage(i,0);
 		}
@@ -135,13 +136,16 @@ public class Main extends BasicGame {
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
 		Image[] attacking = {sprite_k[0],sprite_k[1],sprite_k[2],sprite_k[3],sprite_k[4],sprite_k[5]};
 		Image[] damaging = {sprite_d[0],sprite_d[1],sprite_d[2],sprite_d[3]};
+		Image[] jumping = {sprite_h[0],sprite_h[1],sprite_h[2]};
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
 		int[] duration_d = {500,500,500,500};
+		int[] duration_h = {500,300,700};
 		
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
+		jump = new Animation(jumping, duration_h, false);
 		attack = new Animation(attacking,duration_k, false);
 		damage = new Animation(damaging,duration_d,false);
 		noripie = wait;
@@ -185,6 +189,7 @@ public class Main extends BasicGame {
 		map1 = map.getLayerIndex("base");
 		map2 = map.getLayerIndex("collision");
 		map3 = map.getLayerIndex("floor");
+		
 		try{
 			//System.out.println(map.getTileProperty(3, "number", "true"));
 		}catch(NullPointerException e){
@@ -218,13 +223,10 @@ public class Main extends BasicGame {
 		/* 4. ゲームの内部状態（変数等）の更新に関するルーチン
 		 *
 		（ゲームのロジックや入力に関する本体・メインループ） */
-
-
-
+		
 		if(menu_id!=2){
 
 		float px=x,py=y;
-
 
 		float move = SPEED * delta;
 		Input input = gc.getInput();
@@ -236,11 +238,25 @@ public class Main extends BasicGame {
 			x += move;
 			right = 1;
 		}
-		if (input.isKeyDown(input.KEY_UP)) {
-			y -= move;
-		} else if (input.isKeyDown(input.KEY_DOWN)) {
+		if (input.isKeyDown(input.KEY_DOWN)) {
 			y += move;
 		}
+		
+		//////じゅｍｐ////////////////////////////
+		if (input.isKeyDown(input.KEY_SPACE) && onground) {				//ongroundでSPACE押すと脚力分に上加速度
+			vspeed = -leg_mussle * delta;								
+		}else if(onground){												  //ongroundなら上下加速度ゼロ
+			vspeed = 0;													
+		}else {															//ongroundじゃなければ下加速度どんどん追加
+			vspeed += gravity * delta; 									
+		}																
+																		
+		y += vspeed;													//加速度分だけyに盛り付ける
+		
+		System.out.println("x="+x+",y="+y+","+onground);
+		System.out.println(vspeed);
+
+		
 		if(input.isKeyDown(input.KEY_1)){
 			cannon_number = 0;
 			shell_x = cannon_x_list.get(cannon_number)-64;
@@ -254,7 +270,6 @@ public class Main extends BasicGame {
 			shell_x = cannon_x_list.get(cannon_number)-64;
 		}
 
-
 		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==WALL2_ID ||		//のりぴーの右下と壁判定
 				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==WALL2_ID || 		//のりぴーの右上と壁判定
 				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==WALL2_ID || 			//のりぴーの左下と壁判定
@@ -266,24 +281,12 @@ public class Main extends BasicGame {
 			x=px;			//前の位置にもどす
 			y=py;
 		}
-
-		if(map.getTileId((int)(x+32)/64, (int)(y+51)/64, map3)==FLOOR)
-			onground = true;
-		else
-			onground = false;
-
-//		System.out.println("x:"+(int)(x+50)+" "+"y:"+(int)(y+50)+" "+onground);
-
-//		System.out.println(onground);
-
+		
 		if(map.getTileId((int)(x+50)/64 ,(int)(y+10)/64,map1) == WARP_ID ||
-		map.getTileId((int)(x+10)/64 ,(int)(y+10)/64,map1) == WARP_ID ){		//落下ワープとのりぴーの判定
+				map.getTileId((int)(x+10)/64 ,(int)(y+10)/64,map1) == WARP_ID ){		//落下ワープとのりぴーの判定
 			x=100;y=100;
 		}
 
-
-//		System.out.print("50 : ("+(x+50)/64+", "+(y+50)/64+")\n");
-//		System.out.println(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2));
 		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == TAKARA_ID){
 
 			menu_id=2;
@@ -301,10 +304,10 @@ public class Main extends BasicGame {
 				(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+64)/64)
 
 			){											//障害物たちのあたり判定
-			N_P = blowing(N_P);
-			x = N_P.x;
-			y = N_P.y;
-			life--;
+//			N_P = blowing(N_P);
+//			x = N_P.x;
+//			y = N_P.y;
+//			life--;
 		}
 		//System.out.println("Life: "+life);
 			
@@ -322,14 +325,13 @@ public class Main extends BasicGame {
 		
 		if (input.isKeyDown(input.KEY_LEFT)||
 			input.isKeyDown(input.KEY_RIGHT)||
-			input.isKeyDown(input.KEY_UP)||
 			input.isKeyDown(input.KEY_DOWN))
 		{
-			ismove = true;
+			iswalk = true;
 			noripie = walk;
 			noripie.update(delta);
 		} else if(input.isKeyDown(input.KEY_V)){
-			ismove = false;
+			iswalk = false;
 			noripie = attack;
 			noripie.update(delta);
 //			if(((int)x)/64==(((int)usax)/64) && ((int)y+32)/64 == ((int)usay+32)/64){
@@ -347,10 +349,21 @@ public class Main extends BasicGame {
 			usay = USA_P.y;
 		
 		}else{
-			ismove = false;
+			iswalk = false;
 			noripie = wait;
 			noripie.update(delta);
 		};
+
+		if(map.getTileId((int)(x+50)/64, (int)(y+55)/64, map3)==FLOOR ||		//のりぴーの右下と床判定
+				map.getTileId((int)(x+10)/64, (int)(y+55)/64, map3)==FLOOR ){				//のりぴーの左下と床判定
+			onground = true;
+		//	noripie = wait;
+		//	noripie.update(delta);
+		} else {
+			onground = false;
+			noripie = jump;
+			noripie.update(delta);
+		}
 
 	}
 	}
@@ -377,8 +390,6 @@ public class Main extends BasicGame {
 			g.drawImage(clear, 500,64+a,628,192+a,0,0,-64,64);
 			a+=128;
 			}
-			wait.draw(300, 300-jump);
-			jump += 0.1;
 			g.setColor(Color.red);
 			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
 		}else if(menu_id==3){
@@ -434,13 +445,10 @@ public class Main extends BasicGame {
 			usax-=0.25f;
 		if(map.getTileId((int)(usax+10)/64, (int)(usay+10)/64, map2) == WALL2_ID && usamuki==false)
 			usamuki = true;
-
 		else if(map.getTileId((int)(usax+50)/64, (int)(usay+10)/64, map2) == WALL2_ID && usamuki==true)
 			usamuki = false;
-
 		if(map.getTileId((int)(usax+10)/64, (int)(usay+50)/64, map2) == WALL2_ID && usamuki==false)
 			usamuki = true;
-
 		else if(map.getTileId((int)(usax+50)/64, (int)(usay+50)/64, map2) == WALL2_ID && usamuki==true)
 			usamuki = false;
 
@@ -484,8 +492,6 @@ public class Main extends BasicGame {
 			else
 				g.drawImage(shimo_normal, draw_shimo_x, draw_shimo_y);
 
-		shimo_super.setRotation(90);
-
 		int draw_shell_x = (int) (shell_x % 640);
 		int draw_shell_y = (int) (cannon_y_list.get(cannon_number) % 640);
 		if(cannon_x_list.size()!=0){
@@ -503,14 +509,11 @@ public class Main extends BasicGame {
 					(screen_mapy*448 < cannon_y_list.get(cannon_number) && (screen_mapy+1)*448-1 > cannon_y_list.get(cannon_number) ))
 				g.drawImage(shell, draw_shell_x, draw_shell_y);
 		}
-
 		
 		int draw_doragon_x = (int) (doragon_x % 640);
 		int draw_doragon_y = (int) (doragon_y % 448);
 		int draw_bless_x = (int)(bless_x % 640);
 		int draw_bless_y = (int)(bless_y % 640);
-		
-		
 		
 		if((screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x ) && (screen_mapy*448 < doragon_y && (screen_mapy+1)*448-1 > doragon_y))
 				g.drawImage(doragon, draw_doragon_x, draw_doragon_y);
@@ -524,7 +527,6 @@ public class Main extends BasicGame {
 		}else if(map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) == WALL2_ID){
 			doragon_up=true;
 			darara = doragon_y;
-			
 		}
 		if(doragon_up){
 			if(dra_jump >= 180)
@@ -535,8 +537,7 @@ public class Main extends BasicGame {
 		}
 		//System.out.println(doragon_up);
 				
-		System.out.println(doragon_y);
-			
+		//System.out.println(doragon_y);
 		
 		if(((int)doragon_y+64)/64 <= y/64 && y/64<=((int)doragon_y+128)/64)
 			doragon_flg = true;
@@ -569,6 +570,8 @@ public class Main extends BasicGame {
 		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
 		g.setColor(Color.orange);
 		g.drawRect((((int)draw_usax+32)/64)*64, (((int)draw_usay+32)/64)*64, 5, 5);
+		
+		System.out.println(detect_ground_top(x, y, map, map3, WALL2_ID));
 
 		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
@@ -591,6 +594,16 @@ public class Main extends BasicGame {
 
 		return result;
 	}
+	
+	float detect_ground_top(float x, float y, TiledMap map, int layer, int ID){
+		int min = 1000;
+		for(int i = (int) (y/64);i < 7; i++){
+			if(map.getTileId((int) ((x+10)/64), i, layer) == ID || map.getTileId((int) ((x+50)/64), i, layer) == ID)
+				if(min > i)
+					min = i;
+		}
+		return min;
+	}
 
 	public static void main(String[] args) throws SlickException {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
@@ -601,6 +614,7 @@ public class Main extends BasicGame {
 		app.setDisplayMode(64*10, 64*7, false);
 		app.start();
 	}
+	
 	Point attack(Point enemy_P){
 		if(right>0){
 			if(((int)x)/64==(((int)enemy_P.x)/64) && ((int)y+32)/64 == ((int)enemy_P.y+32)/64){
