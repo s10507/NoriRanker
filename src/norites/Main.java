@@ -140,7 +140,7 @@ public class Main extends BasicGame {
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
 		int[] duration_d = {500,500,500,500};
-		int[] duration_h = {500,300,700};
+		int[] duration_h = {60,70,100};
 		
 
 		walk = new Animation(pyonning, duration, false);
@@ -149,30 +149,21 @@ public class Main extends BasicGame {
 		attack = new Animation(attacking,duration_k, false);
 		damage = new Animation(damaging,duration_d,false);
 		noripie = wait;
+		
+		jump.setLooping(false);
 
 		try{
 //			kabe1 = new Image("./resource/kabe1.png");
-
 			kabe2 = new Image("./resource/kabe3.png");
-
 			usatan = new Image("./resource/usatan.gif");
-
 			cannon = new Image("./resource/cannon.gif");
-
 			shell = new Image("./resource/ball.gif");
-
 			shimo_normal = new Image("./resource/シタ.gif");
-
 			shimo_super = new Image("./resource/ウエ.gif");
-
 			takara = new Image("./resource/takara.gif");
-
 			clear = new Image("./resource/クリア.gif");
-
 			doragon = new Image("./resource/ha-chan.gif");
-			
 			bless = new Image("./resource/mizu.gif");
-			
 			gameover = new Image("./resource/gameover.gif");
 		}catch(Exception e){
 		}
@@ -216,158 +207,162 @@ public class Main extends BasicGame {
 
 		life = 3;
 	}
+
 	@SuppressWarnings("static-access")
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		/* 4. ゲームの内部状態（変数等）の更新に関するルーチン
-		 *
-		（ゲームのロジックや入力に関する本体・メインループ） */
+		/*
+		 * 4. ゲームの内部状態（変数等）の更新に関するルーチン
+		 * 
+		 * （ゲームのロジックや入力に関する本体・メインループ）
+		 */
 
+		if (menu_id != 2) {
 
+			float px = x, py = y;
 
-		if(menu_id!=2){
+			float move = SPEED * delta;
+			Input input = gc.getInput();
+			if (input.isKeyDown(input.KEY_LEFT)) {
+				x -= move;
+				right = -1;
 
-		float px=x,py=y;
-
-
-		float move = SPEED * delta;
-		Input input = gc.getInput();
-		if (input.isKeyDown(input.KEY_LEFT)) {
-			x -= move;
-			right = -1;
-
-		} else if (input.isKeyDown(input.KEY_RIGHT)) {
-			x += move;
-			right = 1;
-		}
-		if (input.isKeyDown(input.KEY_DOWN)) {
-			y += move;
-		}
-		
-		
-		////////じゅｍｐ////////////////////////////
-		if (input.isKeyDown(input.KEY_SPACE) && onground) {				//ongroundでSPACE押すと脚力分に上加速度
-			vspeed = -leg_mussle * delta;								
-		}else if(onground){												  //ongroundなら上下加速度ゼロ
-			vspeed = 0;													
-		}else {															//ongroundじゃなければ下加速度どんどん追加
-			vspeed += gravity * delta; 	
-		}																
-																		
-		y += vspeed;													//加速度分だけyに盛り付ける
-		
-		System.out.println("x="+x+",y="+y+","+onground);
-
-		
-		if(input.isKeyDown(input.KEY_1)){
-			cannon_number = 0;
-			shell_x = cannon_x_list.get(cannon_number)-64;
-		}
-		if(input.isKeyDown(input.KEY_2)){
-			cannon_number = 1;
-			shell_x = cannon_x_list.get(cannon_number)-64;
-		}
-		if(input.isKeyDown(input.KEY_3)){
-			cannon_number = 2;
-			shell_x = cannon_x_list.get(cannon_number)-64;
-		}
-
-		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==WALL2_ID ||		//のりぴーの右下と壁判定
-				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==WALL2_ID || 		//のりぴーの右上と壁判定
-				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==WALL2_ID || 			//のりぴーの左下と壁判定
-				map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2)==WALL2_ID ||				//のりぴーの左上と壁判定
-				map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==CANNON_ID ||	//キャノンの右下と壁判定
-				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==CANNON_ID || 		//キャノンの右上と壁判定
-				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==CANNON_ID || 			//キャノンの左下と壁判定
-				map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == CANNON_ID){				//キャノンの左上と壁判定
-			x=px;			//前の位置にもどす
-			y=py;
-		}
-		
-		if(map.getTileId((int)(x+50)/64 ,(int)(y+10)/64,map1) == WARP_ID ||
-		map.getTileId((int)(x+10)/64 ,(int)(y+10)/64,map1) == WARP_ID ){		//落下ワープとのりぴーの判定
-			x=100;y=100;
-		}
-
-		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == TAKARA_ID){
-
-			menu_id=2;
-		}
-
-		N_P = N_P.setPoint(N_P, x, y);
-		USA_P = USA_P.setPoint(USA_P, usax, usay);
-		SHIMO_P = SHIMO_P.setPoint(SHIMO_P, shimo_x, shimo_y);
-
-		if(
-				(((int)x+32)/64==((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 ||
-				(((int)x+32)/64==((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64||
-				(((int)x+32)/64==((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64||
-				(((int)doragon_x/64<=((int)x+32)/64)&&((int)x+32)/64<=((int)doragon_x+64)/64) && 
-				(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+64)/64)
-
-			){											//障害物たちのあたり判定
-			//N_P = blowing(N_P);
-			x = N_P.x;
-			y = N_P.y;
-			//life--;
-		}
-		//System.out.println("Life: "+life);
-			
-		wid_between_x = x-usax;
-		wid_between_y = y-usay;
-		if(life==0){
-			menu_id=3;
-			noripie=damage;
-			noripie.update(delta);
-			noripie.setLooping(false);
-			
-			
-			
-		}
-		
-		if (input.isKeyDown(input.KEY_LEFT)||
-			input.isKeyDown(input.KEY_RIGHT)||
-			input.isKeyDown(input.KEY_DOWN))
-		{
-			iswalk = true;
-			noripie = walk;
-			noripie.update(delta);
-		} else if(input.isKeyDown(input.KEY_V)){
-			iswalk = false;
-			noripie = attack;
-			noripie.update(delta);
-//			if(((int)x)/64==(((int)usax)/64) && ((int)y+32)/64 == ((int)usay+32)/64){
-			if(right == 1 && (wid_between_x > -50 && wid_between_x < 0) && (wid_between_y > -10 && wid_between_y < 10)){
-				USA_P = blowing(USA_P);
-				System.out.println("USA L: "+(int)usax/64+" "+(int)usay/64);
-				System.out.println("NORI L: "+(int)x/64+" "+(int)y/64+"\nwidth: "+wid_between_x);
-			}else if(right == -1 && (wid_between_x < 50 && wid_between_x > 0) && (wid_between_y > -10 && wid_between_y < 10)){
-				USA_P = blowing(USA_P);
-				System.out.println("USA R: "+((int)usax+64)/64+" "+(int)usay/64);
-				System.out.println("NORI R: "+((int)x+64)/64+" "+(int)y/64+"\nwidth: "+wid_between_x);
+			} else if (input.isKeyDown(input.KEY_RIGHT)) {
+				x += move;
+				right = 1;
+			}
+			if (input.isKeyDown(input.KEY_DOWN)) {
+				y += move;
 			}
 
-			usax = USA_P.x;
-			usay = USA_P.y;
-		
-		}else{
-			iswalk = false;
-			noripie = wait;
-			noripie.update(delta);
-		};
-		
-		if(map.getTileId((int)(x+50)/64, (int)(y+55)/64, map3)==FLOOR ||		//のりぴーの右下と床判定
-				map.getTileId((int)(x+10)/64, (int)(y+55)/64, map3)==FLOOR ){				//のりぴーの左下と床判定
-			onground = true;
-		//	noripie = wait;
-		//	noripie.update(delta);
-		} else {
-			onground = false;
-			noripie = jump;
-			noripie.update(delta);
-		}
+			// //////じゅｍｐ////////////////////////////
+			if (input.isKeyDown(input.KEY_SPACE) && onground) { // ongroundでSPACE押すと脚力分に上加速度
+				vspeed = -leg_mussle * delta;
+				jump.restart();
+			} else if (onground) { // ongroundなら上下加速度ゼロ
+				vspeed = 0;
+			} else { // ongroundじゃなければ下加速度どんどん追加
+				vspeed += gravity * delta;
+			}
+			y += vspeed; // 加速度分だけyに盛り付ける
 
-	}
+			System.out.println("x="+x+",y="+y+","+onground);
+
+			if (input.isKeyDown(input.KEY_1)) {
+				cannon_number = 0;
+				shell_x = cannon_x_list.get(cannon_number) - 64;
+			}
+			if (input.isKeyDown(input.KEY_2)) {
+				cannon_number = 1;
+				shell_x = cannon_x_list.get(cannon_number) - 64;
+			}
+			if (input.isKeyDown(input.KEY_3)) {
+				cannon_number = 2;
+				shell_x = cannon_x_list.get(cannon_number) - 64;
+			}
+
+			if (map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == WALL2_ID
+					|| // のりぴーの右下と壁判定
+					map.getTileId((int) (x+50)/64, (int) (y+10)/64,
+							map2) == WALL2_ID
+					|| // のりぴーの右上と壁判定
+					map.getTileId((int) (x+10)/64, (int) (y+50)/64, map2) == WALL2_ID || // のりぴーの左下と壁判定
+					map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == WALL2_ID || // のりぴーの左上と壁判定
+					map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == CANNON_ID || // キャノンの右下と壁判定
+					map.getTileId((int) (x+50)/64, (int) (y+10)/64, map2) == CANNON_ID || // キャノンの右上と壁判定
+					map.getTileId((int) (x+10)/64, (int) (y+50)/64, map2) == CANNON_ID || // キャノンの左下と壁判定
+					map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == CANNON_ID) { // キャノンの左上と壁判定
+				x = px; // 前の位置にもどす
+				y = py;
+			}
+
+			if (map.getTileId((int) (x+50)/64, (int) (y+10)/64, map1) == WARP_ID
+					|| map.getTileId((int) (x+10)/64, (int) (y+10)/64,
+							map1) == WARP_ID) { // 落下ワープとのりぴーの判定
+				x = 100;
+				y = 100;
+			}
+
+			if (map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == TAKARA_ID) {
+
+				menu_id = 2;
+			}
+
+			N_P = N_P.setPoint(N_P, x, y);
+			USA_P = USA_P.setPoint(USA_P, usax, usay);
+			SHIMO_P = SHIMO_P.setPoint(SHIMO_P, shimo_x, shimo_y);
+
+			if ((((int) x+32)/64 == ((int) usax+32)/64)
+					&& ((int) y+32)/64 == ((int) usay+32)/64
+					|| (((int) x+32)/64 == ((int) shimo_x+32)/64)
+					&& ((int) y+32)/64 == ((int) shimo_y+32)/64
+					|| (((int) x+32)/64 == ((int) shell_x+32)/64)
+					&& ((int) y+32)/64 == ((int) cannon_y_list
+							.get(cannon_number)+32)/64
+					|| (((int) doragon_x/64 <= ((int) x+32)/64) && ((int) x+32)/64 <= ((int) doragon_x+64)/64)
+					&& (((int) doragon_y/64 <= ((int) y+32)/64) && ((int) y+32)/64 <= ((int) doragon_y+64)/64)
+
+			) { // 障害物たちのあたり判定
+				// N_P = blowing(N_P);
+				x = N_P.x;
+				y = N_P.y;
+				// life--;
+			}
+			// System.out.println("Life: "+life);
+
+			wid_between_x = x - usax;
+			wid_between_y = y - usay;
+			if (life == 0) {
+				menu_id = 3;
+				noripie = damage;
+				noripie.setLooping(false);
+			}
+
+			if (input.isKeyDown(input.KEY_LEFT)
+					|| input.isKeyDown(input.KEY_RIGHT)
+					|| input.isKeyDown(input.KEY_DOWN)) {
+				iswalk = true;
+				noripie = walk;
+			} else if (input.isKeyDown(input.KEY_V)) {
+				iswalk = false;
+				noripie = attack;
+
+				if (right == 1 && (wid_between_x > -50 && wid_between_x < 0)
+						&& (wid_between_y > -10 && wid_between_y < 10)) {
+					USA_P = blowing(USA_P);
+					System.out.println("USA L: "+(int) usax/64+" "
+							+ (int) usay/64);
+					System.out.println("NORI L: "+(int) x/64+" "
+							+ (int) y/64+"\nwidth: "+wid_between_x);
+				} else if (right == -1
+						&& (wid_between_x < 50 && wid_between_x > 0)
+						&& (wid_between_y > -10 && wid_between_y < 10)) {
+					USA_P = blowing(USA_P);
+					System.out.println("USA R: "+((int) usax+64)/64+" "
+							+ (int) usay/64);
+					System.out.println("NORI R: "+((int) x+64)/64+" "
+							+ (int) y/64+"\nwidth: "+wid_between_x);
+				}
+
+				usax = USA_P.x;
+				usay = USA_P.y;
+
+			} else {
+				iswalk = false;
+				noripie = wait;
+			}
+			;
+
+			if (map.getTileId((int) (x+50)/64, (int) (y+55)/64, map3) == FLOOR || // のりぴーの右下と床判定
+					map.getTileId((int) (x+10)/64, (int) (y+55)/64, map3) == FLOOR) { // のりぴーの左下と床判定
+				onground = true;
+			} else {
+				onground = false;
+				noripie = jump;
+			}
+
+		}
+		noripie.update(delta);
 	}
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -543,7 +538,7 @@ public class Main extends BasicGame {
 				dra_jump = 0;
 
 			dra_jump += 0.5;
-			doragon_y = (float) (darara - 128 + Math.sin(Math.toRadians(dra_jump)) * 128);
+			doragon_y = (float) (darara - 128+Math.sin(Math.toRadians(dra_jump)) * 128);
 		}
 		//System.out.println(doragon_up);
 				
