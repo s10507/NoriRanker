@@ -7,14 +7,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 public class TestGZIP {
-	void main(){
+	public static void main(String[] args) throws IOException{
+		String str = "0";
 	
 		InputStream in = new ByteArrayInputStream("H4sIAAAAAAAAC2NgGAXDGTCRiXHpBQCie5DKMAIAAA==".getBytes(StandardCharsets.UTF_8));
-		try{
-			GZIPInputStream a = new GZIPInputStream(in);
+		GZIPInputStream a = new GZIPInputStream(in);
+			
+		System.out.println(	a.toString());
+		 str = a.toString();
 	
-		}catch(IOException e){
-		}
+		
+		
+		System.out.println(str);
 	}
 	
 }

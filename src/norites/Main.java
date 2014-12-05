@@ -104,6 +104,11 @@ public class Main extends BasicGame {
 	float darara = 256;
 
 	int life = 0;
+	boolean immortaling = false;
+	
+	//Polygon P = new Polygon(
+			
+		//	)
 
 	public Main(String title) {
 		super(title);
@@ -265,6 +270,13 @@ public class Main extends BasicGame {
 			cannon_number = 2;
 			shell_x = cannon_x_list.get(cannon_number)-64;
 		}
+		if(input.isKeyDown(input.KEY_0))
+			try {
+				gc.wait(100);
+			} catch (InterruptedException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
 
 
 		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==WALL2_ID ||		//のりぴーの右下と壁判定
@@ -279,10 +291,12 @@ public class Main extends BasicGame {
 			y=py;
 		}
 
-		if(map.getTileId((int)(x+10)/64, (int)(y+51)/64, map3)==FLOOR && map.getTileId((int)(x+50)/64, (int)(y+51)/64, map3)==FLOOR)
+		if(map.getTileId((int)(x+10)/64, (int)(y+52)/64, map3)==FLOOR && map.getTileId((int)(x+50)/64, (int)(y+64)/64, map3)==FLOOR)
 			onground = true;
 		else
 			onground = false;
+		
+//		System.out.println(onground+"y: "+y);
 
 //		System.out.println("x:"+(int)(x+50)+" "+"y:"+(int)(y+50)+" "+onground);
 
@@ -304,20 +318,20 @@ public class Main extends BasicGame {
 		N_P = N_P.setPoint(N_P, x, y);
 		USA_P = USA_P.setPoint(USA_P, usax, usay);
 		SHIMO_P = SHIMO_P.setPoint(SHIMO_P, shimo_x, shimo_y);
-
-		if(
-				(((int)x+32)/64==((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 ||
-				(((int)x+32)/64==((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64||
-				(((int)x+32)/64==((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64||
-				(((int)doragon_x/64<=((int)x+32)/64)&&((int)x+32)/64<=((int)doragon_x+64)/64) && 
-				(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+64)/64)
-
-			){											//障害物たちのあたり判定
-			N_P = blowing(N_P);
-			x = N_P.x;
-			y = N_P.y;
-			life--;
-		}
+		if(!immortaling)
+			if(
+					(((int)x+32)/64==((int)usax+32)/64) && ((int)y+32)/64 == ((int)usay+32)/64 ||
+					(((int)x+32)/64==((int)shimo_x+32)/64) && ((int)y+32)/64 == ((int)shimo_y+32)/64||
+					(((int)x+32)/64==((int)shell_x+32)/64) && ((int)y+32)/64 == ((int)cannon_y_list.get(cannon_number)+32)/64||
+					(((int)doragon_x/64<=((int)x+32)/64)&&((int)x+32)/64<=((int)doragon_x+128)/64) && 
+					(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+128)/64)
+	
+				){											//障害物たちのあたり判定
+				N_P = blowing(N_P);
+				x = N_P.x;
+				y = N_P.y;
+				life--;
+			}
 		//System.out.println("Life: "+life);
 		
 			
@@ -328,9 +342,6 @@ public class Main extends BasicGame {
 			noripie=damage;
 			noripie.update(delta);
 			noripie.setLooping(false);
-			
-			
-			
 		}
 		
 		if (input.isKeyDown(input.KEY_LEFT)||
@@ -364,6 +375,8 @@ public class Main extends BasicGame {
 			noripie = wait;
 			noripie.update(delta);
 		};
+		
+//		System.out.println(detect_ground_top(x, map, map3, 2, gc));
 
 	}
 	}
@@ -466,27 +479,28 @@ public class Main extends BasicGame {
 		if(shimomuki){
 			shimo_y+=0.1f;
 		}else{
-			shimo_y-=0.1f;
-			shimo_y-=0.1f;
+			shimo_y-=0.2f;
+//			System.out.println(shimo_y);
 		}
 
 		shimo_normal.setRotation(angle);
 		angle++;
 
-		if(map.getTileId((int)(shimo_x+10)/64, (int)(shimo_y+10)/64, map2) == WALL2_ID && shimomuki==false){
+		if(map.getTileId((int)(shimo_x+10)/64, (int)((shimo_y+10)/64), map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
 			is_shimo_super = false;
-		}else if(map.getTileId((int)(shimo_x+50)/64, (int)(shimo_y+10)/64, map2) == WALL2_ID && shimomuki==true){
+		}else if(map.getTileId((int)(shimo_x+50)/64, (int)((shimo_y+10)/64), map2) == WALL2_ID && shimomuki==true){
 			shimomuki = false;
 			is_shimo_super = true;
 		}
-		if(map.getTileId((int)(shimo_x+10)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==false){
+		if(map.getTileId((int)(shimo_x+10)/64, (int)((shimo_y+50)/64), map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
 			is_shimo_super = false;
-		}else if(map.getTileId((int)(shimo_x+50)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==true){
+		}else if(map.getTileId((int)(shimo_x+50)/64, (int)((shimo_y+50)/64), map2) == WALL2_ID && shimomuki==true){
 			shimomuki = false;
 			is_shimo_super = true;
 		}
+		
 
 		int draw_shimo_x = (int) (shimo_x % 640);
 		int draw_shimo_y = (int) (shimo_y % 448);
@@ -562,6 +576,8 @@ public class Main extends BasicGame {
 			}
 		}
 		
+//		System.out.println(doragon_y);
+		
 		for(int i = 0;i < life; i++)
 			g.drawImage(sprite[1],i*32,0,i*32+32,32,0,0,64,64);
 
@@ -621,6 +637,16 @@ public class Main extends BasicGame {
 
 	}
 	
+	float detect_ground_top(float x,  TiledMap map, int layer, int ID, GameContainer gc){
+		int min = 1000;
+		for(int i = 0;i < gc.getHeight()/64; i++)
+			if(map.getTileId((int)x/64, i, layer) == ID)
+				if(min > i)
+					min = i;
+		return min;
+		
+	}
+	
 
 	public static void main(String[] args) throws SlickException {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
@@ -676,6 +702,4 @@ class Point {
 	void Print(Point _P){
 		System.out.println("P.x :"+_P.x+" P.y :"+_P.y);
 	}
-
 }
-
