@@ -81,7 +81,6 @@ public class Main extends BasicGame {
 	int map1, map2, map3;
 
 	boolean onground;
-	boolean jumping = true;;
 	final float leg_mussle = 0.3f; //脚力
 	final float gravity = 0.01f; //重力
 	
@@ -147,6 +146,7 @@ public class Main extends BasicGame {
 
 		walk = new Animation(pyonning, duration, false);
 		wait = new Animation(waiting, duration, true);
+		jump = new Animation(jumping, duration, false);
 		attack = new Animation(attacking,duration_k, false);
 		damage = new Animation(damaging,duration_d,false);
 		noripie = wait;
@@ -247,17 +247,17 @@ public class Main extends BasicGame {
 		
 		
 		////////じゅｍｐ////////////////////////////
-		if(onground){													//ongroundなら上下加速度ゼロ
-			vspeed = 0;													
-		}else if (input.isKeyDown(input.KEY_SPACE) && onground) {		//ongroundでSPACE押すと脚力分に上加速度
+		if (input.isKeyDown(input.KEY_SPACE) && onground) {				//ongroundでSPACE押すと脚力分に上加速度
 			vspeed = -leg_mussle * delta;								
+		}else if(onground){												  //ongroundなら上下加速度ゼロ
+			vspeed = 0;													
 		}else {															//ongroundじゃなければ下加速度どんどん追加
 			vspeed += gravity * delta; 									
 		}																
 																		
 		y += vspeed;													//加速度分だけyに盛り付ける
 		
-		System.out.println("x="+x+",y="+y);
+		System.out.println("x="+x+",y="+y+","+onground);
 
 		
 		if(input.isKeyDown(input.KEY_1)){
@@ -314,10 +314,10 @@ public class Main extends BasicGame {
 				(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+64)/64)
 
 			){											//障害物たちのあたり判定
-			//N_P = blowing(N_P);
+			N_P = blowing(N_P);
 			x = N_P.x;
 			y = N_P.y;
-			//life--;
+			life--;
 		}
 		//System.out.println("Life: "+life);
 			
