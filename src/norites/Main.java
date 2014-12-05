@@ -21,7 +21,7 @@ public class Main extends BasicGame {
 	final int WARP_ID = 0;
 	final int WALL1_ID = 1;
 	final int WALL2_ID = 2;
-	final int FLOOR = 4;
+	final int FLOOR = 2;
 	final int CEILING = 5;
 	final int CANNON_ID = 3;
 	final int TAKARA_ID = 4;
@@ -81,6 +81,11 @@ public class Main extends BasicGame {
 	int map1, map2, map3;
 
 	boolean onground;
+	boolean jumping = true;;
+	final float leg_mussle = 0.3f; //脚力
+	final float gravity = 0.01f; //重力
+	
+	float vspeed = 0.0f;
 	int next_cannon;
 
 	Point N_P = new Point(x,y);
@@ -236,11 +241,25 @@ public class Main extends BasicGame {
 			x += move;
 			right = 1;
 		}
-		if (input.isKeyDown(input.KEY_UP)) {
-			y -= move;
-		} else if (input.isKeyDown(input.KEY_DOWN)) {
+		if (input.isKeyDown(input.KEY_DOWN)) {
 			y += move;
 		}
+		
+		
+		////////じゅｍｐ////////////////////////////
+		if(onground){													//ongroundなら上下加速度ゼロ
+			vspeed = 0;													
+		}else if (input.isKeyDown(input.KEY_SPACE) && onground) {		//ongroundでSPACE押すと脚力分に上加速度
+			vspeed = -leg_mussle * delta;								
+		}else {															//ongroundじゃなければ下加速度どんどん追加
+			vspeed += gravity * delta; 									
+		}																
+																		
+		y += vspeed;													//加速度分だけyに盛り付ける
+		
+		System.out.println("x="+x+",y="+y);
+
+		
 		if(input.isKeyDown(input.KEY_1)){
 			cannon_number = 0;
 			shell_x = cannon_x_list.get(cannon_number)-64;
@@ -254,7 +273,6 @@ public class Main extends BasicGame {
 			shell_x = cannon_x_list.get(cannon_number)-64;
 		}
 
-
 		if(map.getTileId((int)(x+50)/64, (int)(y+50)/64, map2)==WALL2_ID ||		//のりぴーの右下と壁判定
 				map.getTileId((int)(x+50)/64, (int)(y+10)/64, map2)==WALL2_ID || 		//のりぴーの右上と壁判定
 				map.getTileId((int)(x+10)/64, (int)(y+50)/64, map2)==WALL2_ID || 			//のりぴーの左下と壁判定
@@ -266,24 +284,19 @@ public class Main extends BasicGame {
 			x=px;			//前の位置にもどす
 			y=py;
 		}
-
-		if(map.getTileId((int)(x+32)/64, (int)(y+51)/64, map3)==FLOOR)
+		
+		if(map.getTileId((int)(x+50)/64, (int)(y+55)/64, map3)==FLOOR ||		//のりぴーの右下と床判定
+				map.getTileId((int)(x+10)/64, (int)(y+55)/64, map3)==FLOOR ){				//のりぴーの左下と床判定
 			onground = true;
-		else
+		} else {
 			onground = false;
-
-//		System.out.println("x:"+(int)(x+50)+" "+"y:"+(int)(y+50)+" "+onground);
-
-//		System.out.println(onground);
-
+		}
+		
 		if(map.getTileId((int)(x+50)/64 ,(int)(y+10)/64,map1) == WARP_ID ||
 		map.getTileId((int)(x+10)/64 ,(int)(y+10)/64,map1) == WARP_ID ){		//落下ワープとのりぴーの判定
 			x=100;y=100;
 		}
 
-
-//		System.out.print("50 : ("+(x+50)/64+", "+(y+50)/64+")\n");
-//		System.out.println(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2));
 		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, map2) == TAKARA_ID){
 
 			menu_id=2;
@@ -301,10 +314,10 @@ public class Main extends BasicGame {
 				(((int)doragon_y/64<=((int)y+32)/64)&&((int)y+32)/64<=((int)doragon_y+64)/64)
 
 			){											//障害物たちのあたり判定
-			N_P = blowing(N_P);
+			//N_P = blowing(N_P);
 			x = N_P.x;
 			y = N_P.y;
-			life--;
+			//life--;
 		}
 		//System.out.println("Life: "+life);
 			
@@ -535,7 +548,7 @@ public class Main extends BasicGame {
 		}
 		//System.out.println(doragon_up);
 				
-		System.out.println(doragon_y);
+		//System.out.println(doragon_y);
 			
 		
 		if(((int)doragon_y+64)/64 <= y/64 && y/64<=((int)doragon_y+128)/64)
