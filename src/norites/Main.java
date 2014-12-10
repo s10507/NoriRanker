@@ -1,6 +1,7 @@
 package norites;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.newdawn.slick.Animation;
@@ -14,17 +15,18 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.util.xml.XMLElement;
 
 public class Main extends BasicGame {
 	/* 1. Main クラスまたはオブジェクトに所属するメンバー変数の宣言を書く所 */
-
-	final int WARP_ID = 0;
-	final int WALL1_ID = 1;
-	final int WALL2_ID = 2;
-	final int FLOOR = 2;
-	final int CEILING = 5;
-	final int CANNON_ID = 3;
-	final int TAKARA_ID = 4;
+		
+	int WARP_ID = 0;
+	int WALL1_ID = 1;
+	int WALL2_ID = 2;
+	int FLOOR = 2;
+	int CEILING = 5;
+	int CANNON_ID = 3;
+	int TAKARA_ID = 4;
 
 	float x = 64*4, y = 64*4;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
@@ -116,6 +118,15 @@ public class Main extends BasicGame {
 		（フォントや画像、サウンド等のデータをファイルから読み込んで
 		オブジェクトとして変数名に関連付けたりする）
 		当然、ここはループしない */
+		
+		HashMap MapId = readgid();
+		
+		WALL1_ID = (int) MapId.get("kabe1");
+		WALL2_ID = (int) MapId.get("kabe2");
+		FLOOR = (int) MapId.get("kabe2");
+		CANNON_ID = (int) MapId.get("cannon");
+		TAKARA_ID = (int) MapId.get("takara");
+		
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
@@ -195,6 +206,7 @@ public class Main extends BasicGame {
 				}
 			}
 		}
+		
 
 //		for(int tx = 0;tx < cannon_x_list.size(); tx++){
 //			System.out.println("cannon_x_list: "+ cannon_x_list.get(tx));
@@ -577,6 +589,7 @@ public class Main extends BasicGame {
 		g.setColor(Color.orange);
 		g.drawRect((((int)draw_usax+32)/64)*64, (((int)draw_usay+32)/64)*64, 5, 5);
 
+		detect_ground_top(x,map,map3,WALL2_ID);
 		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
 //			System.out.println("usagi"+(int)usax+":"+(int)usay);
@@ -598,6 +611,37 @@ public class Main extends BasicGame {
 
 		return result;
 	}
+	
+	HashMap readgid() throws SlickException{
+
+		TMXRead t = new TMXRead();
+		ArrayList<XMLElement> gid_xml = t.read("./resource/sample.tmx");
+//		ArrayList<Integer> id = new ArrayList<Integer> (gid_xml.size());
+//		ArrayList<String> name = new ArrayList<String> (gid_xml.size());
+		
+		HashMap gid = new HashMap();
+		
+		for (int i = 0;i < gid_xml.size();i++){
+			String str = gid_xml.get(i).getAttribute("name");
+			int id = gid_xml.get(i).getIntAttribute("firstgid");
+			
+			gid.put(str,id);
+		}
+		
+		return gid;
+
+	}
+	
+	float detect_ground_top(float x,  TiledMap map, int layer, int ID){
+		int min = 1000;
+		for(int i = 0;i < 7; i++)
+			if(map.getTileId((int)x/64, i, layer) == ID)
+				if(min > i)
+					min = i;
+		return min;
+		
+	}
+	
 
 	public static void main(String[] args) throws SlickException {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
@@ -654,5 +698,4 @@ class Point {
 	void Print(Point _P){
 		System.out.println("P.x :"+_P.x+" P.y :"+_P.y);
 	}
-
 }

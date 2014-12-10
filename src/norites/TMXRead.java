@@ -7,9 +7,8 @@ import org.newdawn.slick.util.xml.XMLElementList;
 import org.newdawn.slick.util.xml.XMLParser;
 public class TMXRead {
 	
-	TMXRead() throws SlickException
+	ArrayList<XMLElement> read(String path) throws SlickException
 	{
-		String path = "./resource/untitled.tmx";
 
 		XMLParser xp = new XMLParser();
 
@@ -32,6 +31,8 @@ public class TMXRead {
 
 		for(int i = 0; i < xe_all.size(); i++)
 			System.out.println(a[i]);
+					
+		return xe_all;
 	}
 
 }
