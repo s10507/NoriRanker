@@ -236,7 +236,8 @@ public class Main extends BasicGame {
 			Input input = gc.getInput();
 			if (input.isKeyDown(input.KEY_LEFT)) {
 				x -= move;
-				if(detect_collision(x, y, map2, WALL2_ID)){
+				if(detect_collision(x, y, map2, WALL2_ID)
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					x += move;
 					System.out.println("coll!");
 				}	
@@ -244,7 +245,8 @@ public class Main extends BasicGame {
 
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
-				if(detect_collision(x, y, map2, WALL2_ID)){
+				if(detect_collision(x, y, map2, WALL2_ID)
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					x -= move;
 					System.out.println("coll!");
 				}
@@ -252,13 +254,14 @@ public class Main extends BasicGame {
 			}
 			if (input.isKeyDown(input.KEY_DOWN)) {
 				y += move;
-				if(detect_collision(x, y, map2, WALL2_ID)){
+				if(detect_collision(x, y, map2, WALL2_ID)
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					y -= move;
 					System.out.println("coll!");
 				}
-				
-				
 			}
+			
+			
 
 			// //////じゅｍｐ////////////////////////////
 			if (onground) { // ongroundなら上下加速度ゼロ
@@ -269,6 +272,13 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_SPACE) && onground) { // ongroundでSPACE押すと脚力分に上加速度
 				vspeed = -leg_mussle;
 				jump.restart();
+			}
+			
+			if(detect_collision(x, y, map2, WALL2_ID)
+					|| detect_collision(x, y, map2, CANNON_ID)){
+				vspeed = 0;
+				vspeed += gravity*2;
+				System.out.println("coll!");
 			}
 			
 			y += vspeed; // 加速度分だけyに盛り付ける
@@ -289,6 +299,7 @@ public class Main extends BasicGame {
 				cannon_number = 2;
 				shell_x = cannon_x_list.get(cannon_number) - 64;
 			}
+			
 
 //			if (map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == WALL2_ID
 //					|| // のりぴーの右下と壁判定
@@ -384,8 +395,8 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if (y+55 >= detect_ground_top(x+60, map, map3, FLOOR) * 64 || // のりぴーの右下と床判定
-					y+55 >= detect_ground_top(x+15, map, map3, FLOOR) * 64 ){ // のりぴーの左下と床判定
+			if (y+51 >= detect_ground_top(x+58, map, map3, FLOOR) * 64 || // のりぴーの右下と床判定
+					y+51 >= detect_ground_top(x+20, map, map3, FLOOR) * 64 ){ // のりぴーの左下と床判定
 				onground = true;
 			} else {
 				onground = false;
@@ -617,10 +628,10 @@ public class Main extends BasicGame {
 
 	boolean detect_collision (float x, float y, int layer, int ID){
 		boolean result;
-		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, layer )== ID || 			//		のりぴーの左上と壁判定
-				map.getTileId((int)(x+50)/64, (int)(y+10)/64, layer )== ID||		//		のりぴーの右上と壁判定
-				map.getTileId((int)(x+10)/64, (int)(y+50)/64, layer )== ID||		//		のりぴーの左下と壁判定
-				map.getTileId((int)(x+50)/64, (int)(y+50)/64, layer )== ID)		//		のりぴーの右下と壁判定
+		if(map.getTileId((int)(x+18)/64, (int)(y+3)/64, layer )== ID || 			//		のりぴーの左上と壁判定
+				map.getTileId((int)(x+60)/64, (int)(y+3)/64, layer )== ID||		//		のりぴーの右上と壁判定
+				map.getTileId((int)(x+18)/64, (int)(y+50)/64, layer )== ID||		//		のりぴーの左下と壁判定
+				map.getTileId((int)(x+60)/64, (int)(y+50)/64, layer )== ID)		//		のりぴーの右下と壁判定
 			result = true;
 		else
 			result = false;
