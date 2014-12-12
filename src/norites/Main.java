@@ -59,7 +59,7 @@ public class Main extends BasicGame {
 	Random rnd = new Random();
 	byte icount = 0;
 	boolean iswalk = false;
-	static final float SPEED = 0.1f;
+	static final float SPEED = 0.2f;
 	Image[] sprite = new Image[7];   //移動の絵
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
@@ -83,8 +83,8 @@ public class Main extends BasicGame {
 	int map1, map2, map3;
 
 	boolean onground;
-	final float leg_mussle = 8.0f; //脚力
-	final float gravity = .3f; //重力
+	final float leg_mussle = 1.0f; //脚力
+	final float gravity = .003f; //重力
 	
 	float vspeed = 0.0f;
 	int next_cannon;
@@ -272,6 +272,7 @@ public class Main extends BasicGame {
 			}
 			
 			y += vspeed; // 加速度分だけyに盛り付ける
+			
 			
 
 //			System.out.println("x="+x+",y="+y+","+onground);
