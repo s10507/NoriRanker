@@ -236,14 +236,28 @@ public class Main extends BasicGame {
 			Input input = gc.getInput();
 			if (input.isKeyDown(input.KEY_LEFT)) {
 				x -= move;
+				if(detect_collision(x, y, map2, WALL2_ID)){
+					x += move;
+					System.out.println("coll!");
+				}	
 				right = -1;
 
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
+				if(detect_collision(x, y, map2, WALL2_ID)){
+					x -= move;
+					System.out.println("coll!");
+				}
 				right = 1;
 			}
 			if (input.isKeyDown(input.KEY_DOWN)) {
 				y += move;
+				if(detect_collision(x, y, map2, WALL2_ID)){
+					y -= move;
+					System.out.println("coll!");
+				}
+				
+				
 			}
 
 			// //////じゅｍｐ////////////////////////////
@@ -258,8 +272,9 @@ public class Main extends BasicGame {
 			}
 			
 			y += vspeed; // 加速度分だけyに盛り付ける
+			
 
-			System.out.println("x="+x+",y="+y+","+onground);
+//			System.out.println("x="+x+",y="+y+","+onground);
 
 			if (input.isKeyDown(input.KEY_1)) {
 				cannon_number = 0;
@@ -274,20 +289,22 @@ public class Main extends BasicGame {
 				shell_x = cannon_x_list.get(cannon_number) - 64;
 			}
 
-			if (map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == WALL2_ID
-					|| // のりぴーの右下と壁判定
-					map.getTileId((int) (x+50)/64, (int) (y+10)/64,
-							map2) == WALL2_ID
-					|| // のりぴーの右上と壁判定
-					map.getTileId((int) (x+10)/64, (int) (y+50)/64, map2) == WALL2_ID || // のりぴーの左下と壁判定
-					map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == WALL2_ID || // のりぴーの左上と壁判定
-					map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == CANNON_ID || // キャノンの右下と壁判定
-					map.getTileId((int) (x+50)/64, (int) (y+10)/64, map2) == CANNON_ID || // キャノンの右上と壁判定
-					map.getTileId((int) (x+10)/64, (int) (y+50)/64, map2) == CANNON_ID || // キャノンの左下と壁判定
-					map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == CANNON_ID) { // キャノンの左上と壁判定
-				x = px; // 前の位置にもどす
-				y = py;
-			}
+//			if (map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == WALL2_ID
+//					|| // のりぴーの右下と壁判定
+//					map.getTileId((int) (x+50)/64, (int) (y+10)/64,
+//							map2) == WALL2_ID
+//					|| // のりぴーの右上と壁判定
+//					map.getTileId((int) (x+10)/64, (int) (y+50)/64, map2) == WALL2_ID || // のりぴーの左下と壁判定
+//					map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == WALL2_ID || // のりぴーの左上と壁判定
+//					map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == CANNON_ID || // キャノンの右下と壁判定
+//					map.getTileId((int) (x+50)/64, (int) (y+10)/64, map2) == CANNON_ID || // キャノンの右上と壁判定
+//					map.getTileId((int) (x+10)/64, (int) (y+50)/64, map2) == CANNON_ID || // キャノンの左下と壁判定
+//					map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == CANNON_ID) { // キャノンの左上と壁判定
+//				x = px; // 前の位置にもどす
+//				y = py;
+//				
+//				System.out.println("coll!");
+//			}
 
 			if (map.getTileId((int) (x+50)/64, (int) (y+10)/64, map1) == WARP_ID
 					|| map.getTileId((int) (x+10)/64, (int) (y+10)/64,
@@ -366,13 +383,17 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if (y+60 >= detect_ground_top(x+60, map, map3, FLOOR) * 64 || // のりぴーの右下と床判定
-					y+60 >= detect_ground_top(x+15, map, map3, FLOOR) * 64 ){ // のりぴーの左下と床判定
+			if (y+55 >= detect_ground_top(x+60, map, map3, FLOOR) * 64 || // のりぴーの右下と床判定
+					y+55 >= detect_ground_top(x+15, map, map3, FLOOR) * 64 ){ // のりぴーの左下と床判定
 				onground = true;
 			} else {
 				onground = false;
 				noripie = jump;
 			}
+			
+			System.out.println(y);
+			
+//			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
 		}
 		noripie.update(delta);
@@ -447,7 +468,7 @@ public class Main extends BasicGame {
 		if(right==1){
 			noripie.draw((int)draw_x,(int)draw_y,right*64,64);
 		}else if(right == -1){
-			noripie.draw((int)draw_x+64,(int)draw_y,right*64,64);
+			noripie.draw((int)draw_x+80,(int)draw_y,right*64,64);
 		}
 		if(usamuki)
 			usax+=0.25f;
@@ -581,7 +602,7 @@ public class Main extends BasicGame {
 		g.drawRect(draw_usax, draw_usay, 64, 64);
 		g.drawRect(shimo_x, shimo_y, 64, 64);
 		g.setColor(Color.black);
-		g.drawRect(x, y+60, 64, 1);
+		g.drawRect(draw_x+18, draw_y+3, 42, 47);
 		g.setColor(Color.pink);
 		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
 		g.setColor(Color.orange);
@@ -594,15 +615,11 @@ public class Main extends BasicGame {
 	}
 
 	boolean detect_collision (float x, float y, int layer, int ID){
-//		のりぴーの右下と壁判定
-//		のりぴーの右上と壁判定
-//		のりぴーの左下と壁判定
-//		のりぴーの左上と壁判定
 		boolean result;
-		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, layer )== ID ||
-				map.getTileId((int)(x+50)/64, (int)(y+10)/64, layer )== ID||
-				map.getTileId((int)(x+10)/64, (int)(y+50)/64, layer )== ID||
-				map.getTileId((int)(x+50)/64, (int)(y+50)/64, layer )== ID)
+		if(map.getTileId((int)(x+10)/64, (int)(y+10)/64, layer )== ID || 			//		のりぴーの左上と壁判定
+				map.getTileId((int)(x+50)/64, (int)(y+10)/64, layer )== ID||		//		のりぴーの右上と壁判定
+				map.getTileId((int)(x+10)/64, (int)(y+50)/64, layer )== ID||		//		のりぴーの左下と壁判定
+				map.getTileId((int)(x+50)/64, (int)(y+50)/64, layer )== ID)		//		のりぴーの右下と壁判定
 			result = true;
 		else
 			result = false;
