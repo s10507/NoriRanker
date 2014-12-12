@@ -600,6 +600,16 @@ public class Main extends BasicGame {
 
 		return result;
 	}
+	
+	float detect_ground_top(float x,  TiledMap map, int layer, int ID){
+		int min = 1000;
+		for(int i = 0;i < 7; i++)
+			if(map.getTileId((int)x/64, i, layer) == ID)
+				if(min > i)
+					min = i;
+		return min;
+		
+	}
 
 	public static void main(String[] args) throws SlickException {
 		/* 6. JVM 側がこの Main クラスを実体化するための、
