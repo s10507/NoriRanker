@@ -1,6 +1,7 @@
 package norites;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.newdawn.slick.Animation;
@@ -14,17 +15,18 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.util.xml.XMLElement;
 
 public class Main extends BasicGame {
 	/* 1. Main クラスまたはオブジェクトに所属するメンバー変数の宣言を書く所 */
 
-	final int WARP_ID = 0;
-	final int WALL1_ID = 1;
-	final int WALL2_ID = 2;
-	final int FLOOR = 2;
-	final int CEILING = 5;
-	final int CANNON_ID = 3;
-	final int TAKARA_ID = 4;
+	int WARP_ID = 0;
+	int WALL1_ID = 1;
+	int WALL2_ID = 2;
+	int FLOOR = 2;
+	int CEILING = 5;
+	int CANNON_ID = 3;
+	int TAKARA_ID = 4;
 
 	float x = 64*4, y = 64*4;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
@@ -116,6 +118,15 @@ public class Main extends BasicGame {
 		（フォントや画像、サウンド等のデータをファイルから読み込んで
 		オブジェクトとして変数名に関連付けたりする）
 		当然、ここはループしない */
+		
+		HashMap MapId = readgid();
+		
+		WALL1_ID = (int) MapId.get("kabe1");
+		WALL2_ID = (int) MapId.get("kabe2");
+		FLOOR = (int) MapId.get("kabe2");
+		CANNON_ID = (int) MapId.get("cannon");
+		TAKARA_ID = (int) MapId.get("takara");
+
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
@@ -355,8 +366,8 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if (map.getTileId((int) (x+50)/64, (int) (y+55)/64, map3) == FLOOR || // のりぴーの右下と床判定
-					map.getTileId((int) (x+10)/64, (int) (y+55)/64, map3) == FLOOR) { // のりぴーの左下と床判定
+			if (y+60 >= detect_ground_top(x+60, map, map3, FLOOR) * 64 || // のりぴーの右下と床判定
+					y+60 >= detect_ground_top(x+15, map, map3, FLOOR) * 64 ){ // のりぴーの左下と床判定
 				onground = true;
 			} else {
 				onground = false;
@@ -570,14 +581,12 @@ public class Main extends BasicGame {
 		g.drawRect(draw_usax, draw_usay, 64, 64);
 		g.drawRect(shimo_x, shimo_y, 64, 64);
 		g.setColor(Color.black);
-		g.drawRect((((int)x+50)/64)*64, (((int)y+50)/64)*64, 5, 5);
-		g.drawRect((((int)x+50)/64)*64, (((int)y+10)/64)*64, 5, 5);
-		g.drawRect((((int)x+10)/64)*64, (((int)y+50)/64)*64, 5, 5);
-		g.drawRect((((int)x+10)/64)*64, (((int)y+10)/64)*64, 5, 5);
+		g.drawRect(x, y+60, 64, 1);
 		g.setColor(Color.pink);
 		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
 		g.setColor(Color.orange);
 		g.drawRect((((int)draw_usax+32)/64)*64, (((int)draw_usay+32)/64)*64, 5, 5);
+		
 
 		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
@@ -601,7 +610,7 @@ public class Main extends BasicGame {
 		return result;
 	}
 	
-	float detect_ground_top(float x,  TiledMap map, int layer, int ID){
+	float detect_ground_top(float x,  TiledMap map, int layer, int ID){	//のりぴーの現在地より下の床座標取得
 		int min = 1000;
 		for(int i = 0;i < 7; i++)
 			if(map.getTileId((int)x/64, i, layer) == ID)
@@ -609,6 +618,26 @@ public class Main extends BasicGame {
 					min = i;
 		return min;
 		
+	}
+	
+	HashMap readgid() throws SlickException{	//マップのID取得
+
+		TMXRead t = new TMXRead();
+		ArrayList<XMLElement> gid_xml = t.read("./resource/sample.tmx");
+//		ArrayList<Integer> id = new ArrayList<Integer> (gid_xml.size());
+//		ArrayList<String> name = new ArrayList<String> (gid_xml.size());
+		
+		HashMap gid = new HashMap();
+		
+		for (int i = 0;i < gid_xml.size();i++){
+			String str = gid_xml.get(i).getAttribute("name");
+			int id = gid_xml.get(i).getIntAttribute("firstgid");
+			
+			gid.put(str,id);
+		}
+		
+		return gid;
+
 	}
 
 	public static void main(String[] args) throws SlickException {
