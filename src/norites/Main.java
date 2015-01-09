@@ -27,6 +27,7 @@ public class Main extends BasicGame {
 	int CEILING = 5;
 	int CANNON_ID = 3;
 	int TAKARA_ID = 4;
+	int KUMO_ID = 6;
 
 	float x = 64*4, y = 64*4;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
@@ -44,6 +45,9 @@ public class Main extends BasicGame {
 	int dtx=(int)doragon_x/64;
 	int dty=(int)doragon_y/64;
 
+	int kumo_count=0;
+	int kumo_flg=0;
+	
 	int menu_id = 0;
 	int screen_mapx = 0;
 	int screen_mapy = 0;
@@ -67,7 +71,7 @@ public class Main extends BasicGame {
 	private Animation noripie,walk,wait,attack,damage,jump;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,kumo;
 	Image takara,clear,doragon,gameover;
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
@@ -126,6 +130,7 @@ public class Main extends BasicGame {
 		FLOOR = (int) MapId.get("kabe2");
 		CANNON_ID = (int) MapId.get("cannon");
 		TAKARA_ID = (int) MapId.get("takara");
+		KUMO_ID = (int) MapId.get("kumo");
 
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
@@ -166,6 +171,7 @@ public class Main extends BasicGame {
 		try{
 //			kabe1 = new Image("./resource/kabe1.png");
 			kabe2 = new Image("./resource/kabe3.png");
+			kumo = new Image("./resource/kumo.gif");
 			usatan = new Image("./resource/usatan.gif");
 			cannon = new Image("./resource/cannon.gif");
 			shell = new Image("./resource/ball.gif");
@@ -403,12 +409,17 @@ public class Main extends BasicGame {
 				noripie = jump;
 			}
 			
-			System.out.println(y);
 			
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
 		}
 		noripie.update(delta);
+		
+		if(kumo_flg==0){
+			for(kumo_count=0;kumo_count<10000;kumo_count++){
+			kumo_flg=1;
+			}
+		}
 	}
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -473,6 +484,13 @@ public class Main extends BasicGame {
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==TAKARA_ID){
 					g.drawImage(takara,tx*64,ty*64);
 				}
+				
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==KUMO_ID && kumo_flg==1){
+					g.drawImage(kumo,tx*64,ty*64);
+					
+					kumo_flg=0;
+				}
+				
 				g.setColor(Color.magenta);
 				g.drawRect(tx*64, ty*64, 64, 64);
 			}
