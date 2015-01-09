@@ -18,19 +18,19 @@
  <tileset firstgid="5" name="map1" tilewidth="64" tileheight="64">
   <image source="map1.bmp" width="64" height="64"/>
  </tileset>
- <layer name="collision" width="50" height="30">
+ <layer name="base" width="50" height="30" opacity="0.9">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+1UWw7AIAxq3P3vvP+lLq0F7RZI+OUh6jCzIYpiiNYgg3qoR9UrgwvcA4mV3sgzOrVv1J/hu+ueqkddLwP0O69k8bDiw8q0c+9ojy/dW/XA6lfA6MHK8+aV7cHKw979icy/3YUdz7bS5XSGP23iAaExA0PTA/OdZjHTYO0hiqLZDZm9H1hwFwAA
+   H4sIAAAAAAAAC+2WSw4AIQhDkfsfepZuZhL5FHDSxVsZoRVQVUSUEHLEGqCBPugjmstKpg9P/qguNe7pOBeEF0Teqj6lj3i8zjmPaolos8xH932YEQPdz1XzQh+++Ki58vqoetP1cN/bOkoPuu7TNWbV7Ab+5mOCl6y3H/mvqLrbUNq+YmTXgxCyeQAyuojXcBcAAA==
   </data>
  </layer>
- <layer name="タイル・レイヤー1" width="50" height="30" opacity="0.9">
+ <layer name="collision" width="50" height="30" visible="0">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+2Wyw3AMAhDXfYfugu0UvgYaOWDT1HALwQSA2CSJB3pWuBBHOLI5vKqkiOSP+vLnHsmzoXBwsjbdU/FkY832edZLxlvnv6YnocVMdj3uatfxBGLz+qrKEfXm26H+57WWX7Ydd/usapmX9GfODawVM4E1r+ia7axvL3FYNVDkiTgBiUC7glwFwAA
+   H4sIAAAAAAAAC+2UUQ6AIAxDF7z/nfnUGMSNtTiTNumnax8Dm5k1WZZdtgIdxCGObFZEB5gDqRVu5Bl9tV9vPiN31z0VR35eROh3nuky0koOq9POfXs5/nRvxYGdnxGDg9VnlhXlYPVh7/2uyH+7iiuerThqsIyU+fZNzNlXMd9pVE8z0PuQZfl0B4NtW8xwFwAA
   </data>
  </layer>
- <layer name="ceilingandfloor" width="50" height="30">
+ <layer name="floor" width="50" height="30" visible="0">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3BMQEAAADCoPVPbQhfoAAAAAAAgNcAxA3c/HAXAAA=
+   H4sIAAAAAAAAC+3WUQ7AIAgDUPT+h94NjB3VgulL/FsGyNBFmJmZ9TOBpYy/8ywS80SOaB0MyLuUfTa9Sv3Pzj0Sg53T37nPYs+5qg47q1pPb31vmXqq7BWqQ44rQ50AyYg3anmhjhv3GvtfhYFxxq7y7n7WWH8foNwOFnAXAAA=
   </data>
  </layer>
 </map>
