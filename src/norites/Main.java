@@ -59,7 +59,7 @@ public class Main extends BasicGame {
 	Random rnd = new Random();
 	byte icount = 0;
 	boolean iswalk = false;
-	static final float SPEED = 0.2f;
+	static final float SPEED = 0.3f;
 	Image[] sprite = new Image[7];   //移動の絵
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
