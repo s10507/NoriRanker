@@ -676,7 +676,7 @@ public class Main extends BasicGame {
 		
 	}
 	
-	HashMap readgid() throws SlickException{	//マップのID取得
+	HashMap readgid() throws SlickException {	//マップのID取得
 
 		TMXRead t = new TMXRead();
 		ArrayList<XMLElement> gid_xml = t.read("./resource/sample.tmx");
