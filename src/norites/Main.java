@@ -28,8 +28,9 @@ public class Main extends BasicGame {
 	int CANNON_ID = 3;
 	int TAKARA_ID = 4;
 	int KUMO_ID = 6;
+	int HOOK_ID = 7;
 
-	float x = 64*4, y = 64*4;
+	float x = 261+64*10, y = 64*1;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
 //	int nty=(int)y/64; //のりぴーのタイル位置
 
@@ -71,7 +72,7 @@ public class Main extends BasicGame {
 	private Animation noripie,walk,wait,attack,damage,jump;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,kumo;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,kumo,hook;
 	Image takara,clear,doragon,gameover;
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
@@ -131,6 +132,7 @@ public class Main extends BasicGame {
 		CANNON_ID = (int) MapId.get("cannon");
 		TAKARA_ID = (int) MapId.get("takara");
 		KUMO_ID = (int) MapId.get("kumo");
+		HOOK_ID = (int) MapId.get("hook");
 
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
@@ -182,6 +184,7 @@ public class Main extends BasicGame {
 			doragon = new Image("./resource/ha-chan.gif");
 			bless = new Image("./resource/mizu.gif");
 			gameover = new Image("./resource/gameover.gif");
+			hook = new Image("./resource/hook.gif");
 		}catch(Exception e){
 		}
 
@@ -409,17 +412,21 @@ public class Main extends BasicGame {
 				noripie = jump;
 			}
 			
+			if(detect_collision(x, y, map2, HOOK_ID)){
+				System.out.println("HOOK!");
+			}
+			
 			
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
 		}
 		noripie.update(delta);
 		
-		if(kumo_flg==0){
-			for(kumo_count=0;kumo_count<10000;kumo_count++){
-			kumo_flg=1;
-			}
-		}
+//		if(kumo_flg==0){
+//			for(kumo_count=0;kumo_count<10000;kumo_count++){
+//			kumo_flg=1;
+//			}
+//		}
 	}
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -486,9 +493,11 @@ public class Main extends BasicGame {
 				}
 				
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==KUMO_ID && kumo_flg==1){
-					g.drawImage(kumo,tx*64,ty*64);
-					
+					g.drawImage(kumo,tx*64,ty*64);					
 					kumo_flg=0;
+				}
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==HOOK_ID){
+					g.drawImage(hook,tx*64,ty*64);
 				}
 				
 				g.setColor(Color.magenta);
@@ -646,10 +655,10 @@ public class Main extends BasicGame {
 
 	boolean detect_collision (float x, float y, int layer, int ID){
 		boolean result;
-		if(map.getTileId((int)(x+18)/64, (int)(y+3)/64, layer )== ID || 			//		のりぴーの左上と壁判定
-				map.getTileId((int)(x+60)/64, (int)(y+3)/64, layer )== ID||		//		のりぴーの右上と壁判定
-				map.getTileId((int)(x+18)/64, (int)(y+50)/64, layer )== ID||		//		のりぴーの左下と壁判定
-				map.getTileId((int)(x+60)/64, (int)(y+50)/64, layer )== ID)		//		のりぴーの右下と壁判定
+		if(map.getTileId((int)(x+20)/64, (int)(y+3)/64, layer )== ID || 			//		のりぴーの左上と壁判定
+				map.getTileId((int)(x+58)/64, (int)(y+3)/64, layer )== ID||		//		のりぴーの右上と壁判定
+				map.getTileId((int)(x+20)/64, (int)(y+50)/64, layer )== ID||		//		のりぴーの左下と壁判定
+				map.getTileId((int)(x+58)/64, (int)(y+50)/64, layer )== ID)		//		のりぴーの右下と壁判定
 			result = true;
 		else
 			result = false;
