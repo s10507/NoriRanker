@@ -82,6 +82,11 @@ public class Main extends BasicGame {
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
 	int cannon_number = 0;
+	
+	ArrayList<Integer> kumo_x_list = new ArrayList<>();
+	ArrayList<Integer> kumo_y_list = new ArrayList<>();
+	int kumo_number = 0;
+	
 	int shell_x = 0;
 	float bless_x = doragon_x;
 	float bless_y = doragon_y;
@@ -409,14 +414,23 @@ public class Main extends BasicGame {
 				y = detect_ground_top(x+58, map3, FLOOR) * 64 - 51;
 			}else if (y+51 >= detect_ground_top(x+20, map3, FLOOR) * 64 ) { // のりぴーの左下と床判定
 				onground = true;
-				y = detect_ground_top(x+20, map3, FLOOR) * 64 - 51;
+				y = detect_ground_top(x+20, map3, FLOOR) * 64 - 51;				
+			}else if (y+51 >= detect_ground_top(x+58, map3, KUMO_ID) * 64 ) {// のりぴーの右下と床判定
+				onground = true;
+//				y = detect_ground_top(x+58, map3, KUMO_ID) * 64 - 51;
+			}else if (y+51 >= detect_ground_top(x+20, map3, KUMO_ID) * 64 ) { // のりぴーの左下と床判定
+				onground = true;
+				
+//				y = detect_ground_top(x+20, map3, KUMO_ID) * 64 - 51;
 			}else {
 				onground = false;
 				noripie = jump;
 			}
-			
+			System.out.println(onground);
+			//System.out.println(detect_ground_top(x+20, map3, KUMO_ID) * 64);
+			//System.out.println(x+20);
 			if(detect_collision(x, y, map2, HOOK_ID)){
-				System.out.println("HOOK!");
+				//System.out.println("HOOK!");
 			}
 			
 			
@@ -495,9 +509,9 @@ public class Main extends BasicGame {
 					g.drawImage(takara,tx*64,ty*64);
 				}
 				
-				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==KUMO_ID && kumo_flg==1){
+				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==KUMO_ID ){
 					g.drawImage(kumo,tx*64,ty*64);					
-					kumo_flg=0;
+					
 				}
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==HOOK_ID){
 					g.drawImage(hook,tx*64,ty*64);
