@@ -74,6 +74,10 @@ public class Main extends BasicGame {
 	String path =null;
 	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,kumo,hook;
 	Image takara,clear,doragon,gameover;
+	
+	ArrayList<Point> hook_list = new ArrayList<>(); //フックの座標リスト
+	int hook_number = 0;
+	Point hook_p = new Point();
 
 	ArrayList<Integer> cannon_x_list = new ArrayList<>();
 	ArrayList<Integer> cannon_y_list = new ArrayList<>();
@@ -200,18 +204,18 @@ public class Main extends BasicGame {
 		map1 = map.getLayerIndex("base");
 		map2 = map.getLayerIndex("collision");
 		map3 = map.getLayerIndex("floor");
-		try{
-			//System.out.println(map.getTileProperty(3, "number", "true"));
-		}catch(NullPointerException e){
-			System.err.println(e.getMessage());
-		}
 //		System.out.println("map1: "+map1+" map2: "+map2);
 
-		for(int ty = 0;ty < 7; ty++){
-			for(int tx = 0;tx < 10; tx++){
+		for(int ty = 0;ty < map.getHeight(); ty++){
+			for(int tx = 0;tx < map.getWidth(); tx++){
 				if(map.getTileId(tx, ty, map2) == CANNON_ID){
 					cannon_x_list.add(tx*64);
 					cannon_y_list.add(ty*64);
+				}
+				if(map.getTileId(tx, ty, map2) == HOOK_ID){
+					hook_p.setPoint(tx*64, ty*64);
+					hook_list.add(hook_p);
+					System.out.println("hook x:"+hook_p.x+" y:"+hook_p.y);
 				}
 			}
 		}
@@ -248,7 +252,6 @@ public class Main extends BasicGame {
 				if(detect_collision(x, y, map2, WALL2_ID)
 						|| detect_collision(x, y, map2, CANNON_ID)){
 					x += move;
-					System.out.println("coll!");
 				}	
 				right = -1;
 
@@ -257,7 +260,6 @@ public class Main extends BasicGame {
 				if(detect_collision(x, y, map2, WALL2_ID)
 						|| detect_collision(x, y, map2, CANNON_ID)){
 					x -= move;
-					System.out.println("coll!");
 				}
 				right = 1;
 			}
@@ -266,7 +268,6 @@ public class Main extends BasicGame {
 				if(detect_collision(x, y, map2, WALL2_ID)
 						|| detect_collision(x, y, map2, CANNON_ID)){
 					y -= move;
-					System.out.println("coll!");
 				}
 			}
 			
@@ -287,7 +288,6 @@ public class Main extends BasicGame {
 					|| detect_collision(x, y, map2, CANNON_ID)){
 				vspeed = 0;
 				vspeed += gravity*2;
-				System.out.println("coll!");
 			}
 			
 			y += vspeed; // 加速度分だけyに盛り付ける
@@ -404,10 +404,13 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if (y+51 >= detect_ground_top(x+58, map, map3, FLOOR) * 64 || // のりぴーの右下と床判定
-					y+51 >= detect_ground_top(x+20, map, map3, FLOOR) * 64 ){ // のりぴーの左下と床判定
+			if (y+51 >= detect_ground_top(x+58, map3, FLOOR) * 64 ) {// のりぴーの右下と床判定
 				onground = true;
-			} else {
+				y = detect_ground_top(x+58, map3, FLOOR) * 64 - 51;
+			}else if (y+51 >= detect_ground_top(x+20, map3, FLOOR) * 64 ) { // のりぴーの左下と床判定
+				onground = true;
+				y = detect_ground_top(x+20, map3, FLOOR) * 64 - 51;
+			}else {
 				onground = false;
 				noripie = jump;
 			}
@@ -447,9 +450,9 @@ public class Main extends BasicGame {
 		}else if(menu_id==2){
 			int a=0;
 			for(int i = 0; i < 3; i++){
-			g.drawImage(clear, 0,64+a,128,192+a,0,0,64,64);
-			g.drawImage(clear, 500,64+a,628,192+a,0,0,-64,64);
-			a+=128;
+				g.drawImage(clear, 0,64+a,128,192+a,0,0,64,64);
+				g.drawImage(clear, 500,64+a,628,192+a,0,0,-64,64);
+				a+=128;
 			}
 			g.setColor(Color.red);
 			g.drawString("clear!!!!!!!!!!!!!!!!!!!!",200, 200);
@@ -564,8 +567,6 @@ public class Main extends BasicGame {
 			else
 				g.drawImage(shimo_normal, draw_shimo_x, draw_shimo_y);
 
-		shimo_super.setRotation(90);
-
 		int draw_shell_x = (int) (shell_x % 640);
 		int draw_shell_y = (int) (cannon_y_list.get(cannon_number) % 640);
 		if(cannon_x_list.size()!=0){
@@ -646,7 +647,6 @@ public class Main extends BasicGame {
 		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
 		g.setColor(Color.orange);
 		g.drawRect((((int)draw_usax+32)/64)*64, (((int)draw_usay+32)/64)*64, 5, 5);
-		
 
 		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
@@ -666,8 +666,8 @@ public class Main extends BasicGame {
 		return result;
 	}
 	
-	float detect_ground_top(float x,  TiledMap map, int layer, int ID){	//のりぴーの現在地より下の床座標取得
-		int min = 1000;
+	float detect_ground_top(float x,  int layer, int ID){	//のりぴーの現在地より下の床座標取得
+		int min = 10000;
 		for(int i = 0;i < 7; i++)
 			if(map.getTileId((int)x/64, i, layer) == ID)
 				if(min > i)
@@ -743,10 +743,19 @@ class Point {
 		y = _y;
 	}
 
+	public Point() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
 	Point setPoint(Point _P, float _x, float _y){
 		_P.x = _x;
 		_P.y = _y;
 		return _P;
+	}
+	Point setPoint(float _x, float _y){
+		this.x = _x;
+		this.y = _y;
+		return this;
 	}
 	void Print(Point _P){
 		System.out.println("P.x :"+_P.x+" P.y :"+_P.y);
