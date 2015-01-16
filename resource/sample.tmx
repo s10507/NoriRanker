@@ -12,6 +12,12 @@
  <tileset firstgid="4" name="takara" tilewidth="64" tileheight="64">
   <image source="takara.gif" trans="0000ff" width="64" height="64"/>
  </tileset>
+ <tileset firstgid="5" name="kumo" tilewidth="64" tileheight="64">
+  <image source="kumo.gif" trans="ff00ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="6" name="moku" tilewidth="64" tileheight="64">
+  <image source="moku.gif" trans="ff00ff" width="64" height="64"/>
+ </tileset>
  <layer name="base" width="20" height="7">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAC2NiYGBgojJmJIBHmjpiMa3MIwcz4BAHAG/YQ7IwAgAA
@@ -19,7 +25,7 @@
  </layer>
  <layer name="collision" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgojLGB5iJVMcwQOoodR8jAUyp+4gFLAyUxyE2cQDGRBKiMAIAAA==
+   H4sIAAAAAAAAC2NiYGBgojLGB5iJVMcwQOrQ3cdKonmMBDAMYDOXWH8QA1gYKI9DbOIA0rZ7YTACAAA=
   </data>
  </layer>
  <layer name="floor" width="20" height="7">
