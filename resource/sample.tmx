@@ -21,19 +21,19 @@
  <tileset firstgid="7" name="hook" tilewidth="64" tileheight="64">
   <image source="hook.gif" trans="ff00ff" width="64" height="64"/>
  </tileset>
- <layer name="base" width="20" height="7" visible="0">
+ <layer name="base" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgojJmJIBHmjpiMa3MIwcz4BAHAG/YQ7IwAgAA
+   H4sIAAAAAAAAC2NiYGBgojJmJIBHmjpiMa3MQ8cMRMQhLjUAMMOV/DACAAA=
   </data>
  </layer>
  <layer name="collision" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgojLGB5iJUMcOpYkxj5A6diLV4XIfKw6zcJnHSADDACsDJiDWv8QAFgbK4xCbOACcYml5MAIAAA==
+   H4sIAAAAAAAAC2NiYGBgojLGB5iJUMcOpYkxj9rq0N3HiuQedjS12MxjJIBhgJVM9xELWBjwxw8xcYhNHABAlSpBMAIAAA==
   </data>
  </layer>
  <layer name="floor" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NgGAXDGTCRiXHpBQCie5DKMAIAAA==
+   H4sIAAAAAAAAC2NgGAXDGTBhwbjEiVEDAP1gRoQwAgAA
   </data>
  </layer>
 </map>
