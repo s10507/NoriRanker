@@ -38,7 +38,7 @@ public class Main extends BasicGame {
 	int utx=(int)usax/64;//うさたんのタイル位置
 	int uty=(int)usay/64;
 
-	float shimo_x=200, shimo_y=200;
+	float shimo_x=3*64, shimo_y=3*64;
 	int stx=(int)shimo_x/64;//しもたんのタイル位置
 	int sty=(int)shimo_y/64;
 
@@ -290,8 +290,7 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_LEFT)) {
 				x -= move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)
-								|| detect_collision(x, y, map2, KUMO_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					x += move;
 				}	
 				right = -1;
@@ -299,8 +298,7 @@ public class Main extends BasicGame {
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)
-								|| detect_collision(x, y, map2, KUMO_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					x -= move;
 				}
 				right = 1;
@@ -308,8 +306,7 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_DOWN)) {
 				y += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)
-								|| detect_collision(x, y, map2, KUMO_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					y -= move;
 				}
 			}
@@ -395,12 +392,14 @@ public class Main extends BasicGame {
 					&& ((int) y+32)/64 == ((int) cannon_y_list.get(cannon_number)+32)/64
 					|| (((int) doragon_x/64 <= ((int) x+32)/64) && ((int) x+32)/64 <= ((int) doragon_x+64)/64)
 					&& (((int) doragon_y/64 <= ((int) y+32)/64) && ((int) y+32)/64 <= ((int) doragon_y+64)/64)
+					|| (((int) x+32)/64 == ((int) bless_x+32)/64)
+					&& (((int) y+32)/64 == ((int) bless_y+32)/64)
 
 			) { // 障害物たちのあたり判定
-				// N_P = blowing(N_P);
+				N_P = blowing(N_P);
 				x = N_P.x;
 				y = N_P.y;
-				// life--;
+				 life--;
 			}
 			// System.out.println("Life: "+life);
 
@@ -447,9 +446,8 @@ public class Main extends BasicGame {
 			}
 			;
 
-
 			if(detect_collision(x, y-48, map2, DOKU_ID)){
-				life-=3;
+				life=0;
 				x=64*2;
 				y=64;
 			}
@@ -594,9 +592,9 @@ public class Main extends BasicGame {
 			noripie.draw((int)draw_x+80,(int)draw_y,right*64,64);
 		}
 		if(usamuki)
-			usax+=0.25f;
+			usax+=2.5f;
 		else
-			usax-=0.25f;
+			usax-=2.5f;
 		if(map.getTileId((int)(usax+10)/64, (int)(usay+10)/64, map2) == WALL2_ID && usamuki==false)
 			usamuki = true;
 
@@ -616,13 +614,13 @@ public class Main extends BasicGame {
 			g.drawImage(usatan, draw_usax, draw_usay);
 
 		if(shimomuki){
-			shimo_y+=0.1f;
+			shimo_y+=3f;
 		}else{
-			shimo_y-=0.1f;
+			shimo_y-=3f;
 		}
 
 		shimo_normal.setRotation(angle);
-		angle++;
+		angle+=10;
 
 		if(map.getTileId((int)(shimo_x+10)/64, (int)(shimo_y+10)/64, map2) == WALL2_ID && shimomuki==false){
 			shimomuki = true;
@@ -631,13 +629,13 @@ public class Main extends BasicGame {
 			shimomuki = false;
 			is_shimo_super = true;
 		}
-//		if(map.getTileId((int)(shimo_x+10)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==false){
-//			shimomuki = true;
-//			is_shimo_super = false;
-//		}else if(map.getTileId((int)(shimo_x+50)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==true){
-//			shimomuki = false;
-//			is_shimo_super = true;
-//		}
+		if(map.getTileId((int)(shimo_x+10)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==false){
+			shimomuki = true;
+			is_shimo_super = false;
+		}else if(map.getTileId((int)(shimo_x+50)/64, (int)(shimo_y+50)/64, map2) == WALL2_ID && shimomuki==true){
+			shimomuki = false;
+			is_shimo_super = true;
+		}
 
 		int draw_shimo_x = (int) (shimo_x % 640);
 		int draw_shimo_y = (int) (shimo_y % 448);
@@ -677,7 +675,7 @@ public class Main extends BasicGame {
 		if((screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x ) && (screen_mapy*448 < doragon_y && (screen_mapy+1)*448-1 > doragon_y))
 				g.drawImage(doragon, draw_doragon_x, draw_doragon_y);
 		if(doragon_up==false&&screen_mapx*640 < doragon_x && (screen_mapx+1)*640-1 > doragon_x  && map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) != WALL2_ID){
-			doragon_y +=0.5;
+			doragon_y +=2.5f;
 			
 //		if((map.getTileId((int)(doragon_x)/64, (int)(doragon_y+128)/64, map2) == WALL2_ID)){
 //			doragon_y -= 128;
@@ -692,7 +690,7 @@ public class Main extends BasicGame {
 			if(dra_jump >= 180)
 				dra_jump = 0;
 
-			dra_jump += 0.5;
+			dra_jump += 2.5f;
 			doragon_y = (float) (darara - 128+Math.sin(Math.toRadians(dra_jump)) * 128);
 		}
 		//System.out.println(doragon_up);
@@ -706,7 +704,7 @@ public class Main extends BasicGame {
 		if(doragon_flg){
 			if((screen_mapx*640 < bless_x && (screen_mapx+1)*640-1 > bless_x ) && (screen_mapy*448 < bless_y && (screen_mapy+1)*448-1 > bless_y))
 				g.drawImage(bless,draw_bless_x-64,draw_bless_y+64);
-			bless_x -= 0.5;
+			bless_x -= 5.0f;
 			//bless_y += 0.1;
 			if(map.getTileId((int)bless_x/64-1, (int)bless_y/64,map2 )== WALL2_ID){
 				doragon_flg=false;
@@ -750,7 +748,7 @@ public class Main extends BasicGame {
 
 	float detect_ground_top(float x, float y,  int layer, int ID){	//のりぴーの現在地より下の床座標取得
 		int min = 10000;
-		int i=(int)(y+4)/64;
+		int i=(int)(y+10)/64;
 		for(;i < map.getHeight(); i++)
 
 			if(map.getTileId((int)x/64, i, layer) == ID)
@@ -765,12 +763,12 @@ public class Main extends BasicGame {
 		int n = 0;
 //		float min = 1000;
 		for (int i = 0; i < hook_list.size(); i++){
-			System.out.println("hook "+i+" x :"+hook_list.get(i).x+"\nhook "+i+" x :"+hook_list.get(i).y);
+//			System.out.println("hook "+i+" x :"+hook_list.get(i).x+"\nhook "+i+" x :"+hook_list.get(i).y);
 			if((int)(x+20)/64 == hook_list.get(i).x || (int)(x+58)/64 == hook_list.get(i).x){
 					n = i;
 			}
 		}
-		System.out.println("ナンバー："+n);
+//		System.out.println("ナンバー："+n);
 		return hook_list.get(n);
 	}
 	
