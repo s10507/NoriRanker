@@ -147,8 +147,8 @@ public class Main extends BasicGame {
 		CANNON_ID = (int) MapId.get("cannon");
 		TAKARA_ID = (int) MapId.get("takara");
 		KUMO_ID = (int) MapId.get("kumo");
-		HOOK_ID = (int) MapId.get("hook");
-		DOKU_ID = (int) MapId.get("doku1");
+	//	HOOK_ID = (int) MapId.get("hook");
+	//	DOKU_ID = (int) MapId.get("doku1");
 		
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
@@ -782,6 +782,7 @@ public class Main extends BasicGame {
 		ゲームプログラム本体とは基本的に関係がない部分 */
 		TMXRead t = new TMXRead();
 		AppGameContainer app = new AppGameContainer(new Main("骨組"));
+		app.setTargetFrameRate(60);
 		app.setDisplayMode(64*10, 64*7, false);
 		app.start();
 	}
