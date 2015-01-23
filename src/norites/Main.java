@@ -149,14 +149,14 @@ public class Main extends BasicGame {
 		CANNON_ID = (int) MapId.get("cannon");
 		TAKARA_ID = (int) MapId.get("takara");
 		KUMO_ID = (int) MapId.get("kumo");
-	//	HOOK_ID = (int) MapId.get("hook");
-	//	DOKU_ID = (int) MapId.get("doku1");
+		HOOK_ID = (int) MapId.get("hook");
+		DOKU_ID = (int) MapId.get("doku1");
 		
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
 		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
-		//SpriteSheet ssheet_hook = new SpriteSheet(new Image("./resource/img/.gif"), 128, 64);
+		SpriteSheet ssheet_hook = new SpriteSheet(new Image("./resource/img/.gif"), 128, 64);
 		SpriteSheet ssheet_doku = new SpriteSheet(new Image("./resource/dokusp.gif"),64,64);
 		SpriteSheet ssheet_kumo = new SpriteSheet(new Image("./resource/mokumoku.gif"),64,64);
 		
