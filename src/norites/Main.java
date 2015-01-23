@@ -124,6 +124,8 @@ public class Main extends BasicGame {
 	float darara = 256;
 
 	int life = 0;
+	
+	
 
 	public Main(String title) {
 		super(title);
@@ -209,7 +211,7 @@ public class Main extends BasicGame {
 		}catch(Exception e){
 		}
 
-		path = "./resource/bigmap.tmx";
+		path = "./resource/sample.tmx";
 		//System.out.println(path);
 
 		try{
@@ -230,9 +232,7 @@ public class Main extends BasicGame {
 					cannon_y_list.add(ty*64);
 				}
 				if(map.getTileId(tx, ty, map2) == HOOK_ID){
-					hook_p.setPoint(tx*64, ty*64);
-					hook_list.add(hook_p);
-					System.out.println("hook x:"+hook_p.x+" y:"+hook_p.y);
+					hook_list.add(new Point(tx, ty));
 				}
 			}
 		}
@@ -356,9 +356,9 @@ public class Main extends BasicGame {
 				menu_id = 2;
 			}
 
-			N_P = N_P.setPoint(N_P, x, y);
-			USA_P = USA_P.setPoint(USA_P, usax, usay);
-			SHIMO_P = SHIMO_P.setPoint(SHIMO_P, shimo_x, shimo_y);
+			N_P.setPoint(x, y);
+			USA_P.setPoint(usax, usay);
+			SHIMO_P.setPoint(shimo_x, shimo_y);
 
 			if ((((int) x+32)/64 == ((int) usax+32)/64)
 					&& ((int) y+32)/64 == ((int) usay+32)/64
@@ -420,11 +420,10 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if(detect_collision(x, y, map2, DOKU_ID)){
+			if(detect_collision(x, y-48, map2, DOKU_ID)){
 				life-=3;
-				x=0;
-				y=0;
-				menu_id=3;
+				x=64*2;
+				y=64;
 			}
 			if (y+51 >= detect_ground_top(x+58,y, map3, FLOOR) * 64 ) {// のりぴーの右下と床判定
 				onground = true;
@@ -443,13 +442,14 @@ public class Main extends BasicGame {
 				onground = false;
 				noripie = jump;
 			}
-			System.out.println(map.getTileId((int)x/64+1, (int)y/64+1, map3));
+
 			//System.out.println(detect_ground_top(x+20, map3, KUMO_ID) * 64);
 			//System.out.println(x+20);
 			if(detect_collision(x, y, map2, HOOK_ID)){
 				//System.out.println("HOOK!");
 			}
 			
+			detect_hook_point(x, y).Print();			
 			
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
@@ -715,6 +715,19 @@ public class Main extends BasicGame {
 		
 	}
 	
+	Point detect_hook_point (float x, float y){
+		int n = 0;
+//		float min = 1000;
+		for (int i = 0; i < hook_list.size(); i++){
+			System.out.println("hook "+i+" x :"+hook_list.get(i).x+"\nhook "+i+" x :"+hook_list.get(i).y);
+			if((int)(x+20)/64 == hook_list.get(i).x || (int)(x+58)/64 == hook_list.get(i).x){
+					n = i;
+			}
+		}
+		System.out.println("ナンバー："+n);
+		return hook_list.get(n);
+	}
+	
 	HashMap readgid() throws SlickException {	//マップのID取得
 
 		TMXRead t = new TMXRead();
@@ -777,7 +790,7 @@ class Point {
 	float x;
 	float y;
 
-	Point(float _x, float _y){
+	public Point(float _x, float _y){
 		x = _x;
 		y = _y;
 	}
@@ -786,18 +799,17 @@ class Point {
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
 
-	Point setPoint(Point _P, float _x, float _y){
-		_P.x = _x;
-		_P.y = _y;
-		return _P;
+	void setPoint(Point _P){
+		this.x = _P.x;
+		this.y = _P.y;
+		
 	}
-	Point setPoint(float _x, float _y){
+	void setPoint(float _x, float _y){
 		this.x = _x;
 		this.y = _y;
-		return this;
 	}
-	void Print(Point _P){
-		System.out.println("P.x :"+_P.x+" P.y :"+_P.y);
+	public void Print(){
+		System.out.println("P.x :"+this.x+" P.y :"+this.y);
 	}
 
 }
