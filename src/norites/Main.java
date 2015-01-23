@@ -70,12 +70,13 @@ public class Main extends BasicGame {
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
 	Image[] sprite_d = new Image[4]; //ダメージの絵
-	Image[] sprite_doku = new Image[6];
+	Image[] sprite_doku = new Image[7];
+	Image[] sprite_kumo = new Image[2];
 	
-	private Animation noripie,walk,wait,attack,damage,jump,doku;
+	private Animation noripie,walk,wait,attack,damage,jump,doku,kumo;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,kumo,hook;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,hook;
 	Image takara,clear,doragon,gameover;
 	
 	ArrayList<Point> hook_list = new ArrayList<>(); //フックの座標リスト
@@ -152,6 +153,7 @@ public class Main extends BasicGame {
 		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
 		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
 		SpriteSheet ssheet_doku = new SpriteSheet(new Image("./resource/dokusp.gif"),64,64);
+		SpriteSheet ssheet_kumo = new SpriteSheet(new Image("./resource/mokumoku.gif"),64,64);
 		
 		byte i;
 		for (i = 0; i < sprite.length; i++)
@@ -160,25 +162,27 @@ public class Main extends BasicGame {
 			sprite_k[i] = ssheet_k.getSubImage(i,0);
 		for(i = 0; i < sprite_h.length; i++)
 			sprite_h[i] = ssheet_h.getSubImage(i,0);
-		for(i = 0; i < sprite_d.length; i++) {
+		for(i = 0; i < sprite_d.length; i++) 
 			sprite_d[i] = ssheet_d.getSubImage(i,0);
-		}
-		for(i = 0; i < sprite_doku.length; i++) {
+		for(i = 0; i < sprite_doku.length; i++) 
 			sprite_doku[i] = ssheet_doku.getSubImage(i,0);
-		}
+		for(i = 0; i < sprite_kumo.length; i++) 
+			sprite_kumo[i] = ssheet_kumo.getSubImage(i,0);
 
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
 		Image[] attacking = {sprite_k[0],sprite_k[1],sprite_k[2],sprite_k[3],sprite_k[4],sprite_k[5]};
 		Image[] damaging = {sprite_d[0],sprite_d[1],sprite_d[2],sprite_d[3]};
 		Image[] jumping = {sprite_h[0],sprite_h[1],sprite_h[2]};
-		Image[] dokudoku = {sprite_doku[0],sprite_doku[1],sprite_doku[2],sprite_doku[3],sprite_doku[4],sprite_doku[5]};
+		Image[] dokudoku = {sprite_doku[0],sprite_doku[1],sprite_doku[2],sprite_doku[3],sprite_doku[4],sprite_doku[5],sprite_doku[6]};
+		Image[] kumokumo = {sprite_kumo[0],sprite_kumo[1]};
 		
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
 		int[] duration_d = {500,500,500,500};
 		int[] duration_h = {60,70,100};
-		int[] duration_doku = {100,100,100,100,100,100};
+		int[] duration_doku = {100,100,100,100,100,100,100};
+		int[] duration_kumo = {2000,5000};
 		
 
 		walk = new Animation(pyonning, duration, false);
@@ -187,6 +191,7 @@ public class Main extends BasicGame {
 		attack = new Animation(attacking,duration_k, false);
 		damage = new Animation(damaging,duration_d,true);
 		doku = new Animation(dokudoku,duration_doku,true);
+		kumo = new Animation(kumokumo,duration_kumo,true);
 		noripie = wait;
 		
 		jump.setLooping(false);
@@ -194,7 +199,7 @@ public class Main extends BasicGame {
 		try{
 //			kabe1 = new Image("./resource/kabe1.png");
 			kabe2 = new Image("./resource/kabe3.png");
-			kumo = new Image("./resource/kumo.gif");
+			//kumo = new Image("./resource/kumo.gif");
 			usatan = new Image("./resource/usatan.gif");
 			cannon = new Image("./resource/cannon.gif");
 			shell = new Image("./resource/ball.gif");
@@ -267,7 +272,8 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_LEFT)) {
 				x -= move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)
+								|| detect_collision(x, y, map2, KUMO_ID)){
 					x += move;
 				}	
 				right = -1;
@@ -275,7 +281,8 @@ public class Main extends BasicGame {
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)
+								|| detect_collision(x, y, map2, KUMO_ID)){
 					x -= move;
 				}
 				right = 1;
@@ -283,7 +290,8 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_DOWN)) {
 				y += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)
+								|| detect_collision(x, y, map2, KUMO_ID)){
 					y -= move;
 				}
 			}
@@ -431,10 +439,10 @@ public class Main extends BasicGame {
 			}else if (y+51 >= detect_ground_top(x+20,y,    map3, FLOOR) * 64 ) { // のりぴーの左下と床判定
 				onground = true;
 				y = detect_ground_top(x+20,y, map3, FLOOR) * 64 - 51;				
-			}else if (y+51 >= detect_ground_top(x+58,y, map3, KUMO_ID) * 64 ) {// のりぴーの右下と床判定
+			}else if (y+51 >= detect_ground_top(x+58,y, map3, KUMO_ID) * 64 && kumo.getCurrentFrame() == sprite_kumo[1] ) {
 				onground = true;
 //				y = detect_ground_top(x+58, map3, KUMO_ID) * 64 - 51;
-			}else if (y+51 >= detect_ground_top(x+20,y, map3, KUMO_ID) * 64 ) { // のりぴーの左下と床判定
+			}else if (y+51 >= detect_ground_top(x+20,y, map3, KUMO_ID) * 64 && kumo.getCurrentFrame() == sprite_kumo[1]) { 
 				onground = true;
 				
 //				y = detect_ground_top(x+20, map3, KUMO_ID) * 64 - 51;
@@ -526,7 +534,7 @@ public class Main extends BasicGame {
 				}
 				
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==KUMO_ID ){
-					g.drawImage(kumo,tx*64,ty*64);					
+					kumo.draw(tx*64,ty*64);				
 				}
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==HOOK_ID){
 					g.drawImage(hook,tx*64,ty*64);
@@ -700,12 +708,7 @@ public class Main extends BasicGame {
 	
 	float detect_ground_top(float x, float y,  int layer, int ID){	//のりぴーの現在地より下の床座標取得
 		int min = 10000;
-		int i;
-		if(y/64-1>=0)
-			
-			i=(int)y/64-1;
-		else
-			i=0;
+		int i=(int)(y+4)/64;
 		for(;i < map.getHeight(); i++)
 			if(map.getTileId((int)x/64, i, layer) == ID)
 				if(min > i)

@@ -26,17 +26,17 @@
  </tileset>
  <layer name="base" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgojJmJIBHmjpiMa3MwxY/hOKQAYc4AL9NRjYwAgAA
+   H4sIAAAAAAAAC2NiYGBgojJmJIAHkzps+qhtL7GYVuZhix9CcciAQxwA+9iWYTACAAA=
   </data>
  </layer>
  <layer name="collision" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgojLGB5iJUMcOpYkxj9rq0N3HiuQedjS12MxjJIBhgJVM9xELWBhwxw8HHjlkN2ATBwB9/gOhMAIAAA==
+   H4sIAAAAAAAAC2NiYGBgojLGB5iJUMcOpYkxj1J16Hx097EiuYcdTS028xgJYBhgJdJ95AIWBtzxw4FHDtkN2MQBBRhjxDACAAA=
   </data>
  </layer>
  <layer name="floor" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NgGAXDGTBhwbjEiVEDAP1gRoQwAgAA
+   H4sIAAAAAAAAC2NgGNmAiYA8K43spZW56IAJC8YlTowaAJF0TyIwAgAA
   </data>
  </layer>
 </map>
