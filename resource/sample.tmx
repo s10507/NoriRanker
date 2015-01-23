@@ -24,14 +24,14 @@
  <tileset firstgid="8" name="doku1" tilewidth="64" tileheight="64">
   <image source="doku1.gif" trans="0000ff" width="64" height="64"/>
  </tileset>
- <layer name="base" width="20" height="7">
+ <layer name="base" width="20" height="7" visible="0">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAC2NiYGBgojJmJIAHkzps+qhtL7GYVuZhix9CcciAQxwA+9iWYTACAAA=
   </data>
  </layer>
  <layer name="collision" width="20" height="7">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC2NiYGBgojLGB5iJUMcOpYkxj1J16Hx097EiuYcdTS028xgJYBhgJdJ95AIWBtzxw4FHDtkN2MQBBRhjxDACAAA=
+   H4sIAAAAAAAAC2NiYGBgojLGB5iJUMcOpYkxj1J16Hx097EiuYcdTS028xgJYJgZrES6j1zAwoA7fjjwyCG7AZs4AMO+FZEwAgAA
   </data>
  </layer>
  <layer name="floor" width="20" height="7">
