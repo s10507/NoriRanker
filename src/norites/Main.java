@@ -209,7 +209,7 @@ public class Main extends BasicGame {
 		}catch(Exception e){
 		}
 
-		path = "./resource/bigmap.tmx";
+		path = "./resource/sample.tmx";
 		//System.out.println(path);
 
 		try{
@@ -420,11 +420,10 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if(detect_collision(x, y, map2, DOKU_ID)){
+			if(detect_collision(x, y-48, map2, DOKU_ID)){
 				life-=3;
-				x=0;
-				y=0;
-				menu_id=3;
+				x=64*2;
+				y=64;
 			}
 			if (y+51 >= detect_ground_top(x+58,y, map3, FLOOR) * 64 ) {// のりぴーの右下と床判定
 				onground = true;
