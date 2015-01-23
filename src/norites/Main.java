@@ -73,11 +73,13 @@ public class Main extends BasicGame {
 	Image[] sprite_doku = new Image[7];
 	Image[] sprite_kumo = new Image[2];
 	Image[] sprite_hook = new Image[2];
+	Image[] sprite_kake = new Image[6];
 	
-	private Animation noripie,walk,wait,attack,damage,jump,doku,kumo;
+	private Animation noripie,walk,wait,attack,damage,jump,doku,kumo,hooked,kake;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,hook;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,hook
+	;
 	Image takara,clear,doragon,gameover;
 	
 	ArrayList<Point> hook_list = new ArrayList<>(); //フックの座標リスト
@@ -103,7 +105,7 @@ public class Main extends BasicGame {
 
 	boolean onground;
 	boolean ishooking;
-	final float leg_mussle = 9.0f; //脚力
+	final float leg_mussle = 9.2f; //脚力
 	final float gravity = .3f; //重力
 	
 	float vspeed = 0.0f;
@@ -128,7 +130,7 @@ public class Main extends BasicGame {
 
 	int life = 0;
 	
-	
+	Point nori_hook = new Point();
 
 	public Main(String title) {
 		super(title);
@@ -156,7 +158,8 @@ public class Main extends BasicGame {
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
 		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
-		//SpriteSheet ssheet_hook = new SpriteSheet(new Image("./resource/img/.gif"), 128, 64);
+		SpriteSheet ssheet_hook = new SpriteSheet(new Image("./resource/img/norihooksp.gif"), 64, 64);
+		SpriteSheet ssheet_kake = new SpriteSheet(new Image("./resource/img/norikakesp.gif"), 64 ,64);
 		SpriteSheet ssheet_doku = new SpriteSheet(new Image("./resource/dokusp.gif"),64,64);
 		SpriteSheet ssheet_kumo = new SpriteSheet(new Image("./resource/mokumoku.gif"),64,64);
 		
@@ -170,12 +173,14 @@ public class Main extends BasicGame {
 		for(i = 0; i < sprite_d.length; i++) 
 			sprite_d[i] = ssheet_d.getSubImage(i,0);
 
-	//	for(i = 0; i < sprite_hook.length; i++)
-	//		sprite_hook[i] = ssheet_hook.getSubImage(i,0);
+		for(i = 0; i < sprite_hook.length; i++)
+			sprite_hook[i] = ssheet_hook.getSubImage(i,0);
 		for(i = 0; i < sprite_doku.length; i++)
 			sprite_doku[i] = ssheet_doku.getSubImage(i,0);
 		for(i = 0; i < sprite_kumo.length; i++) 
 			sprite_kumo[i] = ssheet_kumo.getSubImage(i,0);
+		for(i = 0; i < sprite_kake.length; i++)
+			sprite_kake[i] = ssheet_kake.getSubImage(i,0);
 
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
@@ -184,11 +189,16 @@ public class Main extends BasicGame {
 		Image[] jumping = {sprite_h[0],sprite_h[1],sprite_h[2]};
 		Image[] dokudoku = {sprite_doku[0],sprite_doku[1],sprite_doku[2],sprite_doku[3],sprite_doku[4],sprite_doku[5],sprite_doku[6]};
 		Image[] kumokumo = {sprite_kumo[0],sprite_kumo[1]};
+		Image[] hooking = {sprite_hook[0],sprite_hook[1]};
+		Image[] kakeing = {sprite_kake[0],sprite_kake[1],sprite_kake[2],sprite_kake[3],sprite_kake[4],sprite_kake[5]};
+		
 		
 		int[] duration = {100,100,100,100};
 		int[] duration_k = {50,50,50,50,50,100};
 		int[] duration_d = {500,500,500,500};
 		int[] duration_h = {60,70,100};
+		int[] duration_kake = {50,50,50,50,50,50};
+		int[] duration_hook = {1000,1000}; 
 		int[] duration_doku = {100,100,100,100,100,100,100};
 		int[] duration_kumo = {2000,5000};
 		
@@ -200,6 +210,8 @@ public class Main extends BasicGame {
 		damage = new Animation(damaging,duration_d,true);
 		doku = new Animation(dokudoku,duration_doku,true);
 		kumo = new Animation(kumokumo,duration_kumo,true);
+		kake = new Animation(kakeing,duration_kake,true);
+		hooked = new Animation(hooking,duration_hook,true);
 		noripie = wait;
 		
 		jump.setLooping(false);
@@ -243,9 +255,6 @@ public class Main extends BasicGame {
 					cannon_y_list.add(ty*64);
 				}
 				if(map.getTileId(tx, ty, map2) == HOOK_ID){
-					hook_p.setPoint(tx*64, ty*64);
-					hook_list.add(hook_p);
-					System.out.println("hook x:"+hook_p.x+" y:"+hook_p.y);
 					hook_list.add(new Point(tx, ty));
 				}
 			}
@@ -281,7 +290,8 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_LEFT)) {
 				x -= move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)
+								|| detect_collision(x, y, map2, KUMO_ID)){
 					x += move;
 				}	
 				right = -1;
@@ -289,7 +299,8 @@ public class Main extends BasicGame {
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)
+								|| detect_collision(x, y, map2, KUMO_ID)){
 					x -= move;
 				}
 				right = 1;
@@ -297,7 +308,8 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_DOWN)) {
 				y += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)
+								|| detect_collision(x, y, map2, KUMO_ID)){
 					y -= move;
 				}
 			}
@@ -460,17 +472,21 @@ public class Main extends BasicGame {
 			}else {
 				onground = false;
 				if(ishooking){
-					noripie=wait;
+					noripie = hooked;
+					nori_hook = detect_hook_point(x, y);
+					x = nori_hook.x * 64;
+					y = (nori_hook.y + 1) * 64;
 				}else{
 					noripie = jump;
 				}
 			}
 			
 			if (!ishooking){
-				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP)){
+				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP )){
 					ishooking = true;
+					noripie = hooked;
 				}
-			}else if(!detect_collision(x, y, map2, HOOK_ID)){
+			}else if(input.isKeyDown(input.KEY_SPACE)){
 				ishooking = false;
 			}
 				
@@ -481,7 +497,6 @@ public class Main extends BasicGame {
 				//System.out.println("HOOK!");
 			}
 			
-			detect_hook_point(x, y).Print();			
 			
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
@@ -735,7 +750,7 @@ public class Main extends BasicGame {
 
 	float detect_ground_top(float x, float y,  int layer, int ID){	//のりぴーの現在地より下の床座標取得
 		int min = 10000;
-		int i=(int)(y+6)/64;
+		int i=(int)(y+4)/64;
 		for(;i < map.getHeight(); i++)
 
 			if(map.getTileId((int)x/64, i, layer) == ID)
@@ -786,6 +801,7 @@ public class Main extends BasicGame {
 		ゲームプログラム本体とは基本的に関係がない部分 */
 		TMXRead t = new TMXRead();
 		AppGameContainer app = new AppGameContainer(new Main("骨組"));
+		app.setTargetFrameRate(60);
 		app.setDisplayMode(64*10, 64*7, false);
 		app.start();
 	}
