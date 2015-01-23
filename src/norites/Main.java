@@ -128,7 +128,7 @@ public class Main extends BasicGame {
 
 	int life = 0;
 	
-	Point nori_hook = new Point();
+	
 
 	public Main(String title) {
 		super(title);
@@ -149,8 +149,8 @@ public class Main extends BasicGame {
 		CANNON_ID = (int) MapId.get("cannon");
 		TAKARA_ID = (int) MapId.get("takara");
 		KUMO_ID = (int) MapId.get("kumo");
-	//	HOOK_ID = (int) MapId.get("hook");
-	//	DOKU_ID = (int) MapId.get("doku1");
+		HOOK_ID = (int) MapId.get("hook");
+		DOKU_ID = (int) MapId.get("doku1");
 		
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
@@ -243,6 +243,9 @@ public class Main extends BasicGame {
 					cannon_y_list.add(ty*64);
 				}
 				if(map.getTileId(tx, ty, map2) == HOOK_ID){
+					hook_p.setPoint(tx*64, ty*64);
+					hook_list.add(hook_p);
+					System.out.println("hook x:"+hook_p.x+" y:"+hook_p.y);
 					hook_list.add(new Point(tx, ty));
 				}
 			}
@@ -278,8 +281,7 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_LEFT)) {
 				x -= move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)
-								|| detect_collision(x, y, map2, KUMO_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					x += move;
 				}	
 				right = -1;
@@ -287,8 +289,7 @@ public class Main extends BasicGame {
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)
-								|| detect_collision(x, y, map2, KUMO_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					x -= move;
 				}
 				right = 1;
@@ -296,8 +297,7 @@ public class Main extends BasicGame {
 			if (input.isKeyDown(input.KEY_DOWN)) {
 				y += move;
 				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)
-								|| detect_collision(x, y, map2, KUMO_ID)){
+						|| detect_collision(x, y, map2, CANNON_ID)){
 					y -= move;
 				}
 			}
@@ -460,18 +460,15 @@ public class Main extends BasicGame {
 			}else {
 				onground = false;
 				if(ishooking){
-					noripie=wait;					nori_hook = detect_hook_point(x, y);
-					x = nori_hook.x * 64;
-					y = (nori_hook.y + 1) * 64;
+					noripie=wait;
 				}else{
 					noripie = jump;
 				}
 			}
 			
 			if (!ishooking){
-				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP )){
+				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP)){
 					ishooking = true;
-					
 				}
 			}else if(!detect_collision(x, y, map2, HOOK_ID)){
 				ishooking = false;
@@ -484,6 +481,7 @@ public class Main extends BasicGame {
 				//System.out.println("HOOK!");
 			}
 			
+			detect_hook_point(x, y).Print();			
 			
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
@@ -737,7 +735,7 @@ public class Main extends BasicGame {
 
 	float detect_ground_top(float x, float y,  int layer, int ID){	//のりぴーの現在地より下の床座標取得
 		int min = 10000;
-		int i=(int)(y+4)/64;
+		int i=(int)(y+6)/64;
 		for(;i < map.getHeight(); i++)
 
 			if(map.getTileId((int)x/64, i, layer) == ID)
@@ -788,7 +786,6 @@ public class Main extends BasicGame {
 		ゲームプログラム本体とは基本的に関係がない部分 */
 		TMXRead t = new TMXRead();
 		AppGameContainer app = new AppGameContainer(new Main("骨組"));
-		app.setTargetFrameRate(60);
 		app.setDisplayMode(64*10, 64*7, false);
 		app.start();
 	}
