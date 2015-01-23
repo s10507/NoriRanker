@@ -128,7 +128,7 @@ public class Main extends BasicGame {
 
 	int life = 0;
 	
-	
+	Point nori_hook = new Point();
 
 	public Main(String title) {
 		super(title);
@@ -460,15 +460,18 @@ public class Main extends BasicGame {
 			}else {
 				onground = false;
 				if(ishooking){
-					noripie=wait;
+					noripie=wait;					nori_hook = detect_hook_point(x, y);
+					x = nori_hook.x * 64;
+					y = (nori_hook.y + 1) * 64;
 				}else{
 					noripie = jump;
 				}
 			}
 			
 			if (!ishooking){
-				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP)){
+				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP )){
 					ishooking = true;
+					
 				}
 			}else if(!detect_collision(x, y, map2, HOOK_ID)){
 				ishooking = false;
@@ -481,7 +484,6 @@ public class Main extends BasicGame {
 				//System.out.println("HOOK!");
 			}
 			
-			detect_hook_point(x, y).Print();			
 			
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
