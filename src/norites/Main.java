@@ -64,7 +64,7 @@ public class Main extends BasicGame {
 	Random rnd = new Random();
 	byte icount = 0;
 	boolean iswalk = false;
-	static final float SPEED = 0.2f;
+	static final float SPEED = 0.3f;
 	Image[] sprite = new Image[7];   //移動の絵
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
@@ -94,8 +94,8 @@ public class Main extends BasicGame {
 
 	boolean onground;
 	boolean ishooking;
-	final float leg_mussle = 9.0f; //脚力
-	final float gravity = .3f; //重力
+	final float leg_mussle = 1f; //脚力
+	final float gravity = .05f; //重力
 	
 	float vspeed = 0.0f;
 	int next_cannon;
@@ -278,6 +278,7 @@ public class Main extends BasicGame {
 			
 
 			// //////じゅｍｐ////////////////////////////
+			
 			if (onground) { // ongroundなら上下加速度ゼロ
 				vspeed = 0;
 			} else if (ishooking) { //フック中でも上下加速度ゼロ
@@ -296,7 +297,7 @@ public class Main extends BasicGame {
 				vspeed += gravity*2;
 			}
 			
-			y += vspeed; // 加速度分だけyに盛り付ける
+			y += vspeed * delta; // 加速度分だけyに盛り付ける
 			
 			
 
@@ -717,6 +718,7 @@ public class Main extends BasicGame {
 		TMXRead t = new TMXRead();
 		AppGameContainer app = new AppGameContainer(new Main("骨組"));
 		app.setDisplayMode(64*10, 64*7, false);
+		app.setTargetFrameRate(60);
 		app.start();
 	}
 	Point attack(Point enemy_P){
