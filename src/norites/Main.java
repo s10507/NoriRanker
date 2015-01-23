@@ -243,9 +243,6 @@ public class Main extends BasicGame {
 					cannon_y_list.add(ty*64);
 				}
 				if(map.getTileId(tx, ty, map2) == HOOK_ID){
-					hook_p.setPoint(tx*64, ty*64);
-					hook_list.add(hook_p);
-					System.out.println("hook x:"+hook_p.x+" y:"+hook_p.y);
 					hook_list.add(new Point(tx, ty));
 				}
 			}
