@@ -18,25 +18,31 @@
  <tileset firstgid="6" name="moku" tilewidth="64" tileheight="64">
   <image source="moku.gif" trans="ff00ff" width="64" height="64"/>
  </tileset>
- <tileset firstgid="7" name="hook" tilewidth="64" tileheight="64">
-  <image source="hook.gif" trans="ff00ff" width="64" height="64"/>
- </tileset>
- <tileset firstgid="8" name="doku1" tilewidth="64" tileheight="64">
-  <image source="doku1.gif" trans="0000ff" width="64" height="64"/>
- </tileset>
  <layer name="base" width="20" height="7">
   <data encoding="base64" compression="gzip">
+<<<<<<< HEAD
    H4sIAAAAAAAAC2NiYGBgojJmJIAHkzps+qhtL7GYVuZhix9CcciAQxwA+9iWYTACAAA=
+=======
+   H4sIAAAAAAAAC2NiYGBgojJmJIBHmjpiMa3MIwcz4BAHAG/YQ7IwAgAA
+>>>>>>> refs/remotes/origin/master
   </data>
  </layer>
  <layer name="collision" width="20" height="7">
   <data encoding="base64" compression="gzip">
+<<<<<<< HEAD
    H4sIAAAAAAAAC2NiYGBgojLGB5iJUMcOpYkxj1J16Hx097EiuYcdTS028xgJYBhgJdJ95AIWBtzxw4FHDtkN2MQBBRhjxDACAAA=
+=======
+   H4sIAAAAAAAAC2NiYGBgojLGB5iJVMcwQOrQ3cdKonmMBDAMYDOXWH8QA1gYKI9DbOIA0rZ7YTACAAA=
+>>>>>>> refs/remotes/origin/master
   </data>
  </layer>
  <layer name="floor" width="20" height="7">
   <data encoding="base64" compression="gzip">
+<<<<<<< HEAD
    H4sIAAAAAAAAC2NgGNmAiYA8K43spZW56IAJC8YlTowaAJF0TyIwAgAA
+=======
+   H4sIAAAAAAAAC2NgGAXDGTCRiXHpBQCie5DKMAIAAA==
+>>>>>>> refs/remotes/origin/master
   </data>
  </layer>
 </map>

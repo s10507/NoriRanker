@@ -30,7 +30,6 @@ public class Main extends BasicGame {
 	int KUMO_ID = 6;
 	int HOOK_ID = 7;
 	int DOKU_ID = 8;
-
 	float x = 64*4, y = 64*5 ;
 //	int ntx=(int)x/64; //のりぴーのタイル位置
 //	int nty=(int)y/64; //のりぴーのタイル位置
@@ -70,8 +69,10 @@ public class Main extends BasicGame {
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
 	Image[] sprite_d = new Image[4]; //ダメージの絵
+
 	Image[] sprite_doku = new Image[7];
 	Image[] sprite_kumo = new Image[2];
+	Image[] sprite_hook = new Image[2];
 	
 	private Animation noripie,walk,wait,attack,damage,jump,doku,kumo;
 
@@ -101,8 +102,9 @@ public class Main extends BasicGame {
 	int map1, map2, map3;
 
 	boolean onground;
-	final float leg_mussle = 1.0f; //脚力
-	final float gravity = .003f; //重力
+	boolean ishooking;
+	final float leg_mussle = 9.0f; //脚力
+	final float gravity = .3f; //重力
 	
 	float vspeed = 0.0f;
 	int next_cannon;
@@ -125,6 +127,8 @@ public class Main extends BasicGame {
 	float darara = 256;
 
 	int life = 0;
+	
+	
 
 	public Main(String title) {
 		super(title);
@@ -147,11 +151,12 @@ public class Main extends BasicGame {
 		KUMO_ID = (int) MapId.get("kumo");
 		HOOK_ID = (int) MapId.get("hook");
 		DOKU_ID = (int) MapId.get("doku1");
-
+		
 		SpriteSheet ssheet = new SpriteSheet(new Image("./resource/img/noripyonsp.png"), 64, 64);
 		SpriteSheet ssheet_k = new SpriteSheet(new Image("./resource/img/norikousp.gif"), 64, 64);
 		SpriteSheet ssheet_h = new SpriteSheet(new Image("./resource/img/norihappysp.gif"), 64, 64);
 		SpriteSheet ssheet_d = new SpriteSheet(new Image("./resource/img/noridamesp.gif"), 64, 64);
+		//SpriteSheet ssheet_hook = new SpriteSheet(new Image("./resource/img/.gif"), 128, 64);
 		SpriteSheet ssheet_doku = new SpriteSheet(new Image("./resource/dokusp.gif"),64,64);
 		SpriteSheet ssheet_kumo = new SpriteSheet(new Image("./resource/mokumoku.gif"),64,64);
 		
@@ -164,7 +169,10 @@ public class Main extends BasicGame {
 			sprite_h[i] = ssheet_h.getSubImage(i,0);
 		for(i = 0; i < sprite_d.length; i++) 
 			sprite_d[i] = ssheet_d.getSubImage(i,0);
-		for(i = 0; i < sprite_doku.length; i++) 
+
+	//	for(i = 0; i < sprite_hook.length; i++)
+	//		sprite_hook[i] = ssheet_hook.getSubImage(i,0);
+		for(i = 0; i < sprite_doku.length; i++)
 			sprite_doku[i] = ssheet_doku.getSubImage(i,0);
 		for(i = 0; i < sprite_kumo.length; i++) 
 			sprite_kumo[i] = ssheet_kumo.getSubImage(i,0);
@@ -238,6 +246,7 @@ public class Main extends BasicGame {
 					hook_p.setPoint(tx*64, ty*64);
 					hook_list.add(hook_p);
 					System.out.println("hook x:"+hook_p.x+" y:"+hook_p.y);
+					hook_list.add(new Point(tx, ty));
 				}
 			}
 		}
@@ -301,10 +310,12 @@ public class Main extends BasicGame {
 			// //////じゅｍｐ////////////////////////////
 			if (onground) { // ongroundなら上下加速度ゼロ
 				vspeed = 0;
-			} else {		 // ongroundじゃなければ下加速度どんどん追加
+			} else if (ishooking) { //フック中でも上下加速度ゼロ
+				vspeed = 0;
+			} else {// ongroundじゃなければ下加速度どんどん追加
 				vspeed += gravity;
 			}
-			if (input.isKeyDown(input.KEY_SPACE) && onground) { // ongroundでSPACE押すと脚力分に上加速度
+			if (input.isKeyDown(input.KEY_SPACE) && (onground||ishooking)) { // ongroundでSPACE押すと脚力分に上加速度
 				vspeed = -leg_mussle;
 				jump.restart();
 			}
@@ -360,13 +371,12 @@ public class Main extends BasicGame {
 			}
 
 			if (map.getTileId((int) (x+10)/64, (int) (y+10)/64, map2) == TAKARA_ID) {
-
 				menu_id = 2;
 			}
 
-			N_P = N_P.setPoint(N_P, x, y);
-			USA_P = USA_P.setPoint(USA_P, usax, usay);
-			SHIMO_P = SHIMO_P.setPoint(SHIMO_P, shimo_x, shimo_y);
+			N_P.setPoint(x, y);
+			USA_P.setPoint(usax, usay);
+			SHIMO_P.setPoint(shimo_x, shimo_y);
 
 			if ((((int) x+32)/64 == ((int) usax+32)/64)
 					&& ((int) y+32)/64 == ((int) usay+32)/64
@@ -428,6 +438,7 @@ public class Main extends BasicGame {
 			}
 			;
 
+
 			if(detect_collision(x, y-48, map2, DOKU_ID)){
 				life-=3;
 				x=64*2;
@@ -436,6 +447,9 @@ public class Main extends BasicGame {
 			if (y+51 >= detect_ground_top(x+58,y, map3, FLOOR) * 64 ) {// のりぴーの右下と床判定
 				onground = true;
 				y = detect_ground_top(x+58,y, map3, FLOOR) * 64 - 51;
+			}else if (y+51 >= detect_ground_top(x+20,y, map3, FLOOR) * 64 ) { // のりぴーの左下と床判定
+				onground = true;
+				y = detect_ground_top(x+20,y, map3, FLOOR) * 64 - 51;
 			}else if (y+51 >= detect_ground_top(x+20,y,    map3, FLOOR) * 64 ) { // のりぴーの左下と床判定
 				onground = true;
 				y = detect_ground_top(x+20,y, map3, FLOOR) * 64 - 51;				
@@ -448,15 +462,29 @@ public class Main extends BasicGame {
 //				y = detect_ground_top(x+20, map3, KUMO_ID) * 64 - 51;
 			}else {
 				onground = false;
-				noripie = jump;
+				if(ishooking){
+					noripie=wait;
+				}else{
+					noripie = jump;
+				}
 			}
-			System.out.println(map.getTileId((int)x/64+1, (int)y/64+1, map3));
+			
+			if (!ishooking){
+				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP)){
+					ishooking = true;
+				}
+			}else if(!detect_collision(x, y, map2, HOOK_ID)){
+				ishooking = false;
+			}
+				
+
 			//System.out.println(detect_ground_top(x+20, map3, KUMO_ID) * 64);
 			//System.out.println(x+20);
 			if(detect_collision(x, y, map2, HOOK_ID)){
 				//System.out.println("HOOK!");
 			}
 			
+			detect_hook_point(x, y).Print();			
 			
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
 
@@ -533,6 +561,7 @@ public class Main extends BasicGame {
 					g.drawImage(takara,tx*64,ty*64);
 				}
 				
+
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==KUMO_ID ){
 					kumo.draw(tx*64,ty*64);				
 				}
@@ -706,10 +735,12 @@ public class Main extends BasicGame {
 		return result;
 	}
 	
+
 	float detect_ground_top(float x, float y,  int layer, int ID){	//のりぴーの現在地より下の床座標取得
 		int min = 10000;
 		int i=(int)(y+4)/64;
 		for(;i < map.getHeight(); i++)
+
 			if(map.getTileId((int)x/64, i, layer) == ID)
 				if(min > i)
 					min = i;
@@ -717,6 +748,21 @@ public class Main extends BasicGame {
 		
 	}
 	
+
+	Point detect_hook_point (float x, float y){
+		int n = 0;
+//		float min = 1000;
+		for (int i = 0; i < hook_list.size(); i++){
+			System.out.println("hook "+i+" x :"+hook_list.get(i).x+"\nhook "+i+" x :"+hook_list.get(i).y);
+			if((int)(x+20)/64 == hook_list.get(i).x || (int)(x+58)/64 == hook_list.get(i).x){
+					n = i;
+			}
+		}
+		System.out.println("ナンバー："+n);
+		return hook_list.get(n);
+	}
+	
+
 	HashMap readgid() throws SlickException {	//マップのID取得
 
 		TMXRead t = new TMXRead();
@@ -779,27 +825,28 @@ class Point {
 	float x;
 	float y;
 
-	Point(float _x, float _y){
+	public Point(float _x, float _y){
 		x = _x;
 		y = _y;
 	}
 
 	public Point() {
 		// TODO 自動生成されたコンストラクター・スタブ
+
 	}
 
-	Point setPoint(Point _P, float _x, float _y){
-		_P.x = _x;
-		_P.y = _y;
-		return _P;
+
+	void setPoint(Point _P){
+		this.x = _P.x;
+		this.y = _P.y;
+		
 	}
-	Point setPoint(float _x, float _y){
+	void setPoint(float _x, float _y){
 		this.x = _x;
 		this.y = _y;
-		return this;
 	}
-	void Print(Point _P){
-		System.out.println("P.x :"+_P.x+" P.y :"+_P.y);
+	public void Print(){
+		System.out.println("P.x :"+this.x+" P.y :"+this.y);
 	}
 
 }
