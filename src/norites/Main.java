@@ -40,6 +40,8 @@ public class Main extends BasicGame {
 	float x, y;
 	int ntx, nty; //のりぴーのタイル位置
 
+
+
 	float usax, usay;
 	int utx, uty;//うさたんのタイル位置
 
@@ -74,11 +76,12 @@ public class Main extends BasicGame {
 	Image[] sprite_kumo = new Image[2];
 	Image[] sprite_hook = new Image[2];
 	Image[] sprite_kake = new Image[6];
+	Image[] sprite_hooked = new Image[2];
 
 	private Animation noripie,walk,wait,attack,damage,jump,doku,kumo,hooked,kake;
 
 	String path =null;
-	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,hook,afterhook;
+	Image kabe1, kabe2, usatan,cannon,shell,shimo_normal,shimo_super,bless,hook,afterhooked;
 	;
 	Image takara,clear,doragon,gameover;
 
@@ -141,6 +144,8 @@ public class Main extends BasicGame {
 		オブジェクトとして変数名に関連付けたりする）
 		当然、ここはループしない */
 
+		path = "./resource/sample.tmx";
+
 		HashMap MapId = readgid();
 
 		WALL1_ID = (int) MapId.get("kabe1");
@@ -160,6 +165,7 @@ public class Main extends BasicGame {
 		SpriteSheet ssheet_kake = new SpriteSheet(new Image("./resource/img/norikakesp.gif"), 64 ,64);
 		SpriteSheet ssheet_doku = new SpriteSheet(new Image("./resource/dokusp.gif"),64,64);
 		SpriteSheet ssheet_kumo = new SpriteSheet(new Image("./resource/mokumoku.gif"),64,64);
+		SpriteSheet ssheet_hooked = new SpriteSheet(new Image("./resource/hookkake.gif"),64,64);
 
 		byte i;
 		for (i = 0; i < sprite.length; i++)
@@ -170,7 +176,6 @@ public class Main extends BasicGame {
 			sprite_h[i] = ssheet_h.getSubImage(i,0);
 		for(i = 0; i < sprite_d.length; i++)
 			sprite_d[i] = ssheet_d.getSubImage(i,0);
-
 		for(i = 0; i < sprite_hook.length; i++)
 			sprite_hook[i] = ssheet_hook.getSubImage(i,0);
 		for(i = 0; i < sprite_doku.length; i++)
@@ -179,6 +184,8 @@ public class Main extends BasicGame {
 			sprite_kumo[i] = ssheet_kumo.getSubImage(i,0);
 		for(i = 0; i < sprite_kake.length; i++)
 			sprite_kake[i] = ssheet_kake.getSubImage(i,0);
+		for(i = 0; i < sprite_hooked.length; i++)
+			sprite_hooked[i] = ssheet_hooked.getSubImage(i,0);
 
 		Image[] pyonning = {sprite[3],sprite[4],sprite[5],sprite[6]};
 		Image[] waiting = {sprite[1],sprite[2],sprite[1],sprite[2]};
@@ -229,10 +236,9 @@ public class Main extends BasicGame {
 			bless = new Image("./resource/mizu.gif");
 			gameover = new Image("./resource/gameover.gif");
 			hook = new Image("./resource/hook.gif");
+			afterhooked = sprite_hooked[0];
 		}catch(Exception e){
 		}
-
-		path = "./resource/sample.tmx";
 		//System.out.println(path);
 
 		try{
@@ -390,12 +396,12 @@ public class Main extends BasicGame {
 //					|| ((((int) doragon_x/64 <= ((int) x+32)/64) && ((int) x+32)/64 <= ((int) doragon_x+64)/64)
 //					&& (((int) doragon_y/64 <= ((int) y+32)/64) && ((int) y+32)/64 <= ((int) doragon_y+64)/64))
 					) { // 障害物たちのあたり判定
-				N_P = blowing(N_P);
+//				N_P = blowing(N_P);
 				x = N_P.x;
 				y = N_P.y;
 //				life--;
 				if(ishooking){
-					ishooking = false;
+//					ishooking = false;
 				}
 			}
 			// System.out.println("Life: "+life);
@@ -486,9 +492,9 @@ public class Main extends BasicGame {
 
 			//System.out.println(detect_ground_top(x+20, map3, KUMO_ID) * 64);
 			//System.out.println(x+20);
-			if(detect_collision(x, y, map2, HOOK_ID)){
-				//System.out.println("HOOK!");
-			}
+//			if(detect_collision(x, y, map2, HOOK_ID)){
+//				System.out.println("HOOK!");
+//			}
 
 
 //			System.out.println(y+60-detect_ground_top(x+60, map, map3, FLOOR) * 64);
@@ -583,7 +589,13 @@ public class Main extends BasicGame {
 					kumo.draw(tx*64,ty*64);
 				}
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==HOOK_ID){
-					g.drawImage(hook,tx*64,ty*64);
+					if(ishooking && nori_hook.equal(new Point(tx+screen_tx,ty+screen_ty))){
+						if(right == 1)
+							afterhooked.draw(tx*64, ty*64);
+						else
+							afterhooked.draw(tx*64+64, ty*64, right*64, 64);
+					}else
+						g.drawImage(hook, tx*64, ty*64);
 				}
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==DOKU_ID){
 					doku.draw(tx*64,ty*64);
@@ -592,17 +604,14 @@ public class Main extends BasicGame {
 		}
 		if(right==1){
 			noripie.draw((int)draw_x,(int)draw_y,right*64,64);
-			if((x+58) - (usax+50) > -70 && (x+58) - (usax+50) < 0)
-				noripie.draw((int)draw_x,(int)draw_y,right*64,64, Color.blue);
 		}else if(right == -1){
-			noripie.draw((int)draw_x+80,(int)draw_y,right*64,64);
-			if((x+20) - (usax+10) < 70 && (x+20) - (usax+10) > 0)
-				noripie.draw((int)draw_x+80,(int)draw_y,right*64,64, Color.red);
+			noripie.draw((int)draw_x+64,(int)draw_y,right*64,64);
 		}
 		if(usamuki)
 			usax+=2.5f;
 		else
 			usax-=2.5f;
+
 		if(detect_collision(usax, usay, map2, OBSTACLE_FOR_ENEMY, 10, 50, 10, 50))
 			usamuki = !usamuki;
 
@@ -612,11 +621,10 @@ public class Main extends BasicGame {
 		if((screen_mapx*640 < usax && (screen_mapx+1)*640-1 > usax ) && (screen_mapy*448 < usay && (screen_mapy+1)*448-1 > usay))
 			g.drawImage(usatan, draw_usax, draw_usay);
 
-		if(shimomuki){
+		if(shimomuki)
 			shimo_y+=3f;
-		}else{
+		else
 			shimo_y-=3f;
-		}
 
 		shimo_normal.setRotation(angle);
 		angle+=10;
@@ -746,7 +754,7 @@ public class Main extends BasicGame {
 				&&	(((int) enemy_y/64 <= ((int) y+32)/64) && ((int) y+32)/64 <= ((int) enemy_y+size/2)/64)
 			){
 			j = true;
-			System.out.println(j);
+//			System.out.println(j);
 		}
 		return j;
 	}
@@ -756,7 +764,6 @@ public class Main extends BasicGame {
 		if ((((int) x+32)/64 == ((int) enemy_x-32)/64)
 				&& ((int) y+32)/64 == ((int) enemy_y+96)/64){
 			j = true;
-			System.out.println(j);
 		}
 		return j;
 	}
@@ -826,7 +833,6 @@ public class Main extends BasicGame {
 		int min = 10000;
 		int i=(int)(y+51)/64;
 		for(;i < map.getHeight(); i++)
-
 			if(map.getTileId((int)x/64, i, layer) == ID)
 				if(min > i)
 					min = i;
@@ -839,12 +845,12 @@ public class Main extends BasicGame {
 		int n = 0;
 //		float min = 1000;
 		for (int i = 0; i < hook_list.size(); i++){
-			System.out.println("hook "+i+" x :"+hook_list.get(i).x+"\nhook "+i+" x :"+hook_list.get(i).y);
+//			System.out.println("hook "+i+" x :"+hook_list.get(i).x+"\nhook "+i+" x :"+hook_list.get(i).y);
 			if((int)(x+20)/64 == hook_list.get(i).x || (int)(x+58)/64 == hook_list.get(i).x){
 					n = i;
 			}
 		}
-		System.out.println("ナンバー："+n);
+//		System.out.println("ナンバー："+n);
 		return hook_list.get(n);
 	}
 
@@ -852,7 +858,7 @@ public class Main extends BasicGame {
 	HashMap readgid() throws SlickException {	//マップのID取得
 
 		TMXRead t = new TMXRead();
-		ArrayList<XMLElement> gid_xml = t.read("./resource/sample.tmx");
+		ArrayList<XMLElement> gid_xml = t.read(path);
 //		ArrayList<Integer> id = new ArrayList<Integer> (gid_xml.size());
 //		ArrayList<String> name = new ArrayList<String> (gid_xml.size());
 
