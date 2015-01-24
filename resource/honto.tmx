@@ -33,7 +33,7 @@
  </layer>
  <layer name="floor" width="50" height="28">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+2W0QrAIAhFo4f9/yfvdYjeXJlpeCCQWubFcbG1oriHTtZKnhvoJM6oi6tZ6jPd72B/tFDOmfwaHuV3hR+ePbHyr11o/m2pbgs93r34xlF7MgLVvEOPlf/+9eqRhxex0foIPcvc29M6kK/NzjD0fjak+e8Umrm0MWfS/VlflWKLuZcj0yycqVaEVkdkvai2yHUX8eD8ddVP0TvWM/ELLVISMuAVAAA=
+   H4sIAAAAAAAAC+2W0QrAIAhFo4f9/yePvYrerGlpeCCIWuqluLO1oriHTsafODfQyTyjLq5m6Z7pegfro4FirsTX8Ci/m8Ur7m5O6NiZ08q/vNC8baluCz277uLLI3lANlDNHnqs/HfWq0ceXsRG6yN0L/PdntaBfG21h6HnvbH+J0j93yk0fWlj9qTzq74qzS36Xo5MPWumWhFaHZH1otoi113Eg/PXv36K8lj3xC9pUVJy4BUAAA==
   </data>
  </layer>
 </map>
