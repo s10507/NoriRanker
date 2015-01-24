@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="50" height="28" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="kabe1" tilewidth="64" tileheight="64">
+  <image source="kabe1.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="2" name="kabe2" tilewidth="64" tileheight="64">
+  <image source="kabe2.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="3" name="cannon" tilewidth="64" tileheight="64">
+  <image source="cannon.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="4" name="doku1" tilewidth="64" tileheight="64">
+  <image source="doku1.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="5" name="hook" tilewidth="64" tileheight="64">
+  <image source="hook.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="6" name="kumo" tilewidth="64" tileheight="64">
+  <image source="kumo.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="7" name="takara" tilewidth="64" tileheight="64">
+  <image source="takara.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <layer name="base" width="50" height="28" opacity="0.9">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2USw4AIQhDGe9/6NlOJv6KRRrjoolRBF+EFjMrh+iZkHLc5eDEzfTEKB/aV6ryzomSkNlvna34yUwc28MifPH6br+/FN7X+zsFDqTPvO+L4PCoNd+e+yocnrooR6Q/qnlfJgezrzLiRh7nPcvmQPJlc6AzE9UvTK3OR+1+Jof3f1i+M1ozPS2Sg5Vvx1xGxl0OrTiEgy1m3RM5/uvvHsM7rFKXqRelEIyK4BUAAA==
+  </data>
+ </layer>
+ <layer name="collision" width="50" height="28">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3POwoAIAwE0Yi/+9/YShDrlYU4r0qRYjYiv+IOENk7qrVCJ8sOAAAAAACyGu6AS3/0i7/M4262Cp0FJFBCb+AVAAA=
+  </data>
+ </layer>
+ <layer name="floor" width="50" height="28">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2WWwoAIQhFw/0vev7FV+XMqNwDQSSZotxcC4A5EFs3fiZAbN8xLylmrc78nIxzb1k+T/wD4FG9ZyK9rcVdMR8LTQO6YcX8Rj5Z+rur1Z6Gg9pEdYTbOtf27zwsXcuYYTrWZudP+4LIXLoEm3b/VFe1PeZeAMBEJH291VPvrcyZ+AEwFA8f4BUAAA==
+  </data>
+ </layer>
+</map>
