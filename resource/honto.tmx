@@ -21,7 +21,7 @@
  <tileset firstgid="7" name="takara" tilewidth="64" tileheight="64">
   <image source="takara.gif" trans="0000ff" width="64" height="64"/>
  </tileset>
- <layer name="base" width="50" height="28" opacity="0.9">
+ <layer name="base" width="50" height="28" visible="0" opacity="0.9">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAC+2UwQrAIAxDO///o3faRdppXLoG8RAQjNWnps3M2ia6BlL2HQ6eb3QGNoeyVnKiJiT73pxN1kBqMup/2bO6pkLOGT41Du9ulTiQf6byHqvy3mB2P1UOb47Nkdkf1XpfJUdmzrN9EZv3N716b+uqOZB61RxoZjL+C1OMfET3UMWBvs9oPdp3nrEFY2ZPy+Rg1fsjl1m+w6HlQzjYYu67K0c/7j2s3sHqc71uxOZSeeAVAAA=
   </data>
@@ -33,7 +33,7 @@
  </layer>
  <layer name="floor" width="50" height="28">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+2W0QrAIAhFo4f9/yfvdYjerMxpeCCQ2syL487WiuIeOlk7eW6gkzijLq5mqc90v4P90UI5V/JreJTPFX549sTKv06h+balui30ePfiG0ftyQhU8wk9Vv4769UjDy9io/URepa5t3/rQL62OsPQHNmY+ad5oJlLG3Mmvb/qq1JsMfdyZJqFM9WK0OqIrBfVFrnuIh6cv+76KbrHeiZ+AZbz7aHgFQAA
+   H4sIAAAAAAAAC+2W0QrAIAhFo4f9/yfvdYjeXJlpeCCQWubFcbG1oriHTtZKnhvoJM6oi6tZ6jPd72B/tFDOmfwaHuV3hR+ePbHyr11o/m2pbgs93r34xlF7MgLVvEOPlf/+9eqRhxex0foIPcvc29M6kK/NzjD0fjak+e8Umrm0MWfS/VlflWKLuZcj0yycqVaEVkdkvai2yHUX8eD8ddVP0TvWM/ELLVISMuAVAAA=
   </data>
  </layer>
 </map>
