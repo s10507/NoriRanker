@@ -66,7 +66,7 @@ public class Main extends BasicGame {
 	Random rnd;
 	byte icount;
 	boolean iswalk;
-	static final float SPEED = 0.5f;
+	static final float SPEED = 0.2f;
 	Image[] sprite = new Image[7];   //移動の絵
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
@@ -719,8 +719,8 @@ public class Main extends BasicGame {
 //		g.drawRect(x, y, 64, 64);
 //		g.drawRect(draw_usax, draw_usay, 64, 64);
 //		g.drawRect(shimo_x, shimo_y, 64, 64);
-		g.setColor(Color.black);
-		g.drawRect(draw_x+20, draw_y+3, 38, 47);
+//		g.setColor(Color.black);
+//		g.drawRect(draw_x+20, draw_y+3, 38, 47);
 //		g.drawRect(doragon_x % 640, doragon_y % 448, 5, 5);
 //		g.drawRect((bless_x-37)%640, (bless_y+91) % 640, 5, 5);
 //		g.drawRect(x+15, y+27, 5, 5);
@@ -985,7 +985,7 @@ public class Main extends BasicGame {
 	void reset (GameContainer gc){
 		life = 3;
 
-		x = 64*20;
+		x = 64*2;
 		y = 64*4;
 
 		usax = 64*6;usay = 64*5;
