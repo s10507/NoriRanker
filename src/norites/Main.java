@@ -133,7 +133,7 @@ public class Main extends BasicGame {
 
 	Point nori_hook = new Point();
 
-	Point goal_point = new Point(1,0);
+	Point goal_point = new Point(4,3);
 
 	public Main(String title) {
 		super(title);
@@ -903,7 +903,7 @@ public class Main extends BasicGame {
 		いわば着火メソッド。便宜上、このクラスに埋め込まれているだけで、
 		ゲームプログラム本体とは基本的に関係がない部分 */
 		TMXRead t = new TMXRead();
-		AppGameContainer app = new AppGameContainer(new Main("骨組"));
+		AppGameContainer app = new AppGameContainer(new Main("カミゲー"));
 		app.setTargetFrameRate(60);
 		app.setDisplayMode(64*10, 64*7, false);
 		app.start();
