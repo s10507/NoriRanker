@@ -66,7 +66,7 @@ public class Main extends BasicGame {
 	Random rnd;
 	byte icount;
 	boolean iswalk;
-	static final float SPEED = 0.2f;
+	static final float SPEED = 0.5f;
 	Image[] sprite = new Image[7];   //移動の絵
 	Image[] sprite_k = new Image[6]; //攻撃の絵
 	Image[] sprite_h = new Image[3]; //クリアの絵(ジャンプも使えるかも)
@@ -95,6 +95,8 @@ public class Main extends BasicGame {
 
 	ArrayList<Float> kumo_x_list = new ArrayList<>();
 	ArrayList<Float> kumo_y_list = new ArrayList<>();
+	ArrayList<Integer> kouho = new ArrayList<Integer>();
+
 	int kumo_number = 0;
 
 	int shell_x;
@@ -143,6 +145,8 @@ public class Main extends BasicGame {
 		（フォントや画像、サウンド等のデータをファイルから読み込んで
 		オブジェクトとして変数名に関連付けたりする）
 		当然、ここはループしない */
+
+		gc.setShowFPS(false);
 
 		path = "./resource/honto.tmx";
 
@@ -295,23 +299,21 @@ public class Main extends BasicGame {
 			Input input = gc.getInput();
 			if (input.isKeyDown(input.KEY_LEFT)) {
 				x -= move;
-				if(detect_collision(x, y, map2, OBSTACLE_FOR_NORI)){
+				if(detect_collision(x, y, right, map2, OBSTACLE_FOR_NORI)){
 					x += move;
 				}
 				right = -1;
 
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
-				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+				if(detect_collision(x, y, right, map2, OBSTACLE_FOR_NORI)){
 					x -= move;
 				}
 				right = 1;
 			}
 			if (input.isKeyDown(input.KEY_DOWN)) {
 				y += move;
-				if(detect_collision(x, y, map2, WALL2_ID)
-						|| detect_collision(x, y, map2, CANNON_ID)){
+				if(detect_collision(x, y, right, map2, OBSTACLE_FOR_NORI)){
 					y -= move;
 				}
 			}
@@ -329,15 +331,12 @@ public class Main extends BasicGame {
 				jump.restart();
 			}
 
-			if(detect_collision(x, y, map2, WALL2_ID)
-					|| detect_collision(x, y, map2, CANNON_ID)){
+			if(detect_collision(x, y, right, map2, OBSTACLE_FOR_NORI)){
 				vspeed = 0;
 				vspeed += gravity*2;
 			}
 
 			y += vspeed; // 加速度分だけyに盛り付ける
-
-
 
 //			System.out.println("x="+x+",y="+y+","+onground);
 
@@ -444,7 +443,7 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if(detect_collision(x, y-48, map2, DOKU_ID)){
+			if(detect_collision(x, y-48, right, map2, DOKU_ID)){
 				life=0;
 				x=64*2;
 				y=64;
@@ -472,7 +471,6 @@ public class Main extends BasicGame {
 				onground = false;
 				if(ishooking){
 					noripie = hooked;
-					nori_hook = detect_hook_point(x, y);
 					x = nori_hook.x * 64;
 					y = (nori_hook.y + 1) * 64;
 				}else{
@@ -481,11 +479,12 @@ public class Main extends BasicGame {
 			}
 
 			if (!ishooking){
-				if(detect_collision(x, y, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP )){
+				if(detect_collision(x, y, right, map2, HOOK_ID)&&input.isKeyDown(input.KEY_UP) ){
 					ishooking = true;
+					nori_hook = detect_hook_point(x, y);
 					noripie = hooked;
 				}
-			}else if(input.isKeyDown(input.KEY_SPACE)){
+			}else if(input.isKeyDown(input.KEY_SPACE) || onground){
 				ishooking = false;
 			}
 
@@ -589,11 +588,11 @@ public class Main extends BasicGame {
 					kumo.draw(tx*64,ty*64);
 				}
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==HOOK_ID){
-					if(ishooking && nori_hook.equal(new Point(tx+screen_tx,ty+screen_ty))){
+					if(nori_hook.equal(new Point(tx+screen_tx,ty+screen_ty)) && ishooking){
 						if(right == 1)
 							afterhooked.draw(tx*64, ty*64);
 						else
-							afterhooked.draw(tx*64+64, ty*64, right*64, 64);
+							afterhooked.draw(tx*64+80, ty*64, right*64, 64);
 					}else
 						g.drawImage(hook, tx*64, ty*64);
 				}
@@ -605,7 +604,7 @@ public class Main extends BasicGame {
 		if(right==1){
 			noripie.draw((int)draw_x,(int)draw_y,right*64,64);
 		}else if(right == -1){
-			noripie.draw((int)draw_x+64,(int)draw_y,right*64,64);
+			noripie.draw((int)draw_x+80,(int)draw_y,right*64,64);
 		}
 		if(usamuki)
 			usax+=2.5f;
@@ -629,7 +628,7 @@ public class Main extends BasicGame {
 		shimo_normal.setRotation(angle);
 		angle+=10;
 
-		if(detect_collision(shimo_x, shimo_y, map2, OBSTACLE_FOR_ENEMY))
+		if(detect_collision(shimo_x, shimo_y, map2, OBSTACLE_FOR_ENEMY, 10, 50, 10, 50))
 			shimomuki = !shimomuki;
 
 		int draw_shimo_x = (int) (shimo_x % 640);
@@ -645,7 +644,7 @@ public class Main extends BasicGame {
 		int draw_shell_y = (int) (cannon_y_list.get(cannon_number) % 640);
 		if(cannon_x_list.size()!=0){
 			shell_x -= 5.0f;
-			if(detect_collision(shell_x, cannon_y_list.get(cannon_number), map2, OBSTACLE_FOR_ENEMY)){
+			if(detect_collision(shell_x, cannon_y_list.get(cannon_number), map2, OBSTACLE_FOR_ENEMY, 10, 50, 10, 50)){
 				for (int i = 0;i < cannon_y_list.size(); i++){
 					if(cannon_y_list.get(i)/64 == (int)(y+50)/64){
 //						System.out.println("a"+i);
@@ -720,8 +719,8 @@ public class Main extends BasicGame {
 //		g.drawRect(x, y, 64, 64);
 //		g.drawRect(draw_usax, draw_usay, 64, 64);
 //		g.drawRect(shimo_x, shimo_y, 64, 64);
-//		g.setColor(Color.black);
-//		g.drawRect(draw_x+27, draw_y+27, 5, 5);
+		g.setColor(Color.black);
+		g.drawRect(draw_x+20, draw_y+3, 38, 47);
 //		g.drawRect(doragon_x % 640, doragon_y % 448, 5, 5);
 //		g.drawRect((bless_x-37)%640, (bless_y+91) % 640, 5, 5);
 //		g.drawRect(x+15, y+27, 5, 5);
@@ -732,6 +731,7 @@ public class Main extends BasicGame {
 //		g.drawRect((((int)x+32)/64)*64, (((int)y+32)/64)*64, 5, 5);
 //		g.setColor(Color.orange);
 //		g.drawRect((((int)draw_usax+32)/64)*64, (((int)draw_usay+32)/64)*64, 5, 5);
+
 
 		}
 //			System.out.println("noriko"+(int)x+":"+(int)y);
@@ -768,8 +768,15 @@ public class Main extends BasicGame {
 		return j;
 	}
 
-	boolean detect_collision (float x, float y, int layer, int ID){
+	boolean detect_collision (float x, float y, int right, int layer, int ID){
 		boolean result;
+//		int r_x1, r_x2, r_y1, r_y2;
+//		if(right < 0){
+//			r_x1 = 5; r_x2 = r_x1+38; r_y1 = 3; r_y2 = 50;
+//		}else{
+//			r_x1 = 20; r_x2 = r_x1+38; r_y1 = 3; r_y2 = 50;
+//		}
+//
 		if(map.getTileId((int)(x+20)/64, (int)(y+3)/64, layer )== ID || 			//		のりぴーの左上と壁判定
 				map.getTileId((int)(x+58)/64, (int)(y+3)/64, layer )== ID||		//		のりぴーの右上と壁判定
 				map.getTileId((int)(x+20)/64, (int)(y+50)/64, layer )== ID||		//		のりぴーの左下と壁判定
@@ -783,6 +790,7 @@ public class Main extends BasicGame {
 
 	boolean detect_collision (float x, float y, int layer, int[] ID, int r_x1, int r_x2, int r_y1, int r_y2){
 		boolean result = false;
+
 		for(int i=0; i < ID.length; i++)
 			if(
 					map.getTileId((int)(x+r_x1)/64, (int)(y+r_y1)/64, layer )== ID[i] || 			//		のりぴーの左上と壁判定
@@ -798,8 +806,14 @@ public class Main extends BasicGame {
 		return result;
 	}
 
-	boolean detect_collision (float x, float y, int layer, int[] ID){
+	boolean detect_collision (float x, float y, int right, int layer, int[] ID){
 		boolean result = false;
+//		int r_x1, r_x2, r_y1, r_y2;
+//		if(right < 0){
+//			r_x1 = 5; r_x2 = r_x1+38; r_y1 = 3; r_y2 = 50;
+//		}else{
+//			r_x1 = 20; r_x2 = r_x1+38; r_y1 = 3; r_y2 = 50;
+//		}
 		for(int i=0; i < ID.length; i++)
 			if(
 					map.getTileId((int)(x+20)/64, (int)(y+3)/64, layer )== ID[i] || 			//		のりぴーの左上と壁判定
@@ -843,12 +857,23 @@ public class Main extends BasicGame {
 
 	Point detect_hook_point (float x, float y){
 		int n = 0;
-//		float min = 1000;
+		float min = 10000;
+		float diff = 0;
+		kouho.clear();
 		for (int i = 0; i < hook_list.size(); i++){
-//			System.out.println("hook "+i+" x :"+hook_list.get(i).x+"\nhook "+i+" x :"+hook_list.get(i).y);
 			if((int)(x+20)/64 == hook_list.get(i).x || (int)(x+58)/64 == hook_list.get(i).x){
-					n = i;
+				kouho.add(i);
+				n = i;
 			}
+		}
+		for(int j = 0;j < kouho.size(); j++){
+			diff = Math.abs((Math.abs(y) - Math.abs(hook_list.get(kouho.get(j)).y*64)));
+			System.out.println(diff+" "+Math.abs(hook_list.get(kouho.get(j)).y*64));
+			if(min > diff){
+				min = diff;
+				n = kouho.get(j);
+			}
+//			System.out.println(kouho.get(j));
 		}
 //		System.out.println("ナンバー："+n);
 		return hook_list.get(n);
@@ -916,11 +941,10 @@ public class Main extends BasicGame {
 				}
 			}
 			if(
-					!detect_collision(P.x,P.y,map2,WALL2_ID) 	&&		//ランダムで吹っ飛んだ先が壁や障害物にならないように
-					!detect_collision(P.x,P.y,map2,CANNON_ID)	&&
-					!detect_collision(P.x,P.y,map1,WARP_ID)		&&
-					!detect_collision(P.x, P.y, map2, DOKU_ID)	&&
-					!detect_collision(P.x, P.y, map2, KUMO_ID)
+					!detect_collision(P.x, P.y, right, map2, OBSTACLE_FOR_NORI) 	&&		//ランダムで吹っ飛んだ先が壁や障害物にならないように
+					!detect_collision(P.x, P.y, right, map1, WARP_ID)	&&
+					!detect_collision(P.x, P.y, right, map2, DOKU_ID)	&&
+					!detect_collision(P.x, P.y, right, map2, KUMO_ID)
 				)
 				break;
 		}
@@ -950,8 +974,8 @@ public class Main extends BasicGame {
 				}
 			}
 			if(
-					!detect_collision(P.x,P.y,map2,OBSTACLE_FOR_ENEMY) 	&&		//ランダムで吹っ飛んだ先が壁や障害物にならないように
-					!detect_collision(P.x,P.y,map1,WARP_ID)
+					!detect_collision(P.x,P.y,map2,OBSTACLE_FOR_ENEMY, 10, 50, 10, 50) 	&&		//ランダムで吹っ飛んだ先が壁や障害物にならないように
+					!detect_collision(P.x,P.y,0,map1,WARP_ID)
 				)
 				break;
 		}
@@ -1058,7 +1082,4 @@ class Point {
 
 		return ans;
 	}
-
-
-
 }
