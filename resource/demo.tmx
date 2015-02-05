@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="21" height="14" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="kabe1" tilewidth="64" tileheight="64">
+  <image source="kabe1.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="2" name="kabe2" tilewidth="64" tileheight="64">
+  <image source="kabe2.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="3" name="cannon" tilewidth="64" tileheight="64">
+  <image source="cannon.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="4" name="doku1" tilewidth="64" tileheight="64">
+  <image source="doku1.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="5" name="hook" tilewidth="64" tileheight="64">
+  <image source="hook.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="6" name="kumo" tilewidth="64" tileheight="64">
+  <image source="kumo.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="7" name="takara" tilewidth="64" tileheight="64">
+  <image source="takara.gif" trans="0000ff" width="64" height="64"/>
+ </tileset>
+ <layer name="base" width="21" height="14" opacity="0.9">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC92SQQoAIAgEbf//6C4dRNI19ZSwCLEMAwkRwWDk7EWCoGffI6bmTDDhML0wZtSveL74gDCruXlkh/1Rl5m5z66ndf6RyXj6lrJM7ct6GxoEnZWYBAAA
+  </data>
+ </layer>
+ <layer name="collision" width="21" height="14">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NiYGBgogEmBPCpQxcnpJaJSHXEmInuB1L8iU+MlHDBZyap7sFnJiVxS06cY/MPIXeRaiY10iYhd8IAMxXMZCXTbmLUskExOWYSA9jJMBPmDhYcGCYPAODDsuCYBAAA
+  </data>
+ </layer>
+ <layer name="floor" width="21" height="14">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGNqACYqpbR4TDjFs8sS6jxruJOQ2dLXEmIVNHz5MyF5KASXmEXL3SAJsUDyYAKG4gMkBAE3mhsiYBAAA
+  </data>
+ </layer>
+</map>

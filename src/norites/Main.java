@@ -99,7 +99,9 @@ public class Main extends BasicGame {
 
 	int kumo_number = 0;
 
-	int shell_x;
+	float shell_x;
+	int draw_shell_x, draw_shell_y;
+
 	float bless_x, bless_y;
 	boolean doragon_flg;
 	boolean doragon_up;
@@ -133,7 +135,7 @@ public class Main extends BasicGame {
 
 	Point nori_hook = new Point();
 
-	Point goal_point = new Point(4,3);
+	Point goal_point = new Point(1,1);
 
 	public Main(String title) {
 		super(title);
@@ -148,7 +150,7 @@ public class Main extends BasicGame {
 
 		gc.setShowFPS(false);
 
-		path = "./resource/honto.tmx";
+		path = "./resource/demo.tmx";
 
 		HashMap MapId = readgid();
 
@@ -306,9 +308,8 @@ public class Main extends BasicGame {
 
 			} else if (input.isKeyDown(input.KEY_RIGHT)) {
 				x += move;
-				if(detect_collision(x, y, right, map2, OBSTACLE_FOR_NORI)){
+				if(detect_collision(x, y, right, map2, OBSTACLE_FOR_NORI))
 					x -= move;
-				}
 				right = 1;
 			}
 			if (input.isKeyDown(input.KEY_DOWN)) {
@@ -340,18 +341,18 @@ public class Main extends BasicGame {
 
 //			System.out.println("x="+x+",y="+y+","+onground);
 
-			if (input.isKeyDown(input.KEY_1)) {
-				cannon_number = 0;
-				shell_x = (int) (cannon_x_list.get(cannon_number) - 64);
-			}
-			if (input.isKeyDown(input.KEY_2)) {
-				cannon_number = 1;
-				shell_x = (int) (cannon_x_list.get(cannon_number) - 64);
-			}
-			if (input.isKeyDown(input.KEY_3)) {
-				cannon_number = 2;
-				shell_x = (int) (cannon_x_list.get(cannon_number) - 64);
-			}
+//			if (input.isKeyDown(input.KEY_1)) {
+//				cannon_number = 0;
+//				shell_x = (int) (cannon_x_list.get(cannon_number) - 64);
+//			}
+//			if (input.isKeyDown(input.KEY_2)) {
+//				cannon_number = 1;
+//				shell_x = (int) (cannon_x_list.get(cannon_number) - 64);
+//			}
+//			if (input.isKeyDown(input.KEY_3)) {
+//				cannon_number = 2;
+//				shell_x = (int) (cannon_x_list.get(cannon_number) - 64);
+//			}
 
 
 //			if (map.getTileId((int) (x+50)/64, (int) (y+50)/64, map2) == WALL2_ID
@@ -386,6 +387,11 @@ public class Main extends BasicGame {
 			USA_P.setPoint(usax, usay);
 			SHIMO_P.setPoint(shimo_x, shimo_y);
 
+			if(detect_collision(x, y-20, right, map2, DOKU_ID)){
+				life=0;
+				x=64*2;
+				y=64;
+			}
 			if (
 					nori_damage(usax, usay) ||
 					nori_damage(shimo_x, shimo_y) ||
@@ -398,7 +404,7 @@ public class Main extends BasicGame {
 				N_P = blowing(N_P);
 				x = N_P.x;
 				y = N_P.y;
-//				life--;
+				life--;
 				if(ishooking){
 					ishooking = false;
 				}
@@ -443,11 +449,7 @@ public class Main extends BasicGame {
 			}
 			;
 
-			if(detect_collision(x, y-48, right, map2, DOKU_ID)){
-				life=0;
-				x=64*2;
-				y=64;
-			}
+
 			if (y+51 >= detect_ground_top(x+58,y, map3, FLOOR) * 64 ) {// のりぴーの右下と床判定
 				onground = true;
 				y = detect_ground_top(x+58,y, map3, FLOOR) * 64 - 51;
@@ -582,8 +584,6 @@ public class Main extends BasicGame {
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==TAKARA_ID){
 					g.drawImage(takara,tx*64,ty*64);
 				}
-
-
 				if(map.getTileId(tx+screen_tx, ty+screen_ty, map2)==KUMO_ID ){
 					kumo.draw(tx*64,ty*64);
 				}
@@ -640,8 +640,8 @@ public class Main extends BasicGame {
 			else
 				g.drawImage(shimo_normal, draw_shimo_x, draw_shimo_y);
 
-		int draw_shell_x = (int) (shell_x % 640);
-		int draw_shell_y = (int) (cannon_y_list.get(cannon_number) % 640);
+		draw_shell_x = (int) (shell_x % 640);
+		draw_shell_y = (int) (cannon_y_list.get(cannon_number) % 448);
 		if(cannon_x_list.size()!=0){
 			shell_x -= 5.0f;
 			if(detect_collision(shell_x, cannon_y_list.get(cannon_number), map2, OBSTACLE_FOR_ENEMY, 10, 50, 10, 50)){
@@ -658,11 +658,10 @@ public class Main extends BasicGame {
 				g.drawImage(shell, draw_shell_x, draw_shell_y);
 		}
 
-
 		int draw_doragon_x = (int) (doragon_x % 640);
 		int draw_doragon_y = (int) (doragon_y % 448);
 		int draw_bless_x = (int)(bless_x % 640);
-		int draw_bless_y = (int)(bless_y % 640);
+		int draw_bless_y = (int)(bless_y % 448);
 
 
 
@@ -723,7 +722,7 @@ public class Main extends BasicGame {
 //		g.drawRect(draw_x+20, draw_y+3, 38, 47);
 //		g.drawRect(doragon_x % 640, doragon_y % 448, 5, 5);
 //		g.drawRect((bless_x-37)%640, (bless_y+91) % 640, 5, 5);
-//		g.drawRect(x+15, y+27, 5, 5);
+//		g.drawRect(x, y+47, 64, 1);
 //		g.drawRect(x+53, y+27, 5, 5);
 //		g.drawRect(usax+5, usay+27, 5, 5);
 //		g.drawRect(usax+45, usay+27, 5, 5);
@@ -926,8 +925,8 @@ public class Main extends BasicGame {
 		int count = 0;
 		issue : for(;;){
 			System.out.println("count :"+count++);
-			P.x=rnd.nextInt(map.getWidth()*64-64);	//当たったらランダムにふっとばす
-			P.y=rnd.nextInt(map.getHeight()*64-64);
+			P.x=rnd.nextInt(map.getWidth()*64-640);	//当たったらランダムにふっとばす
+			P.y=rnd.nextInt(map.getHeight()*64-448);
 
 			if(goal_point.equal(new Point((int)P.x/640, (int)P.y/448))){
 				continue issue;
@@ -988,15 +987,15 @@ public class Main extends BasicGame {
 		x = 64*2;
 		y = 64*4;
 
-		usax = 64*6;usay = 64*5;
+		usax = 64*12;usay = 64*5;
 		utx=(int)usax/64;//うさたんのタイル位置
 		uty=(int)usay/64;
 
-		shimo_x=44*64; shimo_y=12*64;
+		shimo_x=64*13; shimo_y=64*1;
 		stx=(int)shimo_x/64;//しもたんのタイル位置
 		sty=(int)shimo_y/64;
 
-		doragon_x=36*64; doragon_y=22*64;
+		doragon_x=64*18; doragon_y=64*3;
 		dtx=(int)doragon_x/64;
 		dty=(int)doragon_y/64;
 
@@ -1019,7 +1018,7 @@ public class Main extends BasicGame {
 		icount = 0;
 		iswalk = false;
 
-		shell_x = 0;
+		shell_x = cannon_x_list.get(cannon_number);
 		bless_x = doragon_x;
 		bless_y = doragon_y;
 		doragon_flg = false;
